@@ -5,6 +5,7 @@ import GlobalDashboard from './components/GlobalDashboard'
 import AlertTracking from './components/AlertTracking'
 import ThresholdConfig from './components/ThresholdConfig'
 import SiteDeepDive from './components/SiteDeepDive'
+import Benchmark from './components/Benchmark'
 
 const TAB_TITLES: Record<string, string> = {
   '/dashboard': '全局风险大屏',
@@ -71,6 +72,7 @@ function App() {
               <Route path="/alerts" element={<AlertTracking />} />
               <Route path="/thresholds" element={<ThresholdConfig />} />
               <Route path="/sites/:siteId" element={<SiteDeepDive />} />
+              <Route path="/benchmark" element={<Benchmark />} />
             </Routes>
           </div>
         </main>
