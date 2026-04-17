@@ -28,3 +28,11 @@ def get_site(site_id: str):
     if site_id not in sites:
         raise HTTPException(status_code=404, detail="site not found")
     return sites[site_id]
+
+
+@app.get("/api/sites/{site_id}/metrics")
+def get_site_metrics(site_id: str):
+    try:
+        return generate_site_metrics(site_id=site_id, seed=42)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="site not found")
