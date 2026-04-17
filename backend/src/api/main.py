@@ -36,3 +36,32 @@ def get_site_metrics(site_id: str):
         return generate_site_metrics(site_id=site_id, seed=42)
     except ValueError:
         raise HTTPException(status_code=404, detail="site not found")
+
+
+@app.get("/api/benchmark")
+def benchmark():
+    import statistics
+    sites = generate_sites(seed=42)
+    enriched = []
+    for s in sites:
+        m = generate_site_metrics(site_id=s["id"], seed=42)
+        enriched.append({
+            **s,
+            "pdTotal": sum(m["pd"]),
+            "queryTotal": sum(m["query"]),
+            "progressPct": round(s["enrolled"] / s["target"] * 100, 1) if s["target"] else 0,
+        })
+    pd_totals = [e["pdTotal"] for e in enriched]
+    mean_pd = statistics.mean(pd_totals)
+    sd_pd = statistics.pstdev(pd_totals) or 1
+    return [
+        {
+            "siteId": e["id"],
+            "name": e["name"],
+            "progressPct": e["progressPct"],
+            "pdTotal": e["pdTotal"],
+            "pdZScore": round((e["pdTotal"] - mean_pd) / sd_pd, 3),
+            "queryTotal": e["queryTotal"],
+        }
+        for e in enriched
+    ]
