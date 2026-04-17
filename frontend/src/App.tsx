@@ -4,6 +4,7 @@ import { ThresholdProvider } from './context/ThresholdContext'
 import GlobalDashboard from './components/GlobalDashboard'
 import AlertTracking from './components/AlertTracking'
 import ThresholdConfig from './components/ThresholdConfig'
+import SiteDeepDive from './components/SiteDeepDive'
 
 const TAB_TITLES: Record<string, string> = {
   '/dashboard': '全局风险大屏',
@@ -69,6 +70,7 @@ function App() {
               <Route path="/dashboard" element={<GlobalDashboard />} />
               <Route path="/alerts" element={<AlertTracking />} />
               <Route path="/thresholds" element={<ThresholdConfig />} />
+              <Route path="/sites/:siteId" element={<SiteDeepDive />} />
             </Routes>
           </div>
         </main>
