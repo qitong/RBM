@@ -30,3 +30,16 @@ export function useSite(id: string) {
 export function useSiteMetrics(id: string) {
   return useQuery({ queryKey: ['site-metrics', id], queryFn: () => apiGet<SiteMetrics>(`/api/sites/${id}/metrics`), enabled: !!id })
 }
+
+export interface BenchmarkRow {
+  siteId: string
+  name: string
+  progressPct: number
+  pdTotal: number
+  pdZScore: number
+  queryTotal: number
+}
+
+export function useBenchmark() {
+  return useQuery({ queryKey: ['benchmark'], queryFn: () => apiGet<BenchmarkRow[]>('/api/benchmark') })
+}
