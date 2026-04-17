@@ -1,6 +1,7 @@
 import { useParams, Link } from 'react-router-dom'
 import { ChevronLeft } from 'lucide-react'
 import { useSite, useSiteMetrics } from '../api/hooks'
+import SiteKpiCards from './site-deep-dive/SiteKpiCards'
 
 export default function SiteDeepDive() {
   const { siteId = '' } = useParams()
@@ -21,6 +22,13 @@ export default function SiteDeepDive() {
       </Link>
       <h2 className="text-2xl font-bold">{site.data.name}</h2>
       <p className="text-slate-500 text-sm">PI: {site.data.pi} · 区域: {site.data.region}</p>
+      <SiteKpiCards
+        enrolled={site.data.enrolled}
+        target={site.data.target}
+        pdTotal={metrics.data?.pd.reduce((a, b) => a + b, 0) ?? 0}
+        aeTotal={metrics.data?.ae.reduce((a, b) => a + b, 0) ?? 0}
+        openQueries={metrics.data?.query.at(-1) ?? 0}
+      />
     </div>
   )
 }
