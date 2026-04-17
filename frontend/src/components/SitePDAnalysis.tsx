@@ -1,15 +1,17 @@
 import { useMemo, useState } from 'react';
-import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, 
-  ResponsiveContainer 
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer
 } from 'recharts';
 import { ChevronLeft, ArrowRight, LayoutGrid, Table as TableIcon } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useThresholds } from '../context/ThresholdContext';
 
 const SITES = ['101', '102', '105', '201', '203', '302', '305', '401', '402', '501'];
 
 export default function SitePDAnalysis() {
   const { categories, checkOutlier } = useThresholds();
+  const navigate = useNavigate();
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
 
   // Comparison View Data (Current Site Comparison)
@@ -51,6 +53,7 @@ export default function SitePDAnalysis() {
     if (data && data.activePayload && data.activePayload.length > 0) {
       const payload = data.activePayload[0].payload;
       setSelectedSite(payload.rawSite);
+      navigate(`/sites/${payload.rawSite}`);
     }
   };
 
