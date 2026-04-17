@@ -3,6 +3,7 @@ import { ChevronLeft } from 'lucide-react'
 import { useSite, useSiteMetrics } from '../api/hooks'
 import SiteKpiCards from './site-deep-dive/SiteKpiCards'
 import SiteTrendPanel from './site-deep-dive/SiteTrendPanel'
+import SubjectVisitHeatmap from './site-deep-dive/SubjectVisitHeatmap'
 
 export default function SiteDeepDive() {
   const { siteId = '' } = useParams()
@@ -31,6 +32,7 @@ export default function SiteDeepDive() {
         openQueries={metrics.data?.query.at(-1) ?? 0}
       />
       {metrics.data && <SiteTrendPanel metrics={metrics.data} />}
+      <SubjectVisitHeatmap siteId={siteId} />
     </div>
   )
 }
