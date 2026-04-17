@@ -21,3 +21,18 @@ def generate_sites(seed: int = 42) -> list[dict]:
             "pi": f"研究者 {sid}",
         })
     return sites
+
+
+def generate_site_metrics(site_id: str, seed: int = 42, months: int = 12) -> dict:
+    if site_id not in SITE_IDS:
+        raise ValueError(f"unknown site_id: {site_id}")
+    rng = np.random.default_rng(seed + int(site_id))
+    timeline = [f"2025-{m:02d}" for m in range(1, months + 1)]
+    return {
+        "siteId": site_id,
+        "timeline": timeline,
+        "pd": [int(rng.integers(0, 8)) for _ in range(months)],
+        "ae": [int(rng.integers(0, 5)) for _ in range(months)],
+        "enrollment": list(np.cumsum(rng.integers(1, 6, size=months)).astype(int).tolist()),
+        "query": [int(rng.integers(0, 12)) for _ in range(months)],
+    }
