@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom'
 import { ChevronLeft } from 'lucide-react'
 import { useSite, useSiteMetrics } from '../api/hooks'
 import SiteKpiCards from './site-deep-dive/SiteKpiCards'
+import SiteTrendPanel from './site-deep-dive/SiteTrendPanel'
 
 export default function SiteDeepDive() {
   const { siteId = '' } = useParams()
@@ -29,6 +30,7 @@ export default function SiteDeepDive() {
         aeTotal={metrics.data?.ae.reduce((a, b) => a + b, 0) ?? 0}
         openQueries={metrics.data?.query.at(-1) ?? 0}
       />
+      {metrics.data && <SiteTrendPanel metrics={metrics.data} />}
     </div>
   )
 }
