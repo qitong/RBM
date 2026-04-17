@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { AlertTriangle, Clock, CheckCircle, Search, ThumbsUp, X, TrendingDown, TrendingUp } from 'lucide-react';
+import { useState } from 'react';
+import { Clock, CheckCircle, Search, ThumbsUp, X, TrendingDown, TrendingUp } from 'lucide-react';
 import { alerts as initialAlerts } from '../data.json';
 import { useThresholds } from '../context/ThresholdContext';
 

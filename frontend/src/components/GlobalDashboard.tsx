@@ -36,6 +36,7 @@ export default function GlobalDashboard() {
     if (selectedCategory === 'Weighted_Overall') return '综合 PD 评分 (加权)';
     return categories.find(c => c.id === selectedCategory)?.label || selectedCategory;
   }, [selectedCategory, categories]);
+  void currentCategoryLabel;
 
   // Threshold View logic
   const currentThreshold = useMemo(() => {
