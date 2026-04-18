@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from src.edc.generator import generate_sites, generate_site_metrics
+from src.edc.generator import (generate_sites, generate_site_metrics,
+                                generate_investigators, generate_investigator_metrics)
 from src.edc.correlation import compute_correlation
 
 app = FastAPI(title="RBM API", version="0.1.0")
@@ -88,3 +89,24 @@ def correlation():
         })
     corr = compute_correlation(pd_totals, query_totals)
     return {"points": points, **corr}
+
+
+@app.get("/api/investigators")
+def list_investigators():
+    return generate_investigators(seed=42)
+
+
+@app.get("/api/investigators/{inv_id}")
+def get_investigator(inv_id: str):
+    investigators = {i["id"]: i for i in generate_investigators(seed=42)}
+    if inv_id not in investigators:
+        raise HTTPException(status_code=404, detail="investigator not found")
+    return investigators[inv_id]
+
+
+@app.get("/api/investigators/{inv_id}/metrics")
+def get_investigator_metrics(inv_id: str):
+    try:
+        return generate_investigator_metrics(investigator_id=inv_id, seed=42)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="investigator not found")
