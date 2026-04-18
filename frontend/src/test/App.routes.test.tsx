@@ -49,4 +49,9 @@ describe('App routes', () => {
     renderAt('/forecast/101')
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('\u98CE\u9669\u9884\u6D4B')
   })
+
+  it('renders CAPA page at /capa', () => {
+    renderAt('/capa')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('CAPA \u6548\u7387\u5206\u6790')
+  })
 })

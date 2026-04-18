@@ -1,4 +1,4 @@
-import { Activity, LayoutDashboard, Settings, Filter, AlertTriangle, BarChart3, GitCompareArrows, Users } from 'lucide-react'
+import { Activity, LayoutDashboard, Settings, Filter, AlertTriangle, BarChart3, GitCompareArrows, Users, ClipboardCheck } from 'lucide-react'
 import { NavLink, Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { ThresholdProvider } from './context/ThresholdContext'
 import GlobalDashboard from './components/GlobalDashboard'
@@ -10,6 +10,7 @@ import CorrelationScatter from './components/CorrelationScatter'
 import InvestigatorList from './components/InvestigatorList'
 import InvestigatorProfile from './components/InvestigatorProfile'
 import ForecastChart from './components/ForecastChart'
+import CapaEfficiency from './components/CapaEfficiency'
 
 const TAB_TITLES: Record<string, string> = {
   '/dashboard': '全局风险大屏',
@@ -18,6 +19,7 @@ const TAB_TITLES: Record<string, string> = {
   '/benchmark': '中心间横向对比',
   '/correlation': 'PD \u00D7 Query \u76F8\u5173\u6027',
   '/investigators': '\u7814\u7A76\u8005\u753B\u50CF',
+  '/capa': 'CAPA \u6548\u7387\u5206\u6790',
 }
 
 function NavItem({ to, icon: Icon, label }: { to: string; icon: React.ComponentType<{ size?: number }>; label: string }) {
@@ -59,6 +61,7 @@ function App() {
             <NavItem to="/benchmark" icon={BarChart3} label="中心间横向对比" />
             <NavItem to="/correlation" icon={GitCompareArrows} label="PD × Query 相关性" />
             <NavItem to="/investigators" icon={Users} label="研究者画像" />
+            <NavItem to="/capa" icon={ClipboardCheck} label="CAPA 效率分析" />
             <div className="mt-8">
               <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">系统设置</p>
               <NavItem to="/thresholds" icon={Settings} label="预警阈值配置" />
@@ -89,6 +92,7 @@ function App() {
               <Route path="/investigators" element={<InvestigatorList />} />
               <Route path="/investigators/:invId" element={<InvestigatorProfile />} />
               <Route path="/forecast/:siteId" element={<ForecastChart />} />
+              <Route path="/capa" element={<CapaEfficiency />} />
             </Routes>
           </div>
         </main>
