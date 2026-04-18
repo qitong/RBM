@@ -113,3 +113,42 @@ export function useForecast(siteId: string) {
     enabled: !!siteId,
   })
 }
+
+export interface CapaRecord {
+  id: string
+  siteId: string
+  category: string
+  openDate: string
+  closeDate: string
+  status: string
+  cycleTimeDays?: number
+}
+
+export interface CapaSiteEfficiency {
+  siteId: string
+  avgCycleTimeDays: number
+  count: number
+  closureRate: number
+}
+
+export interface CapaCategoryEfficiency {
+  category: string
+  avgCycleTimeDays: number
+  count: number
+}
+
+export interface CapaEfficiency {
+  avgCycleTimeDays: number
+  medianCycleTimeDays: number
+  closureRate: number
+  bySite: CapaSiteEfficiency[]
+  byCategory: CapaCategoryEfficiency[]
+}
+
+export function useCapaList() {
+  return useQuery({ queryKey: ['capa'], queryFn: () => apiGet<CapaRecord[]>('/api/capa') })
+}
+
+export function useCapaEfficiency() {
+  return useQuery({ queryKey: ['capa-efficiency'], queryFn: () => apiGet<CapaEfficiency>('/api/capa/efficiency') })
+}
