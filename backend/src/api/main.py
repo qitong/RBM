@@ -1,7 +1,8 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from src.edc.generator import (generate_sites, generate_site_metrics,
-                                generate_investigators, generate_investigator_metrics)
+                                generate_investigators, generate_investigator_metrics,
+                                generate_capa_records)
 from src.edc.correlation import compute_correlation
 from src.edc.forecast import linear_forecast
 
@@ -140,3 +141,56 @@ def get_investigator_metrics(inv_id: str):
         return generate_investigator_metrics(investigator_id=inv_id, seed=42)
     except ValueError:
         raise HTTPException(status_code=404, detail="investigator not found")
+
+
+@app.get("/api/capa/efficiency")
+def capa_efficiency():
+    import statistics
+    from collections import defaultdict
+    records = generate_capa_records(seed=42)
+    closed = [r for r in records if r["status"] == "closed"]
+    cycles = [r["cycleTimeDays"] for r in closed]
+    avg_cycle = round(statistics.mean(cycles), 1) if cycles else 0
+    median_cycle = round(statistics.median(cycles), 1) if cycles else 0
+    closure_rate = round(len(closed) / len(records), 3) if records else 0
+    site_map: dict[str, list[int]] = defaultdict(list)
+    site_total: dict[str, int] = defaultdict(int)
+    for r in records:
+        site_total[r["siteId"]] += 1
+        if r["status"] == "closed":
+            site_map[r["siteId"]].append(r["cycleTimeDays"])
+    by_site = []
+    for sid in sorted(site_total.keys()):
+        sc = site_map[sid]
+        by_site.append({
+            "siteId": sid,
+            "avgCycleTimeDays": round(statistics.mean(sc), 1) if sc else 0,
+            "count": site_total[sid],
+            "closureRate": round(len(sc) / site_total[sid], 3) if site_total[sid] else 0,
+        })
+    cat_map: dict[str, list[int]] = defaultdict(list)
+    cat_total: dict[str, int] = defaultdict(int)
+    for r in records:
+        cat_total[r["category"]] += 1
+        if r["status"] == "closed":
+            cat_map[r["category"]].append(r["cycleTimeDays"])
+    by_category = []
+    for cat in sorted(cat_total.keys()):
+        cc = cat_map[cat]
+        by_category.append({
+            "category": cat,
+            "avgCycleTimeDays": round(statistics.mean(cc), 1) if cc else 0,
+            "count": cat_total[cat],
+        })
+    return {
+        "avgCycleTimeDays": avg_cycle,
+        "medianCycleTimeDays": median_cycle,
+        "closureRate": closure_rate,
+        "bySite": by_site,
+        "byCategory": by_category,
+    }
+
+
+@app.get("/api/capa")
+def list_capa():
+    return generate_capa_records(seed=42)
