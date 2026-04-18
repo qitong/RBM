@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from src.edc.generator import generate_sites, generate_site_metrics
+from src.edc.correlation import compute_correlation
 
 app = FastAPI(title="RBM API", version="0.1.0")
 
@@ -65,3 +66,25 @@ def benchmark():
         }
         for e in enriched
     ]
+
+
+@app.get("/api/correlation")
+def correlation():
+    sites = generate_sites(seed=42)
+    points = []
+    pd_totals = []
+    query_totals = []
+    for s in sites:
+        m = generate_site_metrics(site_id=s["id"], seed=42)
+        pd_t = sum(m["pd"])
+        q_t = sum(m["query"])
+        pd_totals.append(pd_t)
+        query_totals.append(q_t)
+        points.append({
+            "siteId": s["id"],
+            "name": s["name"],
+            "pdTotal": pd_t,
+            "queryTotal": q_t,
+        })
+    corr = compute_correlation(pd_totals, query_totals)
+    return {"points": points, **corr}
