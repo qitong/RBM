@@ -38,4 +38,9 @@ describe('App routes', () => {
     renderAt('/correlation')
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('PD \u00D7 Query \u76F8\u5173\u6027')
   })
+
+  it('renders investigators page at /investigators', () => {
+    renderAt('/investigators')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('\u7814\u7A76\u8005\u753B\u50CF')
+  })
 })
