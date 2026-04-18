@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.edc.generator import (generate_sites, generate_site_metrics,
                                 generate_investigators, generate_investigator_metrics)
 from src.edc.correlation import compute_correlation
+from src.edc.forecast import linear_forecast
 
 app = FastAPI(title="RBM API", version="0.1.0")
 
@@ -38,6 +39,35 @@ def get_site_metrics(site_id: str):
         return generate_site_metrics(site_id=site_id, seed=42)
     except ValueError:
         raise HTTPException(status_code=404, detail="site not found")
+
+
+@app.get("/api/sites/{site_id}/forecast")
+def get_site_forecast(site_id: str, horizon: int = 3):
+    try:
+        m = generate_site_metrics(site_id=site_id, seed=42)
+    except ValueError:
+        raise HTTPException(status_code=404, detail="site not found")
+    pd_fc = linear_forecast(m["pd"], horizon=horizon)
+    ae_fc = linear_forecast(m["ae"], horizon=horizon)
+    last_month = int(m["timeline"][-1].split("-")[1])
+    last_year = int(m["timeline"][-1].split("-")[0])
+    future_timeline = []
+    for i in range(1, horizon + 1):
+        nm = last_month + i
+        ny = last_year + (nm - 1) // 12
+        nm = ((nm - 1) % 12) + 1
+        future_timeline.append(f"{ny}-{nm:02d}")
+    return {
+        "siteId": site_id,
+        "historical": {
+            "timeline": m["timeline"],
+            "pd": m["pd"],
+            "ae": m["ae"],
+        },
+        "forecastTimeline": future_timeline,
+        "pd": pd_fc,
+        "ae": ae_fc,
+    }
 
 
 @app.get("/api/benchmark")
