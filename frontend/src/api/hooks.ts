@@ -89,3 +89,27 @@ export function useInvestigator(id: string) {
 export function useInvestigatorMetrics(id: string) {
   return useQuery({ queryKey: ['investigator-metrics', id], queryFn: () => apiGet<InvestigatorMetrics>(`/api/investigators/${id}/metrics`), enabled: !!id })
 }
+
+export interface ForecastSeries {
+  forecast: number[]
+  lower: number[]
+  upper: number[]
+  slope: number
+  intercept: number
+}
+
+export interface ForecastData {
+  siteId: string
+  historical: { timeline: string[]; pd: number[]; ae: number[] }
+  forecastTimeline: string[]
+  pd: ForecastSeries
+  ae: ForecastSeries
+}
+
+export function useForecast(siteId: string) {
+  return useQuery({
+    queryKey: ['forecast', siteId],
+    queryFn: () => apiGet<ForecastData>(`/api/sites/${siteId}/forecast`),
+    enabled: !!siteId,
+  })
+}
