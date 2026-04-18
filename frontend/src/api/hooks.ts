@@ -43,3 +43,22 @@ export interface BenchmarkRow {
 export function useBenchmark() {
   return useQuery({ queryKey: ['benchmark'], queryFn: () => apiGet<BenchmarkRow[]>('/api/benchmark') })
 }
+
+export interface CorrelationPoint {
+  siteId: string
+  name: string
+  pdTotal: number
+  queryTotal: number
+}
+
+export interface CorrelationData {
+  points: CorrelationPoint[]
+  pearson: number
+  spearman: number
+  slope: number
+  intercept: number
+}
+
+export function useCorrelation() {
+  return useQuery({ queryKey: ['correlation'], queryFn: () => apiGet<CorrelationData>('/api/correlation') })
+}
