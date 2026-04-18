@@ -84,3 +84,29 @@ def generate_investigator_metrics(investigator_id: str, seed: int = 42,
         "pdTotal": pd_total,
         "aeCounts": ae_counts,
     }
+
+
+def generate_capa_records(seed: int = 42, count: int = 30) -> list[dict]:
+    rng = np.random.default_rng(seed + 2000)
+    records = []
+    for i in range(count):
+        site_id = str(rng.choice(SITE_IDS))
+        category = str(rng.choice(PD_CATEGORIES))
+        open_day = int(rng.integers(1, 300))
+        status = str(rng.choice(["open", "closed", "closed", "closed"]))
+        cycle = int(rng.integers(3, 45)) if status == "closed" else 0
+        close_day = open_day + cycle
+        open_date = f"2025-{((open_day - 1) // 30 + 1):02d}-{((open_day - 1) % 30 + 1):02d}"
+        close_date = f"2025-{((close_day - 1) // 30 + 1):02d}-{((close_day - 1) % 30 + 1):02d}" if status == "closed" else ""
+        record: dict = {
+            "id": f"CAPA-{i + 1:03d}",
+            "siteId": site_id,
+            "category": category,
+            "openDate": open_date,
+            "closeDate": close_date,
+            "status": status,
+        }
+        if status == "closed":
+            record["cycleTimeDays"] = cycle
+        records.append(record)
+    return records
