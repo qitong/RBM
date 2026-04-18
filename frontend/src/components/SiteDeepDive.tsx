@@ -33,6 +33,9 @@ export default function SiteDeepDive() {
       />
       {metrics.data && <SiteTrendPanel metrics={metrics.data} />}
       <SubjectVisitHeatmap siteId={siteId} />
+      <Link to={`/forecast/${siteId}`} className="inline-flex items-center gap-1 text-sm font-medium text-primary-600 hover:underline">
+        {'\u98CE\u9669\u9884\u6D4B \u2192'}
+      </Link>
     </div>
   )
 }

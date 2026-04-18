@@ -9,6 +9,7 @@ import Benchmark from './components/Benchmark'
 import CorrelationScatter from './components/CorrelationScatter'
 import InvestigatorList from './components/InvestigatorList'
 import InvestigatorProfile from './components/InvestigatorProfile'
+import ForecastChart from './components/ForecastChart'
 
 const TAB_TITLES: Record<string, string> = {
   '/dashboard': '全局风险大屏',
@@ -37,7 +38,11 @@ function NavItem({ to, icon: Icon, label }: { to: string; icon: React.ComponentT
 
 function App() {
   const location = useLocation()
-  const title = TAB_TITLES[location.pathname] ?? (location.pathname.startsWith('/sites/') ? '中心深度分析' : location.pathname.startsWith('/investigators/') ? '\u7814\u7A76\u8005\u8BE6\u60C5' : 'RBM')
+  const title = TAB_TITLES[location.pathname]
+    ?? (location.pathname.startsWith('/sites/') ? '\u4E2D\u5FC3\u6DF1\u5EA6\u5206\u6790'
+      : location.pathname.startsWith('/investigators/') ? '\u7814\u7A76\u8005\u8BE6\u60C5'
+      : location.pathname.startsWith('/forecast/') ? '\u98CE\u9669\u9884\u6D4B'
+      : 'RBM')
 
   return (
     <ThresholdProvider>
@@ -83,6 +88,7 @@ function App() {
               <Route path="/correlation" element={<CorrelationScatter />} />
               <Route path="/investigators" element={<InvestigatorList />} />
               <Route path="/investigators/:invId" element={<InvestigatorProfile />} />
+              <Route path="/forecast/:siteId" element={<ForecastChart />} />
             </Routes>
           </div>
         </main>

@@ -43,4 +43,10 @@ describe('App routes', () => {
     renderAt('/investigators')
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('\u7814\u7A76\u8005\u753B\u50CF')
   })
+
+  it('renders forecast page at /forecast/:siteId', () => {
+    vi.stubGlobal('fetch', vi.fn().mockReturnValue(new Promise(() => {})))
+    renderAt('/forecast/101')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('\u98CE\u9669\u9884\u6D4B')
+  })
 })
