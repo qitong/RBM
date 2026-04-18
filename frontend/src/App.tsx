@@ -1,4 +1,4 @@
-import { Activity, LayoutDashboard, Settings, Filter, AlertTriangle, BarChart3 } from 'lucide-react'
+import { Activity, LayoutDashboard, Settings, Filter, AlertTriangle, BarChart3, GitCompareArrows } from 'lucide-react'
 import { NavLink, Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { ThresholdProvider } from './context/ThresholdContext'
 import GlobalDashboard from './components/GlobalDashboard'
@@ -6,12 +6,14 @@ import AlertTracking from './components/AlertTracking'
 import ThresholdConfig from './components/ThresholdConfig'
 import SiteDeepDive from './components/SiteDeepDive'
 import Benchmark from './components/Benchmark'
+import CorrelationScatter from './components/CorrelationScatter'
 
 const TAB_TITLES: Record<string, string> = {
   '/dashboard': '全局风险大屏',
   '/alerts': '预警跟踪与闭环',
   '/thresholds': '预警阈值配置',
   '/benchmark': '中心间横向对比',
+  '/correlation': 'PD \u00D7 Query \u76F8\u5173\u6027',
 }
 
 function NavItem({ to, icon: Icon, label }: { to: string; icon: React.ComponentType<{ size?: number }>; label: string }) {
@@ -47,6 +49,7 @@ function App() {
             <NavItem to="/dashboard" icon={LayoutDashboard} label="全局风险大屏" />
             <NavItem to="/alerts" icon={AlertTriangle} label="预警跟踪与闭环" />
             <NavItem to="/benchmark" icon={BarChart3} label="中心间横向对比" />
+            <NavItem to="/correlation" icon={GitCompareArrows} label="PD × Query 相关性" />
             <div className="mt-8">
               <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">系统设置</p>
               <NavItem to="/thresholds" icon={Settings} label="预警阈值配置" />
@@ -73,6 +76,7 @@ function App() {
               <Route path="/thresholds" element={<ThresholdConfig />} />
               <Route path="/sites/:siteId" element={<SiteDeepDive />} />
               <Route path="/benchmark" element={<Benchmark />} />
+              <Route path="/correlation" element={<CorrelationScatter />} />
             </Routes>
           </div>
         </main>

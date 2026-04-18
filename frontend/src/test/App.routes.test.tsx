@@ -33,4 +33,9 @@ describe('App routes', () => {
     renderAt('/thresholds')
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('预警阈值配置')
   })
+
+  it('renders correlation page at /correlation', () => {
+    renderAt('/correlation')
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('PD \u00D7 Query \u76F8\u5173\u6027')
+  })
 })
