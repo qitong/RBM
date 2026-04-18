@@ -1,5 +1,5 @@
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,
-         ResponsiveContainer, Line, ComposedChart } from 'recharts'
+         ResponsiveContainer } from 'recharts'
 import { useCorrelation } from '../api/hooks'
 
 export default function CorrelationScatter() {
@@ -9,16 +9,10 @@ export default function CorrelationScatter() {
   if (q.isError || !q.data) return <div className="text-red-600">{'\u65E0\u6CD5\u52A0\u8F7D\u76F8\u5173\u6027\u6570\u636E'}</div>
 
   const { points, pearson, spearman, slope, intercept } = q.data
-  const xMin = Math.min(...points.map(p => p.pdTotal))
-  const xMax = Math.max(...points.map(p => p.pdTotal))
   const merged = points.map(p => ({
     ...p,
     regrY: slope * p.pdTotal + intercept,
   }))
-  const regressionLine = [
-    { pdTotal: xMin, regrY: slope * xMin + intercept },
-    { pdTotal: xMax, regrY: slope * xMax + intercept },
-  ]
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
