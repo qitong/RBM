@@ -62,3 +62,30 @@ export interface CorrelationData {
 export function useCorrelation() {
   return useQuery({ queryKey: ['correlation'], queryFn: () => apiGet<CorrelationData>('/api/correlation') })
 }
+
+export interface Investigator {
+  id: string
+  name: string
+  experience: string
+  siteIds: string[]
+}
+
+export interface InvestigatorMetrics {
+  investigatorId: string
+  timeline: string[]
+  pdByCategory: Record<string, number[]>
+  pdTotal: number[]
+  aeCounts: number[]
+}
+
+export function useInvestigators() {
+  return useQuery({ queryKey: ['investigators'], queryFn: () => apiGet<Investigator[]>('/api/investigators') })
+}
+
+export function useInvestigator(id: string) {
+  return useQuery({ queryKey: ['investigator', id], queryFn: () => apiGet<Investigator>(`/api/investigators/${id}`), enabled: !!id })
+}
+
+export function useInvestigatorMetrics(id: string) {
+  return useQuery({ queryKey: ['investigator-metrics', id], queryFn: () => apiGet<InvestigatorMetrics>(`/api/investigators/${id}/metrics`), enabled: !!id })
+}
