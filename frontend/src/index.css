@@ -86,7 +86,7 @@ body {
     font-size: var(--text-display);
     font-weight: 600;
     line-height: 1.15;
-    letter-spacing: -1.28px;
+    letter-spacing: 0;
     color: var(--color-text-primary);
   }
 
@@ -94,7 +94,7 @@ body {
     font-size: var(--text-h1);
     font-weight: 600;
     line-height: 1.10;
-    letter-spacing: -0.8px;
+    letter-spacing: 0;
     color: var(--color-text-primary);
   }
 
@@ -102,7 +102,7 @@ body {
     font-size: var(--text-h2);
     font-weight: 500;
     line-height: 1.30;
-    letter-spacing: -0.24px;
+    letter-spacing: 0;
     color: var(--color-text-primary);
   }
 
@@ -110,7 +110,7 @@ body {
     font-size: var(--text-h3);
     font-weight: 600;
     line-height: 1.30;
-    letter-spacing: -0.2px;
+    letter-spacing: 0;
     color: var(--color-text-primary);
   }
 

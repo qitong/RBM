@@ -92,7 +92,7 @@ export default function AlertTracking() {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="">`
       <header className="mb-8">
         <div className="flex justify-between items-end">
           <div className="max-w-3xl">
