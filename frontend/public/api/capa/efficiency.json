@@ -1,0 +1,19 @@
+{
+  "avgCycleTimeDays": 25,
+  "medianCycleTimeDays": 24.5,
+  "closureRate": 66.7,
+  "bySite": [
+    { "siteId": "S-001", "avgCycleTimeDays": 32, "count": 1, "closureRate": 100 },
+    { "siteId": "S-002", "avgCycleTimeDays": 23, "count": 1, "closureRate": 100 },
+    { "siteId": "S-003", "avgCycleTimeDays": 22.5, "count": 2, "closureRate": 100 },
+    { "siteId": "S-005", "avgCycleTimeDays": 0, "count": 1, "closureRate": 0 },
+    { "siteId": "S-007", "avgCycleTimeDays": 0, "count": 1, "closureRate": 0 }
+  ],
+  "byCategory": [
+    { "category": "知情同意", "avgCycleTimeDays": 26, "count": 2 },
+    { "category": "入排标准", "avgCycleTimeDays": 32, "count": 1 },
+    { "category": "合并用药", "avgCycleTimeDays": 0, "count": 1 },
+    { "category": "AE上报", "avgCycleTimeDays": 19, "count": 1 },
+    { "category": "样本管理", "avgCycleTimeDays": 23, "count": 1 }
+  ]
+}

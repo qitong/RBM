@@ -1,0 +1,8 @@
+[
+  { "id": "CAPA-001", "siteId": "S-003", "category": "知情同意", "openDate": "2026-01-15", "closeDate": "2026-02-10", "status": "Closed", "cycleTimeDays": 26 },
+  { "id": "CAPA-002", "siteId": "S-001", "category": "入排标准", "openDate": "2026-02-01", "closeDate": "2026-03-05", "status": "Closed", "cycleTimeDays": 32 },
+  { "id": "CAPA-003", "siteId": "S-005", "category": "合并用药", "openDate": "2026-03-10", "closeDate": "", "status": "Open", "cycleTimeDays": null },
+  { "id": "CAPA-004", "siteId": "S-003", "category": "AE上报", "openDate": "2026-03-20", "closeDate": "2026-04-08", "status": "Closed", "cycleTimeDays": 19 },
+  { "id": "CAPA-005", "siteId": "S-007", "category": "知情同意", "openDate": "2026-04-01", "closeDate": "", "status": "Open", "cycleTimeDays": null },
+  { "id": "CAPA-006", "siteId": "S-002", "category": "样本管理", "openDate": "2026-02-20", "closeDate": "2026-03-15", "status": "Closed", "cycleTimeDays": 23 }
+]

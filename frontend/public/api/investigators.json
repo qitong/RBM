@@ -1,0 +1,8 @@
+[
+  { "id": "INV-001", "name": "张伟 教授", "experience": "15年", "siteIds": ["S-001"] },
+  { "id": "INV-002", "name": "李芳 主任医师", "experience": "12年", "siteIds": ["S-002"] },
+  { "id": "INV-003", "name": "王强 副教授", "experience": "8年", "siteIds": ["S-003", "S-007"] },
+  { "id": "INV-004", "name": "陈静 教授", "experience": "20年", "siteIds": ["S-004"] },
+  { "id": "INV-005", "name": "刘洋 主任医师", "experience": "10年", "siteIds": ["S-005"] },
+  { "id": "INV-006", "name": "赵明 教授", "experience": "18年", "siteIds": ["S-006"] }
+]

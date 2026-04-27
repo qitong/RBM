@@ -92,7 +92,7 @@ export default function AlertTracking() {
   };
 
   return (
-    <div className="">`
+    <div>
       <header className="mb-8">
         <div className="flex justify-between items-end">
           <div className="max-w-3xl">

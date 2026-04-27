@@ -1,0 +1,16 @@
+{
+  "points": [
+    { "siteId": "S-001", "name": "北京协和", "pdTotal": 14, "queryTotal": 45 },
+    { "siteId": "S-002", "name": "上海瑞金", "pdTotal": 8, "queryTotal": 32 },
+    { "siteId": "S-003", "name": "广州中山", "pdTotal": 22, "queryTotal": 67 },
+    { "siteId": "S-004", "name": "成都华西", "pdTotal": 5, "queryTotal": 18 },
+    { "siteId": "S-005", "name": "杭州浙一", "pdTotal": 18, "queryTotal": 52 },
+    { "siteId": "S-006", "name": "武汉同济", "pdTotal": 11, "queryTotal": 38 },
+    { "siteId": "S-007", "name": "南京鼓楼", "pdTotal": 16, "queryTotal": 49 },
+    { "siteId": "S-008", "name": "天津医大", "pdTotal": 7, "queryTotal": 25 }
+  ],
+  "pearson": 0.94,
+  "spearman": 0.90,
+  "slope": 2.85,
+  "intercept": 5.2
+}

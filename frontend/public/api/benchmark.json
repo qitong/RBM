@@ -1,0 +1,32 @@
+{
+  "points": [
+    { "siteId": "S-001", "name": "北京协和", "progressPct": 82, "pdTotal": 14, "pdZScore": 1.2, "queryTotal": 45 },
+    { "siteId": "S-002", "name": "上海瑞金", "progressPct": 75, "pdTotal": 8, "pdZScore": -0.3, "queryTotal": 32 },
+    { "siteId": "S-003", "name": "广州中山", "progressPct": 68, "pdTotal": 22, "pdZScore": 2.4, "queryTotal": 67 },
+    { "siteId": "S-004", "name": "成都华西", "progressPct": 91, "pdTotal": 5, "pdZScore": -1.1, "queryTotal": 18 },
+    { "siteId": "S-005", "name": "杭州浙一", "progressPct": 55, "pdTotal": 18, "pdZScore": 1.8, "queryTotal": 52 },
+    { "siteId": "S-006", "name": "武汉同济", "progressPct": 78, "pdTotal": 11, "pdZScore": 0.5, "queryTotal": 38 },
+    { "siteId": "S-007", "name": "南京鼓楼", "progressPct": 63, "pdTotal": 16, "pdZScore": 1.5, "queryTotal": 49 },
+    { "siteId": "S-008", "name": "天津医大", "progressPct": 88, "pdTotal": 7, "pdZScore": -0.6, "queryTotal": 25 }
+  ],
+  "trend": {
+    "trendLine": [
+      { "x": 55, "y": 18 }, { "x": 63, "y": 16 }, { "x": 68, "y": 22 },
+      { "x": 75, "y": 8 }, { "x": 78, "y": 11 }, { "x": 82, "y": 14 },
+      { "x": 88, "y": 7 }, { "x": 91, "y": 5 }
+    ],
+    "upperBand": [
+      { "x": 55, "y": 24 }, { "x": 63, "y": 22 }, { "x": 68, "y": 28 },
+      { "x": 75, "y": 14 }, { "x": 78, "y": 17 }, { "x": 82, "y": 20 },
+      { "x": 88, "y": 13 }, { "x": 91, "y": 11 }
+    ],
+    "lowerBand": [
+      { "x": 55, "y": 12 }, { "x": 63, "y": 10 }, { "x": 68, "y": 16 },
+      { "x": 75, "y": 2 }, { "x": 78, "y": 5 }, { "x": 82, "y": 8 },
+      { "x": 88, "y": 1 }, { "x": 91, "y": 0 }
+    ],
+    "slope": -0.35,
+    "intercept": 38.2,
+    "r_squared": 0.72
+  }
+}
