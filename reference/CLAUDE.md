@@ -66,3 +66,10 @@ TDD workflow: write failing test first, verify it fails for the right reason, th
 ## Design Reference
 
 `docs/plans/2026-03-30-RBM-system-design.md` contains the full system design document including clinical scenario narratives (A–D) that the mock data is based on. `reference/` contains screenshot references for chart layouts.
+
+## Design System
+**Always read DESIGN.md before making any visual or UI decisions.**
+All font choices, colors, spacing, and aesthetic direction are defined there.
+Do not deviate without explicit user approval.
+Key principles: PingFang SC fonts for Chinese optimization, #0066CC professional blue primary, 8px comfortable spacing grid, decision-oriented information hierarchy.
+In QA mode, flag any code that doesn't match DESIGN.md.

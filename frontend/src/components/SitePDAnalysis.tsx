@@ -44,8 +44,8 @@ export default function SitePDAnalysis() {
   }, [selectedSite, categories]);
 
   const COLORS = [
-    '#3b82f6', '#ef4444', '#10b981', '#f59e0b', 
-    '#8b5cf6', '#06b6d4', '#ec4899', '#64748b'
+    '#54e98a', '#ffb4ab', '#59d8e5', '#f59e0b', 
+    '#b9d4d5', '#87f3ff', '#ffdad6', '#bbcbbb'
   ];
 
   const handleBarClick = (data: any) => {
@@ -58,15 +58,16 @@ export default function SitePDAnalysis() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm h-full flex flex-col overflow-hidden animate-in fade-in duration-300">
+    <div className="bg-surface-container-low rounded-xl p-6 relative flex flex-col h-full overflow-hidden shadow-lg border border-outline-variant/30 group animate-in fade-in duration-300">
+       <div className="absolute top-0 left-0 w-full h-[2px] card-top-border opacity-50 group-hover:opacity-100 transition-opacity"></div>
        <div className="flex justify-between items-start mb-6">
           <div>
-            <h3 className="text-lg font-bold text-slate-800 flex items-center gap-2">
+            <h3 className="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
                {selectedSite ? (
                  <>
                    <button 
                      onClick={() => setSelectedSite(null)}
-                     className="p-1 hover:bg-slate-100 rounded-lg text-slate-400 transition"
+                     className="p-1 hover:bg-surface-container-high rounded-lg text-on-surface-variant transition-colors"
                    >
                       <ChevronLeft size={20} />
                    </button>
@@ -74,18 +75,18 @@ export default function SitePDAnalysis() {
                  </>
                ) : '各中心 PD 发生构成 (Site Comparison)'}
             </h3>
-            <p className="text-sm text-slate-500 mt-1">
+            <p className="font-body-md text-sm text-on-surface-variant mt-1">
                {selectedSite 
                  ? `查看该中心在各个访视上的多维度 PD 偏离度 (双向预警)。` 
                  : '对比不同中心在各维度的 PD 堆叠分布，点击中心柱状图可下钻。'}
             </p>
           </div>
-          <div className="bg-slate-100 p-1 rounded-lg flex gap-1">
-             <div className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1 transition ${!selectedSite ? 'bg-white shadow-sm text-primary-600' : 'text-slate-400'}`}>
+          <div className="bg-surface-container-high p-1 rounded-lg flex gap-1 border border-outline-variant/50">
+             <div className={`px-3 py-1 rounded-md text-xs font-bold flex items-center gap-1 transition-colors ${!selectedSite ? 'bg-primary-container text-on-primary-container shadow-sm' : 'text-on-surface-variant hover:text-on-surface'}`}>
                 <LayoutGrid size={14} /> 堆叠对比
              </div>
              {selectedSite && (
-               <div className="px-3 py-1 bg-white shadow-sm rounded-md text-xs font-bold text-primary-600 flex items-center gap-1">
+               <div className="px-3 py-1 bg-primary-container shadow-sm rounded-md text-xs font-bold text-on-primary-container flex items-center gap-1">
                   <TableIcon size={14} /> 访视矩阵
                </div>
              )}
@@ -94,13 +95,13 @@ export default function SitePDAnalysis() {
 
        <div className="flex-1 w-full overflow-hidden flex flex-col">
           {selectedSite ? (
-            <div className="flex-1 overflow-auto border border-slate-100 rounded-xl">
+            <div className="flex-1 overflow-auto border border-outline-variant/30 rounded-xl">
                <table className="w-full text-left border-collapse min-w-[700px]">
-                  <thead className="sticky top-0 bg-slate-50 z-10">
-                     <tr className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                        <th className="p-3 border-b border-slate-100">访视 (Visit)</th>
+                  <thead className="sticky top-0 bg-surface-container-highest z-10 shadow-sm">
+                     <tr className="text-[10px] uppercase font-bold text-on-surface-variant tracking-wider">
+                        <th className="p-3 border-b border-outline-variant/30">访视 (Visit)</th>
                         {categories.map(cat => (
-                          <th key={cat.id} className="p-3 border-b border-slate-100 text-center" title={cat.label}>
+                          <th key={cat.id} className="p-3 border-b border-outline-variant/30 text-center" title={cat.label}>
                              {cat.id.split(' ')[0]}...
                           </th>
                         ))}
@@ -108,19 +109,19 @@ export default function SitePDAnalysis() {
                   </thead>
                   <tbody className="text-[11px] font-medium">
                      {siteMatrixData.map((row) => (
-                       <tr key={row.visit} className="border-b border-slate-50 hover:bg-slate-50/50 transition">
-                          <td className="p-3 font-bold text-slate-600 bg-white sticky left-0 shadow-[2px_0_5px_rgba(0,0,0,0.02)]">
+                       <tr key={row.visit} className="border-b border-outline-variant/10 hover:bg-surface-container-high/50 transition-colors group/row">
+                          <td className="p-3 font-bold text-on-surface bg-surface-container-low group-hover/row:bg-surface-container-high/50 sticky left-0 shadow-[2px_0_5px_rgba(0,0,0,0.2)] transition-colors">
                              {row.visit}
                           </td>
                           {categories.map(cat => {
                              const val = row[cat.id];
                              const status = checkOutlier(val, cat.id);
-                             const bgColor = status === 'action' ? 'bg-red-500' : status === 'warning' ? 'bg-yellow-500' : 'bg-green-500/10';
-                             const textColor = (status === 'action' || status === 'warning') ? 'text-white' : 'text-green-700';
+                             const bgColor = status === 'action' ? 'bg-error text-on-error' : status === 'warning' ? 'bg-yellow-500 text-black' : 'bg-primary-container/20 text-primary-fixed';
+                             const ring = status === 'action' ? 'ring-1 ring-error/50 shadow-[0_0_8px_rgba(255,180,171,0.4)]' : '';
                              
                              return (
                                <td key={cat.id} className="p-1">
-                                  <div className={`${bgColor} ${textColor} text-center py-1.5 rounded-sm font-bold shadow-sm transition-transform hover:scale-105 cursor-help`} title={`${cat.label}: ${val.toFixed(2)} SD`}>
+                                  <div className={`${bgColor} ${ring} text-center py-1.5 rounded-sm font-bold shadow-sm transition-transform hover:scale-105 cursor-help`} title={`${cat.label}: ${val.toFixed(2)} SD`}>
                                      {val.toFixed(1)}
                                   </div>
                                </td>
@@ -139,20 +140,20 @@ export default function SitePDAnalysis() {
                      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
                      onClick={handleBarClick}
                   >
-                     <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#f1f5f9" />
+                     <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} stroke="#353534" />
                      <XAxis 
                        dataKey="site" 
-                       tick={{ fill: '#64748b', fontSize: 12, fontWeight: 500 }} 
+                       tick={{ fill: '#bbcbbb', fontSize: 12, fontWeight: 500 }} 
                        axisLine={false} 
                        tickLine={false}
                      />
                      <YAxis hide />
                      <Tooltip 
-                       cursor={{ fill: 'transparent' }}
-                       contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                       cursor={{ fill: '#353534', opacity: 0.4 }}
+                       contentStyle={{ backgroundColor: '#1c1b1b', borderRadius: '8px', border: '1px solid #3d4a3e', color: '#e5e2e1' }}
                        formatter={(value) => [`${value} 次`, '发生次数']}
                      />
-                     <Legend iconType="circle" />
+                     <Legend iconType="circle" wrapperStyle={{ paddingTop: '10px', color: '#e5e2e1' }} />
                      {categories.map((cat, idx) => (
                         <Bar 
                           key={cat.id} 
@@ -170,15 +171,15 @@ export default function SitePDAnalysis() {
        </div>
 
        {selectedSite && (
-          <div className="mt-4 pt-4 border-t border-slate-100 flex justify-end gap-3">
-             <div className="flex items-center gap-4 mr-auto text-[10px] font-bold text-slate-400 italic">
-                <span className="flex items-center gap-1"><div className="w-2 h-2 bg-red-500 rounded-sm"></div> 高偏离危险 (High/Low)</span>
-                <span className="flex items-center gap-1"><div className="w-2 h-2 bg-yellow-500 rounded-sm"></div> 关注预警</span>
-                <span className="flex items-center gap-1"><div className="w-2 h-2 bg-green-500/20"></div> 统计正常</span>
+          <div className="mt-4 pt-4 border-t border-outline-variant/30 flex justify-end gap-3">
+             <div className="flex items-center gap-4 mr-auto text-[10px] font-bold text-on-surface-variant italic">
+                <span className="flex items-center gap-1.5"><div className="w-2 h-2 bg-error rounded-sm"></div> 高偏离危险 (High/Low)</span>
+                <span className="flex items-center gap-1.5"><div className="w-2 h-2 bg-yellow-500 rounded-sm"></div> 关注预警</span>
+                <span className="flex items-center gap-1.5"><div className="w-2 h-2 bg-primary-container/40 rounded-sm"></div> 统计正常</span>
              </div>
              <button 
                onClick={() => setSelectedSite(null)}
-               className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-primary-600 hover:bg-primary-50 rounded-xl transition"
+               className="flex items-center gap-2 px-4 py-2 text-sm font-bold text-primary-fixed hover:bg-primary-container/20 rounded-xl transition-colors"
              >
                 返回全局对比 <ArrowRight size={16} />
              </button>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Threshold Configuration - RBM Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#ffdad6",
+                      "primary-container": "#2ecc71",
+                      "primary-fixed-dim": "#4ae183",
+                      "surface-dim": "#131313",
+                      "on-tertiary-fixed": "#051f20",
+                      "tertiary": "#b9d4d5",
+                      "on-secondary-container": "#003439",
+                      "on-primary-container": "#005027",
+                      "on-primary-fixed-variant": "#005228",
+                      "tertiary-container": "#9eb8b9",
+                      "secondary-fixed-dim": "#59d8e5",
+                      "on-tertiary-container": "#31494a",
+                      "inverse-on-surface": "#313030",
+                      "surface-container": "#201f1f",
+                      "on-primary-fixed": "#00210c",
+                      "surface-container-high": "#2a2a2a",
+                      "surface-variant": "#353534",
+                      "surface-tint": "#4ae183",
+                      "primary-fixed": "#6bfe9c",
+                      "on-background": "#e5e2e1",
+                      "error": "#ffb4ab",
+                      "background": "#131313",
+                      "on-secondary-fixed": "#001f23",
+                      "secondary": "#59d8e5",
+                      "surface-container-highest": "#353534",
+                      "error-container": "#93000a",
+                      "on-surface": "#e5e2e1",
+                      "outline": "#869486",
+                      "surface-container-low": "#1c1b1b",
+                      "tertiary-fixed-dim": "#b1cbcd",
+                      "secondary-fixed": "#87f3ff",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-bright": "#393939",
+                      "on-secondary-fixed-variant": "#004f55",
+                      "on-primary": "#003919",
+                      "inverse-primary": "#006d37",
+                      "on-error": "#690005",
+                      "on-surface-variant": "#bbcbbb",
+                      "tertiary-fixed": "#cde8e9",
+                      "on-secondary": "#00363b",
+                      "primary": "#54e98a",
+                      "outline-variant": "#3d4a3e",
+                      "surface-container-lowest": "#0e0e0e",
+                      "secondary-container": "#00a6b3",
+                      "surface": "#131313",
+                      "on-tertiary": "#1c3435",
+                      "on-tertiary-fixed-variant": "#334b4c"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1440px",
+                      "margin": "40px",
+                      "unit": "4px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-xl": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                      "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                      "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                      "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                      "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                      "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                      "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+              }
+            }
+          }
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md antialiased overflow-hidden flex h-screen">
+<!-- SideNavBar (from JSON) -->
+<nav class="bg-zinc-950 h-screen w-64 border-r border-zinc-800 rounded-none border-r border-emerald-500/10 flex flex-col h-full sticky left-0 top-0 pt-4 flex-shrink-0 z-40">
+<div class="px-6 pb-8 border-b border-zinc-800 mb-4">
+<h2 class="text-emerald-500 font-inter text-sm uppercase tracking-widest font-bold">Clinical Operations</h2>
+<p class="text-zinc-500 font-inter text-xs tracking-wider mt-1">Precision Intelligence</p>
+</div>
+<div class="flex-1 overflow-y-auto">
+<ul class="flex flex-col space-y-1">
+<li>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined">public</span>
+<span class="font-inter text-sm uppercase tracking-widest">Global Risk</span>
+</a>
+</li>
+<li>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined">error</span>
+<span class="font-inter text-sm uppercase tracking-widest">Alert Tracking</span>
+</a>
+</li>
+<li>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="font-inter text-sm uppercase tracking-widest">Site Comparison</span>
+</a>
+</li>
+<li>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-inter text-sm uppercase tracking-widest">PD Analytics</span>
+</a>
+</li>
+<li>
+<!-- Active State -->
+<a class="bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500 py-3 px-4 flex items-center gap-3 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined" data-weight="fill">tune</span>
+<span class="font-inter text-sm uppercase tracking-widest">Threshold Config</span>
+</a>
+</li>
+</ul>
+</div>
+<div class="mt-auto border-t border-zinc-800 pt-4 pb-6">
+<ul class="flex flex-col space-y-1">
+<li>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+<span class="font-inter text-sm uppercase tracking-widest">System Status</span>
+</a>
+</li>
+<li>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined">description</span>
+<span class="font-inter text-sm uppercase tracking-widest">Documentation</span>
+</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col h-screen overflow-hidden relative">
+<!-- TopAppBar (from JSON) -->
+<header class="bg-zinc-950/80 backdrop-blur-md text-emerald-500 font-inter tracking-tight antialiased docked full-width top-0 border-b border-emerald-500/20 shadow-[0_0_15px_rgba(46,204,113,0.05)] flex justify-between items-center w-full px-6 h-16 sticky top-0 z-50 flex-shrink-0">
+<div class="flex items-center gap-8 border-b border-zinc-800 w-full h-full">
+<div class="text-emerald-400 font-black tracking-tighter text-xl flex items-center gap-2">
+<img alt="Company Logo" class="w-8 h-8 rounded-DEFAULT object-cover" data-alt="abstract glowing geometric hexagonal symbol in bright emerald green on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9d4CiSELzFdvMuGmHvfP68rN7044YdOWuedhcaW7y_C5ovL9G2P2DzU1WvpxGkxWT8zToUHDrq74WaHhbLFYXQDMBcmIi3z31syb0VEh6X31Y27jcYfqQU97gsIVgxraDT1QxVpNoaGtcwa-Re69IlnnNhtEwbhDAx1CYb5mpQa8k73cb_A4LrOwZ-dBZ5S44etpATYCXnWvImw1hnC9_3Z7Pl1L3SquXw-IUmHQFnhkFG7CuZq4Q21Y27COZVbLj-MJfOnmr6Q"/>
+                    RBM Intelligence
+                </div>
+<nav class="hidden md:flex h-full items-center gap-6">
+<a class="text-zinc-400 font-medium hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors scale-95 duration-200 ease-out h-full flex items-center px-2" href="#">Portfolio</a>
+<a class="text-zinc-400 font-medium hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors scale-95 duration-200 ease-out h-full flex items-center px-2" href="#">Study A-204</a>
+<a class="text-zinc-400 font-medium hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors scale-95 duration-200 ease-out h-full flex items-center px-2" href="#">Site Monitoring</a>
+</nav>
+<div class="ml-auto flex items-center gap-4">
+<button class="text-zinc-400 hover:text-emerald-300 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-zinc-400 hover:text-emerald-300 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-zinc-700 ml-2">
+<img alt="Clinical Researcher Profile" class="w-full h-full object-cover" data-alt="professional headshot of female researcher in late 30s with neutral expression against dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtvjInptmoVGzKSZBqji-81RvZdK3xEXu8ctmL8W3rk9D1RvlXo4qonbuJE_-J8o8TvDNuMiwjj7VmP6Pp0DlvjSL730LIICs_7yPJ64lJrIBFRjBVVEypYmoTwNLJvVgRLADSnog9NpyQJEQMkpHkSauZjFUr9LVCfuF2qHz8KZdKLWZZgxAj376ksyi03h5c2e5IG079C0CXSzXrAF_4m8Dwz-EmzdhAN7UOcd_W84PjfEgFORdD-pwQDOzWUzbBWJ6K5heU-g"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Scrollable Canvas -->
+<main class="flex-1 overflow-y-auto p-margin relative z-0">
+<!-- Decorative Aurora Background Glow -->
+<div class="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-10 translate-x-1/3 -translate-y-1/3"></div>
+<div class="max-w-container-max mx-auto">
+<!-- Page Header -->
+<div class="mb-10">
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-2">Threshold Configuration</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Adjust global risk tolerance, protocol deviation parameters, and impact weightings to tune the intelligence engine.</p>
+</div>
+<!-- Control Panel Grid -->
+<div class="grid grid-cols-12 gap-gutter">
+<!-- Global Strategy Card -->
+<div class="col-span-12 lg:col-span-4 bg-surface-container rounded-xl relative overflow-hidden flex flex-col p-6 border border-outline-variant shadow-lg">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-secondary to-primary"></div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">settings_suggest</span>
+                            Global Strategy
+                        </h3>
+<div class="space-y-8 flex-1">
+<!-- Toggle -->
+<div class="flex items-center justify-between">
+<div>
+<label class="font-label-md text-label-md text-on-surface block mb-1">Auto-Escalation</label>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">Routes critical to lead</span>
+</div>
+<div class="w-12 h-6 bg-primary/20 rounded-full relative cursor-pointer border border-primary/30">
+<div class="absolute top-1/2 -translate-y-1/2 right-1 w-4 h-4 bg-primary rounded-full shadow-[0_0_8px_rgba(84,233,138,0.6)]"></div>
+</div>
+</div>
+<!-- Slider -->
+<div>
+<div class="flex justify-between items-end mb-2">
+<label class="font-label-md text-label-md text-on-surface">Base Risk Tolerance</label>
+<span class="font-label-sm text-label-sm text-primary">High</span>
+</div>
+<div class="h-2 bg-surface-container-highest rounded-full w-full relative">
+<div class="absolute left-0 top-0 h-full bg-gradient-to-r from-secondary to-primary rounded-full w-[80%]"></div>
+<div class="absolute top-1/2 -translate-y-1/2 left-[80%] -translate-x-1/2 w-4 h-4 bg-on-surface rounded-full shadow-md border-2 border-primary"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- PD-Specific Thresholds -->
+<div class="col-span-12 lg:col-span-8 bg-surface-container rounded-xl relative overflow-hidden flex flex-col p-6 border border-outline-variant shadow-lg">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-secondary to-primary"></div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">rule</span>
+                            PD-Specific Thresholds
+                        </h3>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<!-- Metric 1 -->
+<div class="bg-surface-container-high p-4 rounded-lg border border-surface-bright">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label-md text-label-md text-on-surface">Critical Deviations (Rate)</span>
+<span class="bg-error-container text-on-error-container font-label-sm text-label-sm px-2 py-1 rounded-DEFAULT">2.5% Limit</span>
+</div>
+<div class="h-1 bg-surface-container-lowest rounded-full w-full relative mb-1">
+<div class="absolute left-0 top-0 h-full bg-error rounded-full w-[25%]"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant uppercase mt-2">
+<span>0%</span>
+<span>10%</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="bg-surface-container-high p-4 rounded-lg border border-surface-bright">
+<div class="flex justify-between items-center mb-4">
+<span class="font-label-md text-label-md text-on-surface">Major Deviations (Vol)</span>
+<span class="bg-secondary/20 text-secondary font-label-sm text-label-sm px-2 py-1 rounded-DEFAULT border border-secondary/30">15/Site Limit</span>
+</div>
+<div class="h-1 bg-surface-container-lowest rounded-full w-full relative mb-1">
+<div class="absolute left-0 top-0 h-full bg-secondary rounded-full w-[45%]"></div>
+</div>
+<div class="flex justify-between font-label-sm text-label-sm text-on-surface-variant uppercase mt-2">
+<span>0</span>
+<span>50</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

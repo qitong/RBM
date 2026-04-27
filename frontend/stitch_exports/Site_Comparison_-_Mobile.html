@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Site Comparison - Vigilance Clinical RBM</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-tertiary-container": "#fffbff",
+                    "surface-container-highest": "#d8e3fb",
+                    "on-tertiary-fixed": "#311400",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#263143",
+                    "surface": "#f9f9ff",
+                    "surface-container-high": "#dee8ff",
+                    "on-surface-variant": "#424754",
+                    "on-secondary": "#ffffff",
+                    "on-primary-container": "#fefcff",
+                    "primary": "#0058be",
+                    "inverse-on-surface": "#ecf1ff",
+                    "surface-variant": "#d8e3fb",
+                    "on-primary": "#ffffff",
+                    "surface-dim": "#cfdaf2",
+                    "on-tertiary": "#ffffff",
+                    "inverse-primary": "#adc6ff",
+                    "outline-variant": "#c2c6d6",
+                    "on-background": "#111c2d",
+                    "primary-fixed": "#d8e2ff",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "secondary": "#565e74",
+                    "surface-tint": "#005ac2",
+                    "surface-container": "#e7eeff",
+                    "primary-container": "#2170e4",
+                    "error": "#ba1a1a",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary-container": "#dae2fd",
+                    "on-surface": "#111c2d",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "primary-fixed-dim": "#adc6ff",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "on-primary-fixed": "#001a42",
+                    "outline": "#727785",
+                    "on-secondary-fixed": "#131b2e",
+                    "on-secondary-container": "#5c647a",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "tertiary-fixed": "#ffdcc6",
+                    "tertiary": "#924700",
+                    "secondary-fixed": "#dae2fd",
+                    "on-primary-fixed-variant": "#004395",
+                    "on-error-container": "#93000a",
+                    "tertiary-container": "#b75b00",
+                    "surface-container-low": "#f0f3ff",
+                    "background": "#f9f9ff",
+                    "surface-bright": "#f9f9ff",
+                    "error-container": "#ffdad6"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "display": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f9f9ff; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .scatter-quadrant { transition: opacity 0.3s; }
+        .scatter-quadrant:hover { opacity: 0.8; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background antialiased pb-24">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-slate-100/50 backdrop-blur-md flex items-center justify-between px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[#0058be]" data-icon="analytics">analytics</span>
+<h1 class="font-['Inter'] font-semibold text-lg tracking-tight text-on-surface">Site Comparison</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 hover:bg-blue-50 transition-colors active:scale-95 duration-200 rounded-full">
+<span class="material-symbols-outlined text-slate-500" data-icon="search">search</span>
+</button>
+<button class="p-2 hover:bg-blue-50 transition-colors active:scale-95 duration-200 rounded-full">
+<span class="material-symbols-outlined text-[#0058be]" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<main class="pt-20 px-4 space-y-6">
+<!-- Analytics Section: Responsive Scatter Plot -->
+<section class="space-y-4">
+<div class="flex items-end justify-between px-1">
+<div>
+<span class="text-on-surface-variant font-medium text-[10px] uppercase tracking-widest block mb-1">Performance Matrix</span>
+<h2 class="text-2xl font-bold text-on-surface tracking-tight leading-none">Enrollment vs. PD Risk</h2>
+</div>
+<span class="material-symbols-outlined text-primary text-xl" data-icon="info" data-weight="fill" style="font-variation-settings: 'FILL' 1;">info</span>
+</div>
+<!-- Chart Canvas -->
+<div class="bg-surface-container-lowest rounded-3xl p-6 shadow-[0_8px_32px_rgba(0,88,190,0.04)] overflow-hidden relative border border-outline-variant/10">
+<div class="relative w-full aspect-square border-l-2 border-b-2 border-outline-variant/20">
+<!-- Grid Quadrants -->
+<div class="absolute inset-0 grid grid-cols-2 grid-rows-2">
+<!-- Top Left: Steady Progress -->
+<div class="bg-primary-fixed/10 border-r border-b border-dashed border-outline-variant/30 flex items-start p-3">
+<span class="text-[8px] font-bold text-on-primary-fixed-variant uppercase tracking-tighter opacity-50">Steady Progress</span>
+</div>
+<!-- Top Right: Critical Focus Area -->
+<div class="bg-error-container/10 border-b border-dashed border-outline-variant/30 flex items-start justify-end p-3">
+<span class="text-[8px] font-bold text-error uppercase tracking-tighter opacity-50 text-right">Critical Focus Area</span>
+</div>
+<!-- Bottom Left: High Efficiency -->
+<div class="bg-surface-container-high/20 border-r border-dashed border-outline-variant/30 flex items-end p-3">
+<span class="text-[8px] font-bold text-secondary uppercase tracking-tighter opacity-50">High Efficiency</span>
+</div>
+<!-- Bottom Right: Potential Over-reporting -->
+<div class="bg-tertiary-fixed/10 flex items-end justify-end p-3">
+<span class="text-[8px] font-bold text-on-tertiary-fixed-variant uppercase tracking-tighter opacity-50 text-right">Potential Over-reporting</span>
+</div>
+</div>
+<!-- Axis Labels -->
+<div class="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-semibold text-on-surface-variant flex items-center gap-1">
+                        Enrollment Progress (入组进度) <span class="material-symbols-outlined text-[12px]" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<div class="absolute -left-10 top-1/2 -rotate-90 -translate-y-1/2 text-[10px] font-semibold text-on-surface-variant flex items-center gap-1">
+                        PD Z-score <span class="material-symbols-outlined text-[12px]" data-icon="arrow_upward">arrow_upward</span>
+</div>
+<!-- Scatter Points -->
+<!-- Critical Site -->
+<div class="absolute bottom-[80%] left-[75%] group">
+<div class="w-4 h-4 bg-error rounded-full ring-4 ring-error/20 flex items-center justify-center animate-pulse"></div>
+<div class="absolute top-6 left-1/2 -translate-x-1/2 whitespace-nowrap bg-on-surface text-white text-[9px] py-1 px-2 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity">Site 102: High Risk</div>
+</div>
+<!-- High Efficiency Site -->
+<div class="absolute bottom-[20%] left-[30%]">
+<div class="w-3 h-3 bg-primary rounded-full ring-4 ring-primary/10"></div>
+</div>
+<!-- Progressing Site -->
+<div class="absolute bottom-[65%] left-[15%]">
+<div class="w-3 h-3 bg-primary rounded-full ring-4 ring-primary/10"></div>
+</div>
+<!-- Outlier Site -->
+<div class="absolute bottom-[40%] left-[85%]">
+<div class="w-3 h-3 bg-tertiary rounded-full ring-4 ring-tertiary/10"></div>
+</div>
+<!-- Multiple Clustered -->
+<div class="absolute bottom-[50%] left-[50%] w-2 h-2 bg-secondary rounded-full"></div>
+<div class="absolute bottom-[52%] left-[48%] w-2 h-2 bg-secondary rounded-full opacity-60"></div>
+<div class="absolute bottom-[48%] left-[55%] w-2 h-2 bg-secondary rounded-full opacity-60"></div>
+</div>
+</div>
+</section>
+<!-- Data Table Section: Site Risk Ranking -->
+<section class="space-y-4">
+<div class="flex items-center justify-between px-1">
+<h2 class="text-lg font-bold text-on-surface tracking-tight">Site Risk Ranking <span class="font-normal text-on-surface-variant text-sm ml-2">研究中心风险排名</span></h2>
+<button class="text-xs font-semibold text-primary uppercase tracking-wider">View All</button>
+</div>
+<div class="space-y-3">
+<!-- Site Card 1 (High Risk) -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-[0_4px_20px_rgba(0,88,190,0.03)] flex items-center gap-4 border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-error-container/20 flex flex-col items-center justify-center border border-error-container/30">
+<span class="text-[10px] font-bold text-on-error-container leading-none">ID</span>
+<span class="text-lg font-extrabold text-on-error-container">102</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-on-surface text-sm">Dr. Zhang Wei</h3>
+<span class="bg-error-container text-on-error-container text-[10px] font-black px-2 py-0.5 rounded-full uppercase">High Risk</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-[9px] uppercase font-medium text-on-surface-variant tracking-wider">PD Rate</span>
+<span class="text-xs font-bold text-on-surface">18.4%</span>
+</div>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<div class="flex flex-col">
+<span class="text-[9px] uppercase font-medium text-on-surface-variant tracking-wider">Trend</span>
+<span class="material-symbols-outlined text-error text-sm leading-none" data-icon="trending_up">trending_up</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Site Card 2 (Medium Risk) -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-[0_4px_20px_rgba(0,88,190,0.03)] flex items-center gap-4 border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-tertiary-fixed/30 flex flex-col items-center justify-center border border-tertiary-fixed/50">
+<span class="text-[10px] font-bold text-on-tertiary-fixed-variant leading-none">ID</span>
+<span class="text-lg font-extrabold text-on-tertiary-fixed-variant">085</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-on-surface text-sm">Prof. Li Ming</h3>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Warning</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-[9px] uppercase font-medium text-on-surface-variant tracking-wider">PD Rate</span>
+<span class="text-xs font-bold text-on-surface">12.1%</span>
+</div>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<div class="flex flex-col">
+<span class="text-[9px] uppercase font-medium text-on-surface-variant tracking-wider">Trend</span>
+<span class="material-symbols-outlined text-tertiary text-sm leading-none" data-icon="trending_flat">trending_flat</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Site Card 3 (Low Risk) -->
+<div class="bg-surface-container-lowest p-4 rounded-2xl shadow-[0_4px_20px_rgba(0,88,190,0.03)] flex items-center gap-4 border border-outline-variant/10">
+<div class="w-12 h-12 rounded-xl bg-secondary-fixed/30 flex flex-col items-center justify-center border border-secondary-fixed/50">
+<span class="text-[10px] font-bold text-on-secondary-fixed-variant leading-none">ID</span>
+<span class="text-lg font-extrabold text-on-secondary-fixed-variant">042</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-bold text-on-surface text-sm">Dr. Sarah Chen</h3>
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-black px-2 py-0.5 rounded-full uppercase">Normal</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex flex-col">
+<span class="text-[9px] uppercase font-medium text-on-surface-variant tracking-wider">PD Rate</span>
+<span class="text-xs font-bold text-on-surface">4.5%</span>
+</div>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<div class="flex flex-col">
+<span class="text-[9px] uppercase font-medium text-on-surface-variant tracking-wider">Trend</span>
+<span class="material-symbols-outlined text-secondary text-sm leading-none" data-icon="trending_down">trending_down</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Metric Overlays (Asymmetric Section) -->
+<section class="grid grid-cols-2 gap-4 pb-8">
+<div class="bg-primary p-5 rounded-[2rem] text-white flex flex-col justify-between aspect-square">
+<span class="material-symbols-outlined text-2xl" data-icon="group" data-weight="fill" style="font-variation-settings: 'FILL' 1;">group</span>
+<div>
+<div class="text-[10px] uppercase font-bold opacity-70 tracking-widest">Global Avg.</div>
+<div class="text-3xl font-extrabold">64%</div>
+<div class="text-[9px] font-medium opacity-80 mt-1">Enrollment Target Met</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="bg-surface-container-high p-4 rounded-3xl h-[calc(50%-8px)] flex flex-col justify-center">
+<span class="text-[10px] uppercase font-bold text-primary tracking-widest">Active Sites</span>
+<div class="text-xl font-bold text-on-surface">142</div>
+</div>
+<div class="bg-error-container/30 p-4 rounded-3xl h-[calc(50%-8px)] flex flex-col justify-center border border-error-container/20">
+<span class="text-[10px] uppercase font-bold text-error tracking-widest">Risk Alerts</span>
+<div class="text-xl font-bold text-on-error-container">12</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full bg-white/80 backdrop-blur-xl flex justify-around items-center px-4 pb-6 pt-3 z-50 rounded-t-3xl shadow-[0_-8px_32px_rgba(0,88,190,0.04)]">
+<button class="flex flex-col items-center justify-center text-slate-400 py-2 px-4 hover:text-[#0058be] transition-all active:scale-95">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-['Inter'] text-[11px] font-medium uppercase tracking-wider">Dashboard</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-blue-50 text-[#0058be] rounded-2xl py-2 px-4 transition-all active:scale-95">
+<span class="material-symbols-outlined mb-1" data-icon="compare_arrows" data-weight="fill" style="font-variation-settings: 'FILL' 1;">compare_arrows</span>
+<span class="font-['Inter'] text-[11px] font-medium uppercase tracking-wider">Comparison</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 py-2 px-4 hover:text-[#0058be] transition-all active:scale-95">
+<span class="material-symbols-outlined mb-1" data-icon="location_city">location_city</span>
+<span class="font-['Inter'] text-[11px] font-medium uppercase tracking-wider">Sites</span>
+</button>
+<button class="flex flex-col items-center justify-center text-slate-400 py-2 px-4 hover:text-[#0058be] transition-all active:scale-95 relative">
+<span class="material-symbols-outlined mb-1" data-icon="warning">warning</span>
+<span class="font-['Inter'] text-[11px] font-medium uppercase tracking-wider">Alerts</span>
+<div class="absolute top-2 right-4 w-2 h-2 bg-error rounded-full border-2 border-white"></div>
+</button>
+</nav>
+</body></html>

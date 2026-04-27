@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Clock, CheckCircle, Search, ThumbsUp, X, TrendingDown, TrendingUp } from 'lucide-react';
+import { Clock, CheckCircle, Search, ThumbsUp, X, TrendingDown, TrendingUp, MoreVertical, Building2 } from 'lucide-react';
 import { alerts as initialAlerts } from '../data.json';
 import { useThresholds } from '../context/ThresholdContext';
 
@@ -67,10 +67,19 @@ export default function AlertTracking() {
   const [activeRCA, setActiveRCA] = useState<any>(null);
 
   const handleStartRCA = (alert: any) => {
-    const typeTemplates = HYPOTHESES_TEMPLATES[alert.type] || HYPOTHESES_TEMPLATES['HIGH'];
-    const templates = typeTemplates[alert.dimension] || typeTemplates['default'];
-    const hypothesis = templates[Math.floor(Math.random() * templates.length)];
-    setActiveRCA({ ...alert, hypothesis });
+    try {
+      const typeTemplates = HYPOTHESES_TEMPLATES[alert?.type] || HYPOTHESES_TEMPLATES['HIGH'];
+      const templates = typeTemplates[alert?.dimension] || typeTemplates['default'];
+      const hypothesis = templates[Math.floor(Math.random() * templates.length)];
+      setActiveRCA({ ...alert, hypothesis });
+    } catch (error) {
+      console.error('Error in handleStartRCA:', error);
+      // Fallback
+      setActiveRCA({
+        ...alert,
+        hypothesis: "系统正在分析此偏差的潜在根因，请稍候查看详细分析结果。"
+      });
+    }
   };
 
   const handleConfirmHypothesis = (id: string) => {
@@ -83,175 +92,248 @@ export default function AlertTracking() {
   };
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 h-full flex flex-col relative">
-       <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold text-slate-800 tracking-tight italic">预警跟踪与根因分析 (RCA / CAPA)</h2>
-          <button className="bg-primary-600 text-white px-4 py-2 rounded-xl font-bold shadow-lg hover:shadow-xl transition active:scale-95">
-             导出 PDF 审计日志
-          </button>
-       </div>
-
-       {/* Kanban Board Layout */}
-       <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-hidden">
-          {/* Column 1: Open */}
-          <div className="bg-slate-100 rounded-2xl p-4 flex flex-col max-h-full">
-             <h3 className="font-bold text-slate-700 mb-4 flex items-center justify-between">
-               <span className="flex items-center gap-2"><div className="w-2 h-2 bg-red-500 rounded-full"></div> 待评估预警</span>
-               <span className="bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-[10px] font-black uppercase">
-                 {alerts.filter((i:any) => i.status === 'Open').length} EVENTS
-               </span>
-             </h3>
-             <div className="flex-1 overflow-y-auto space-y-3 pb-4">
-                {alerts.filter((i:any) => i.status === 'Open').map((item: any) => (
-                  <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 cursor-pointer hover:border-red-300 hover:shadow-md transition group">
-                     <div className="flex justify-between items-start mb-2">
-                        <span className="text-[10px] font-black text-slate-400 font-mono tracking-tighter">{item.id}</span>
-                        <span className={`${item.type === 'HIGH' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-indigo-50 text-indigo-600 border-indigo-100'} border px-2 py-0.5 rounded text-[10px] font-black flex items-center gap-1`}>
-                           {item.type === 'HIGH' ? <TrendingUp size={10} /> : <TrendingDown size={10} />} 
-                           {item.type === 'HIGH' ? '异常升高' : '低报/漏报风险'}
-                        </span>
-                     </div>
-                     <h4 className="font-bold text-slate-800 text-sm mb-1">{item.project} • 中心 {item.site}</h4>
-                     <p className="text-slate-500 text-[11px] mb-4">
-                        {DIMENSION_LABELS[item.dimension as keyof typeof DIMENSION_LABELS]} 维度偏差: 
-                        <span className={`ml-1 font-bold ${item.type === 'HIGH' ? 'text-red-500' : 'text-indigo-500'}`}>
-                           {item.metricValue.toFixed(2)} SD
-                        </span>
-                     </p>
-                     <button 
-                       onClick={() => handleStartRCA(item)}
-                       className="w-full py-2 bg-primary-50 hover:bg-primary-500 hover:text-white text-primary-700 text-xs font-black rounded-lg border border-primary-100 flex items-center justify-center gap-2 transition"
-                     >
-                       <Search size={14} /> 启动 AI 根因推演
-                     </button>
-                  </div>
-                ))}
-             </div>
+    <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <header className="mb-8">
+        <div className="flex justify-between items-end">
+          <div className="max-w-3xl">
+            <h1 className="text-h1 mb-4">预警跟踪与闭环管理</h1>
+            <p className="text-large leading-relaxed">
+              监控、调查并解决所有活跃临床站点的安全信号。系统持续接入结构化和非结构化源数据。
+            </p>
           </div>
-
-          {/* Column 2: In Review */}
-          <div className="bg-slate-100 rounded-2xl p-4 flex flex-col max-h-full">
-             <h3 className="font-bold text-slate-700 mb-4 flex items-center justify-between">
-               <span className="flex items-center gap-2"><div className="w-2 h-2 bg-yellow-500 rounded-full"></div> CAPA 执行与干预</span>
-               <span className="bg-slate-200 text-slate-600 px-2 py-0.5 rounded text-[10px] font-black">
-                 {alerts.filter((i:any) => i.status === 'In Review').length} IN PROGRESS
-               </span>
-             </h3>
-             <div className="flex-1 overflow-y-auto space-y-3 pb-4">
-                {alerts.filter((i:any) => i.status === 'In Review').map((item: any) => (
-                  <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-slate-200/60 cursor-pointer hover:border-yellow-300 hover:shadow-md transition">
-                     <div className="flex justify-between items-start mb-2">
-                        <span className="text-[10px] font-black text-slate-400 font-mono italic">{item.id}</span>
-                        <div className="flex gap-1">
-                          <span className="bg-yellow-50 text-yellow-700 px-2 py-0.5 rounded text-[10px] font-black flex items-center gap-1 border border-yellow-100">
-                             <Clock size={10} /> 任务追踪中
-                          </span>
-                        </div>
-                     </div>
-                     <h4 className="font-bold text-slate-800 text-sm mb-1">{item.project} • 中心 {item.site}</h4>
-                     <p className="text-slate-500 text-xs mb-4">{DIMENSION_LABELS[item.dimension as keyof typeof DIMENSION_LABELS]} ({item.metricValue.toFixed(1)} SD)</p>
-                     <div className="bg-slate-100 p-2 rounded text-[10px] text-slate-600 italic mb-4 border-l-2 border-primary-400">
-                        "{item.hypothesis?.substring(0, 40)}..."
-                     </div>
-                     <button 
-                       onClick={() => handleCompleteCAPA(item.id)}
-                       className="w-full py-2 bg-slate-900 text-white hover:bg-black text-[10px] font-black rounded-lg transition"
-                     >
-                       确认 CAPA 整改闭环
-                     </button>
-                  </div>
-                ))}
-             </div>
+          <div className="flex gap-4 flex-shrink-0">
+            <button className="btn-secondary">
+              导出PDF审计记录
+            </button>
           </div>
+        </div>
+      </header>
 
-          {/* Column 3: Closed */}
-          <div className="bg-slate-200/50 rounded-2xl p-4 flex flex-col max-h-full">
-             <h3 className="font-bold text-slate-400 mb-4 flex items-center justify-between">
-               <span className="flex items-center gap-2"><div className="w-2 h-2 bg-slate-300 rounded-full"></div> 审计闭环</span>
-             </h3>
-             <div className="flex-1 overflow-y-auto space-y-3 pb-4">
-                {alerts.filter((i:any) => i.status === 'Closed').map((item: any) => (
-                  <div key={item.id} className="bg-white/60 p-4 rounded-xl border border-dashed border-slate-200 grayscale">
-                     <div className="flex justify-between items-start mb-2">
-                        <span className="text-[10px] font-bold text-slate-300 font-mono tracking-tighter">{item.id}</span>
-                        <span className="bg-slate-50 text-slate-400 px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 border border-slate-100">
-                           <CheckCircle size={10} /> 已审计
-                        </span>
-                     </div>
-                     <h4 className="font-bold text-slate-400 text-sm mb-1">{item.project} • {item.site}</h4>
-                     <p className="text-slate-400 text-[10px] italic">数据已录入偏差日志并归档</p>
-                  </div>
-                ))}
-             </div>
+      {/* Kanban Board Area - Mintlify clean grid */}
+      <div className="grid-cards grid-cols-1 xl:grid-cols-3">
+        {/* Column 1: 待评估 (Open) */}
+        <div className="card">
+          <div className="flex justify-between items-center pb-4 border-b mb-6" style={{ borderColor: 'var(--color-border)' }}>
+            <h3 className="text-h3 flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--color-error)' }}></span>
+              待评估
+            </h3>
+            <span className="badge badge-error">
+              {alerts.filter((i:any) => i.status === 'Open').length}
+            </span>
           </div>
-       </div>
-
-       {/* RCA Modal */}
-       {activeRCA && (
-          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-             <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden animate-in slide-in-from-top-4 duration-300">
-                <div className="p-8 border-b border-slate-100 flex justify-between items-start bg-slate-50/50">
-                   <div>
-                      <h3 className="text-3xl font-black text-slate-900 tracking-tighter flex items-center gap-4">
-                         <div className="p-3 bg-primary-600 text-white rounded-2xl shadow-lg rotate-3"><Search size={28} /></div>
-                         根因推演分析
-                      </h3>
-                      <p className="text-slate-500 mt-2 font-bold uppercase text-xs tracking-widest">
-                         EVENT ID: {activeRCA.id} | TYPE: {activeRCA.type} OUTLIER
-                      </p>
-                   </div>
-                   <button onClick={() => setActiveRCA(null)} className="p-2 hover:bg-slate-100 rounded-full text-slate-400 transition">
-                      <X size={28} />
-                   </button>
+          <div className="space-y-6">
+            {alerts.filter((i:any) => i.status === 'Open').map((item: any) => (
+              <article key={item.id} className="card-minimal border-l-4" style={{ borderLeftColor: 'var(--color-error)' }}>
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex gap-2">
+                    <span className={`badge ${item.type === 'HIGH' ? 'badge-error' : 'badge-warning'} flex items-center gap-1`}>
+                      {item.type === 'HIGH' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                      {item.type === 'HIGH' ? 'High Risk' : 'Low Reporting'}
+                    </span>
+                    <span className="badge badge-neutral">
+                      {item.id}
+                    </span>
+                  </div>
+                  <button className="p-1 hover:bg-gray-50 rounded transition-colors">
+                    <MoreVertical size={16} />
+                  </button>
                 </div>
-                
-                <div className="p-10 space-y-8">
-                   <div className="bg-white p-8 rounded-3xl border-2 border-slate-100 shadow-inner">
-                      <div className="flex items-center gap-2 mb-4">
-                        <div className="w-1.5 h-1.5 bg-primary-500 rounded-full animate-ping"></div>
-                        <h4 className="text-[10px] font-black text-primary-500 uppercase tracking-[0.2em]">智能假设模型生成中 (Prediction Engine)</h4>
+                <h4 className="text-h3 mb-3">
+                  {DIMENSION_LABELS[item.dimension as keyof typeof DIMENSION_LABELS]} 偏差
+                </h4>
+                <div className="flex items-center gap-2 mb-4 text-small">
+                  <span className="flex items-center gap-1"><Building2 size={16} /> 中心 {item.site}</span>
+                  <span>•</span>
+                  <span>{item.project}</span>
+                </div>
+                <div className="mb-6 text-small">
+                  偏差值:
+                  <span className={`ml-1 font-semibold text-mono`} style={{ color: item.type === 'HIGH' ? 'var(--color-error)' : 'var(--color-warning)' }}>
+                    {item.metricValue.toFixed(2)} SD
+                  </span>
+                </div>
+                <div className="flex justify-end pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
+                  <button
+                    onClick={() => {
+                      console.log('Button clicked, item:', item);
+                      handleStartRCA(item);
+                    }}
+                    className="btn-primary flex items-center gap-2"
+                    type="button"
+                  >
+                    <Search size={18} /> 开始AI分析
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        {/* Column 2: CAPA执行 (In Review) */}
+        <div className="card">
+          <div className="flex justify-between items-center pb-4 border-b mb-6" style={{ borderColor: 'var(--color-border)' }}>
+            <h3 className="text-h3 flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--color-warning)' }}></span>
+              CAPA执行
+            </h3>
+            <span className="badge badge-warning">
+              {alerts.filter((i:any) => i.status === 'In Review').length}
+            </span>
+          </div>
+          <div className="space-y-6">
+            {alerts.filter((i:any) => i.status === 'In Review').map((item: any) => (
+              <article key={item.id} className="card-minimal border-l-4 relative" style={{ borderLeftColor: 'var(--color-warning)' }}>
+                <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ background: 'linear-gradient(135deg, var(--color-brand), transparent)' }}></div>
+                <div className="flex justify-between items-start mb-4 relative z-10">
+                  <div className="flex gap-2">
+                    <span className="badge badge-warning flex items-center gap-1">
+                      <Clock size={12} /> 进行中
+                    </span>
+                    <span className="badge badge-neutral">
+                      {item.id}
+                    </span>
+                  </div>
+                </div>
+                <h4 className="text-h3 mb-3 relative z-10">
+                  {DIMENSION_LABELS[item.dimension as keyof typeof DIMENSION_LABELS]} 解决方案
+                </h4>
+                <div className="flex items-center gap-2 mb-4 text-small relative z-10">
+                  <span className="flex items-center gap-1"><Building2 size={16} /> 中心 {item.site}</span>
+                </div>
+                <div className="card-minimal text-small italic mb-6 border-l-2 relative z-10" style={{ borderLeftColor: 'var(--color-warning)' }}>
+                  "{item.hypothesis}"
+                </div>
+                <div className="flex justify-end pt-4 border-t relative z-10" style={{ borderColor: 'var(--color-border)' }}>
+                  <button
+                    onClick={() => handleCompleteCAPA(item.id)}
+                    className="btn-brand w-full flex justify-center items-center gap-2"
+                  >
+                    确认CAPA闭环
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        {/* Column 3: 审计闭环 (Closed) */}
+        <div className="card opacity-80 hover:opacity-100 transition-opacity">
+          <div className="flex justify-between items-center pb-4 border-b mb-6" style={{ borderColor: 'var(--color-border)' }}>
+            <h3 className="text-h3 flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--color-brand)' }}></span>
+              审计闭环
+            </h3>
+            <span className="badge badge-success">
+              {alerts.filter((i:any) => i.status === 'Closed').length}
+            </span>
+          </div>
+          <div className="space-y-6">
+            {alerts.filter((i:any) => i.status === 'Closed').map((item: any) => (
+              <article key={item.id} className="card-minimal border-l-4 opacity-80" style={{ borderLeftColor: 'var(--color-brand)' }}>
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex gap-2">
+                    <span className="badge badge-success flex items-center gap-1">
+                      <CheckCircle size={14} /> 已解决
+                    </span>
+                  </div>
+                  <span className="text-mono text-xs">{item.id}</span>
+                </div>
+                <h4 className="text-h3 mb-3 line-through opacity-60" style={{ textDecorationColor: 'var(--color-border)' }}>
+                  {DIMENSION_LABELS[item.dimension as keyof typeof DIMENSION_LABELS]} 问题
+                </h4>
+                <div className="flex items-center gap-2 text-small opacity-60">
+                  <span className="flex items-center gap-1"><Building2 size={16} /> 中心 {item.site}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* RCA Modal */}
+      {activeRCA && (
+        <div className="fixed inset-0 bg-black bg-opacity-20 z-50 flex items-center justify-center p-8">
+          <div className="card-featured shadow-2xl w-full max-w-2xl overflow-hidden">
+            <div className="p-6 border-b flex justify-between items-start" style={{ borderColor: 'var(--color-border)' }}>
+              <div>
+                <h3 className="text-h2 flex items-center gap-3">
+                  <div className="p-2 rounded-lg shadow-lg rotate-3" style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-primary)' }}>
+                    <Search size={20} />
+                  </div>
+                  根因分析
+                </h3>
+                <p className="text-mono mt-2">
+                  事件 ID: {activeRCA.id} | 类型: {activeRCA.type} 异常值
+                </p>
+              </div>
+              <button
+                onClick={() => setActiveRCA(null)}
+                className="p-2 rounded-full transition-colors"
+                style={{ backgroundColor: 'transparent' }}
+                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
+                type="button"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-8 space-y-8">
+              <div className="card-minimal relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: 'var(--color-brand)' }}></div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-brand)' }}></div>
+                  <h4 className="text-mono" style={{ color: 'var(--color-brand)' }}>
+                    AI预测引擎生成
+                  </h4>
+                </div>
+                <p className="text-large font-medium leading-relaxed italic">
+                  "{activeRCA.hypothesis}"
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <h4 className="text-mono">
+                  下一步行动 (风险缓解)
+                </h4>
+                <div className="grid grid-cols-1 gap-4">
+                  <button
+                    onClick={() => handleConfirmHypothesis(activeRCA.id)}
+                    className="flex items-center gap-4 p-6 card-minimal border hover:border-gray-200 transition-all text-left group"
+                  >
+                    <div className="p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform" style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-primary)' }}>
+                      <ThumbsUp size={20} />
+                    </div>
+                    <div>
+                      <div className="text-h3">接受假设并启动CAPA</div>
+                      <div className="text-small mt-1">
+                        自动分派任务到CRM/CRC门户并进入闭环跟踪。
                       </div>
-                      <p className="text-xl font-bold text-slate-800 leading-snug italic">
-                        "{activeRCA.hypothesis}"
-                      </p>
-                   </div>
-
-                   <div className="space-y-6">
-                      <h4 className="text-xs font-black text-slate-400 uppercase tracking-widest pl-2">下一步风险缓解动作 (Next Actions)</h4>
-                      <div className="grid grid-cols-1 gap-4">
-                         <button 
-                           onClick={() => handleConfirmHypothesis(activeRCA.id)}
-                           className="flex items-center gap-6 p-6 rounded-2xl border-2 border-primary-50 bg-primary-50/30 hover:bg-primary-50 hover:border-primary-200 transition text-left group elevation-hover"
-                         >
-                            <div className="p-4 bg-primary-600 text-white rounded-2xl shadow-xl group-hover:rotate-12 transition duration-300">
-                               <ThumbsUp size={24} />
-                            </div>
-                            <div>
-                               <div className="text-lg font-black text-primary-900">采纳推演并启动 CAPA</div>
-                               <div className="text-xs text-primary-700 font-bold opacity-70">自动分发任务至 CRM/CRC 终端，进入闭环跟踪。</div>
-                            </div>
-                         </button>
-                      </div>
-                   </div>
+                    </div>
+                  </button>
                 </div>
+              </div>
+            </div>
 
-                <div className="p-8 bg-slate-50 border-t border-slate-100 flex justify-end gap-4">
-                   <button 
-                     onClick={() => setActiveRCA(null)}
-                     className="px-8 py-3 text-slate-400 font-black text-xs uppercase tracking-widest hover:text-slate-600 transition"
-                   >
-                     忽略推断
-                   </button>
-                   <button 
-                     onClick={() => handleConfirmHypothesis(activeRCA.id)}
-                     className="px-10 py-3 bg-slate-900 text-white rounded-2xl font-black shadow-2xl hover:bg-black transition active:scale-95 text-xs uppercase tracking-widest"
-                   >
-                     确认并下发指令
-                   </button>
-                </div>
-             </div>
+            <div className="p-6 border-t flex justify-end gap-4" style={{ borderColor: 'var(--color-border)' }}>
+              <button
+                onClick={() => setActiveRCA(null)}
+                className="btn-secondary"
+              >
+                忽略预测
+              </button>
+              <button
+                onClick={() => handleConfirmHypothesis(activeRCA.id)}
+                className="btn-primary active:scale-95"
+              >
+                确认并发出指令
+              </button>
+            </div>
           </div>
-       )}
+        </div>
+      )}
     </div>
   );
 }
+

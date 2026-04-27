@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Site Comparison - RBM Intelligence</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#2ecc71",
+                        "primary-fixed-dim": "#4ae183",
+                        "surface-dim": "#131313",
+                        "on-tertiary-fixed": "#051f20",
+                        "tertiary": "#b9d4d5",
+                        "on-secondary-container": "#003439",
+                        "on-primary-container": "#005027",
+                        "on-primary-fixed-variant": "#005228",
+                        "tertiary-container": "#9eb8b9",
+                        "secondary-fixed-dim": "#59d8e5",
+                        "on-tertiary-container": "#31494a",
+                        "inverse-on-surface": "#313030",
+                        "surface-container": "#201f1f",
+                        "on-primary-fixed": "#00210c",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-variant": "#353534",
+                        "surface-tint": "#4ae183",
+                        "primary-fixed": "#6bfe9c",
+                        "on-background": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "background": "#131313",
+                        "on-secondary-fixed": "#001f23",
+                        "secondary": "#59d8e5",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "on-surface": "#e5e2e1",
+                        "outline": "#869486",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary-fixed-dim": "#b1cbcd",
+                        "secondary-fixed": "#87f3ff",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-secondary-fixed-variant": "#004f55",
+                        "on-primary": "#003919",
+                        "inverse-primary": "#006d37",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#bbcbbb",
+                        "tertiary-fixed": "#cde8e9",
+                        "on-secondary": "#00363b",
+                        "primary": "#54e98a",
+                        "outline-variant": "#3d4a3e",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-container": "#00a6b3",
+                        "surface": "#131313",
+                        "on-tertiary": "#1c3435",
+                        "on-tertiary-fixed-variant": "#334b4c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin": "40px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        /* Subtle Aurora Glow Effect */
+        .aurora-bg {
+            position: relative;
+            overflow: hidden;
+        }
+        .aurora-bg::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(46, 204, 113, 0.05) 0%, transparent 50%);
+            z-index: 0;
+            pointer-events: none;
+        }
+        .content-layer {
+            position: relative;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md text-body-md min-h-screen flex selection:bg-primary selection:text-on-primary">
+<!-- SideNavBar -->
+<nav class="hidden md:flex flex-col h-screen w-64 border-r border-zinc-800 rounded-none bg-zinc-950 border-r border-emerald-500/10 shrink-0 sticky left-0 top-0 pt-4 z-40">
+<!-- Logo Area -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center border border-primary/30 relative">
+<div class="absolute inset-0 rounded-full bg-primary/10 blur-sm"></div>
+<span class="material-symbols-outlined text-primary" style="font-size: 18px;">science</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-emerald-500 tracking-tight" style="font-size: 16px;">RBM Intelligence</div>
+</div>
+</div>
+<!-- User Profile Area -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<img alt="Clinical Lead Avatar" class="w-10 h-10 rounded-full border border-zinc-700 object-cover" data-alt="Professional headshot of a clinical researcher with glasses in a modern office environment with soft lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuClTYF9GY0ql93NT96FoMM0_ZwqnpFT_dDar_xzVvWosUxtX_JGJHaEUduIhj7CmGYJqunwobhrULp9J-51P_LIND_YIcSnk_Im4YoKG2CBacpkZdgffhm6elX0wdYc1B9f42YqERoOZ7wNHmyWXD-g_25P1fG9-q6djuJABYq_YAQMDTIxwTAUpyeHBYo1xN9ztOQdgAht3FXlVCKjO38uOhSr-LajuwqiMdL-HmxcadcMt5JL98cEPP8TrZ7K71g7F5DDxmseIA"/>
+<div>
+<div class="font-label-sm text-label-sm text-on-surface">Clinical Operations</div>
+<div class="font-label-sm text-label-sm text-zinc-500 font-normal uppercase tracking-wider" style="font-size: 10px;">Precision Intelligence</div>
+</div>
+</div>
+<!-- Main Navigation -->
+<div class="flex-1 overflow-y-auto px-2">
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 font-inter text-sm uppercase tracking-widest hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 rounded-DEFAULT mb-1 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">public</span>
+<span>Global Risk</span>
+</a>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 font-inter text-sm uppercase tracking-widest hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 rounded-DEFAULT mb-1 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">error</span>
+<span>Alert Tracking</span>
+</a>
+<a class="bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500 py-3 px-4 flex items-center gap-3 font-inter text-sm uppercase tracking-widest rounded-r-DEFAULT mb-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">compare_arrows</span>
+<span class="font-semibold">Site Comparison</span>
+</a>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 font-inter text-sm uppercase tracking-widest hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 rounded-DEFAULT mb-1 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">analytics</span>
+<span>PD Analytics</span>
+</a>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 font-inter text-sm uppercase tracking-widest hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 rounded-DEFAULT mb-1 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform">tune</span>
+<span>Threshold Config</span>
+</a>
+</div>
+<!-- Footer Navigation -->
+<div class="px-2 pb-6 border-t border-zinc-800 pt-4 mt-auto">
+<a class="text-zinc-500 py-2 px-4 flex items-center gap-3 font-inter text-sm uppercase tracking-widest hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 rounded-DEFAULT mb-1 group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-size: 20px;">verified_user</span>
+<span style="font-size: 11px;">System Status</span>
+</a>
+<a class="text-zinc-500 py-2 px-4 flex items-center gap-3 font-inter text-sm uppercase tracking-widest hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 rounded-DEFAULT group" href="#">
+<span class="material-symbols-outlined group-hover:scale-110 transition-transform" style="font-size: 20px;">description</span>
+<span style="font-size: 11px;">Documentation</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 flex flex-col min-h-screen relative overflow-x-hidden">
+<!-- TopAppBar -->
+<header class="bg-zinc-950/80 backdrop-blur-md font-inter tracking-tight antialiased docked full-width top-0 border-b border-emerald-500/20 border-b border-zinc-800 shadow-[0_0_15px_rgba(46,204,113,0.05)] flex justify-between items-center w-full px-6 h-16 sticky top-0 z-50">
+<!-- Mobile Brand/Logo (Hidden on Desktop) -->
+<div class="md:hidden flex items-center gap-2 text-emerald-400 font-black tracking-tighter text-xl">
+<span class="material-symbols-outlined text-emerald-500">science</span>
+<span>RBM</span>
+</div>
+<!-- Desktop Navigation Links -->
+<div class="hidden md:flex items-center h-full gap-6">
+<a class="text-zinc-400 font-medium hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors h-full flex items-center px-2 text-sm" href="#">Portfolio</a>
+<a class="text-zinc-400 font-medium hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors h-full flex items-center px-2 text-sm" href="#">Study A-204</a>
+<a class="text-emerald-400 font-semibold border-b-2 border-emerald-500 pb-1 h-full flex items-center px-2 text-sm mt-[2px]" href="#">Site Monitoring</a>
+</div>
+<!-- Right Actions -->
+<div class="flex items-center gap-4">
+<button class="text-zinc-400 hover:text-emerald-300 transition-colors scale-95 duration-200 ease-out hover:bg-emerald-500/10 p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="text-zinc-400 hover:text-emerald-300 transition-colors scale-95 duration-200 ease-out hover:bg-emerald-500/10 p-2 rounded-full flex items-center justify-center mr-2">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<div class="w-8 h-8 rounded-full border border-zinc-700 overflow-hidden cursor-pointer hover:border-emerald-500/50 transition-colors">
+<img alt="Clinical Researcher Profile" class="w-full h-full object-cover" data-alt="Professional headshot of a female clinical researcher smiling slightly in a bright laboratory setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDORLTt66mysliIOPEPbZYfI9f_Flq3DTYNyytQ5n2dCaX_kneZ2BFVPJqax7talHWMUSuvGAhw0AJYTpZU6wrPncSQzJM7qIm3uYo5OtrEbM4du5Ta9ycmZoGjGCBU6wmO5AYTo5CZ_eSe4RHvHKGzVLZoT8Hx5kRU_LX_xQ7ktc5iOKgl0TfTVuAmyIGlw5GZBi_rcT5aQGSKCyRcwvNPRmgVwy0QmwYNQXwLpYrJEfrzHDR5N2omUGPy7rm-Y4DMI48SWkvaEA"/>
+</div>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 p-6 md:p-10 max-w-container-max mx-auto w-full">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Site Comparison</h1>
+<p class="font-body-lg text-body-lg text-zinc-400 max-w-2xl">Analyze performance metrics and protocol deviation risks across active study sites to identify outliers requiring intervention.</p>
+</div>
+<div class="flex gap-3">
+<button class="px-4 py-2 border border-tertiary/30 text-tertiary rounded-DEFAULT font-label-md text-label-md hover:bg-tertiary/10 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-size: 18px;">download</span>
+                        Export Data
+                    </button>
+<button class="px-4 py-2 bg-primary text-on-primary rounded-DEFAULT font-label-md text-label-md hover:bg-primary/90 transition-colors flex items-center gap-2 shadow-[0_0_10px_rgba(84,233,138,0.2)]">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+                        New Comparison
+                    </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+<!-- Main Scatter Plot Chart (Spans 8 cols) -->
+<div class="lg:col-span-8 bg-[#1E1E1E] rounded-lg border border-tertiary/20 overflow-hidden relative group p-6 aurora-bg">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-tertiary/40 to-primary/40"></div>
+<div class="content-layer h-full flex flex-col">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Enrollment vs. PD Risk Quadrant</h2>
+<p class="font-body-md text-body-md text-zinc-400 mt-1">Identifies high-enrolling sites with disproportionate protocol deviations.</p>
+</div>
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-surface-container-high border border-zinc-700 rounded-DEFAULT font-label-sm text-label-sm text-zinc-300">Study A-204</span>
+<span class="px-2 py-1 bg-surface-container-high border border-zinc-700 rounded-DEFAULT font-label-sm text-label-sm text-zinc-300">Last 30 Days</span>
+</div>
+</div>
+<!-- Chart Placeholder Area -->
+<div class="flex-1 min-h-[300px] border border-zinc-800 rounded-DEFAULT bg-surface-dim/50 relative overflow-hidden flex items-center justify-center mt-2">
+<!-- Simulated Grid Lines -->
+<div class="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+<!-- Quadrant Dividers -->
+<div class="absolute left-1/2 top-0 bottom-0 w-[1px] bg-zinc-700/50"></div>
+<div class="absolute top-1/2 left-0 right-0 h-[1px] bg-zinc-700/50"></div>
+<!-- Quadrant Labels -->
+<div class="absolute top-4 left-4 font-label-sm text-label-sm text-zinc-500 uppercase tracking-wider">Low Enroll / High PD</div>
+<div class="absolute top-4 right-4 font-label-sm text-label-sm text-error/70 uppercase tracking-wider">High Enroll / High PD (Risk)</div>
+<div class="absolute bottom-4 left-4 font-label-sm text-label-sm text-zinc-500 uppercase tracking-wider">Low Enroll / Low PD</div>
+<div class="absolute bottom-4 right-4 font-label-sm text-label-sm text-primary/70 uppercase tracking-wider">High Enroll / Low PD (Ideal)</div>
+<!-- Simulated Data Points (Scatter) -->
+<!-- High Risk (Top Right) -->
+<div class="absolute top-[20%] right-[30%] w-4 h-4 rounded-full bg-error border-2 border-surface-dim shadow-[0_0_10px_rgba(255,180,171,0.5)] cursor-pointer hover:scale-150 transition-transform group/point">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-surface-container-high border border-zinc-700 px-2 py-1 rounded text-xs opacity-0 group-hover/point:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none">Site 104 - 15 PDs</div>
+</div>
+<div class="absolute top-[35%] right-[15%] w-3 h-3 rounded-full bg-error/80 border border-surface-dim cursor-pointer hover:scale-150 transition-transform"></div>
+<!-- Ideal (Bottom Right) -->
+<div class="absolute bottom-[30%] right-[25%] w-5 h-5 rounded-full bg-primary border-2 border-surface-dim shadow-[0_0_10px_rgba(84,233,138,0.5)] cursor-pointer hover:scale-125 transition-transform group/point">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-surface-container-high border border-zinc-700 px-2 py-1 rounded text-xs opacity-0 group-hover/point:opacity-100 transition-opacity whitespace-nowrap z-10 pointer-events-none text-zinc-300">Site 201 - 2 PDs</div>
+</div>
+<div class="absolute bottom-[20%] right-[40%] w-3 h-3 rounded-full bg-primary/70 border border-surface-dim cursor-pointer hover:scale-150 transition-transform"></div>
+<div class="absolute bottom-[40%] right-[10%] w-4 h-4 rounded-full bg-primary/90 border border-surface-dim cursor-pointer hover:scale-150 transition-transform"></div>
+<!-- Average/Normal (Scattered) -->
+<div class="absolute top-[45%] left-[45%] w-3 h-3 rounded-full bg-tertiary/60 border border-surface-dim cursor-pointer hover:scale-150 transition-transform"></div>
+<div class="absolute bottom-[45%] left-[60%] w-4 h-4 rounded-full bg-tertiary/60 border border-surface-dim cursor-pointer hover:scale-150 transition-transform"></div>
+<div class="absolute bottom-[25%] left-[30%] w-2 h-2 rounded-full bg-tertiary/50 border border-surface-dim cursor-pointer hover:scale-150 transition-transform"></div>
+<div class="absolute top-[30%] left-[20%] w-3 h-3 rounded-full bg-tertiary/60 border border-surface-dim cursor-pointer hover:scale-150 transition-transform"></div>
+<!-- Axes Labels -->
+<div class="absolute bottom-2 left-1/2 -translate-x-1/2 font-label-sm text-label-sm text-zinc-400">Enrollment Rate (Subjects/Month) →</div>
+<div class="absolute left-2 top-1/2 -translate-y-1/2 -rotate-90 origin-center font-label-sm text-label-sm text-zinc-400 whitespace-nowrap">← Protocol Deviation Rate (%)</div>
+</div>
+</div>
+</div>
+<!-- Summary Metrics Column (Spans 4 cols) -->
+<div class="lg:col-span-4 flex flex-col gap-6">
+<!-- Metric Card 1 -->
+<div class="bg-[#1E1E1E] rounded-lg border border-tertiary/20 p-5 relative overflow-hidden flex-1">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-tertiary/40 to-transparent"></div>
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-label-md text-label-md text-zinc-400 uppercase tracking-wider">Avg Site Deviation Rate</h3>
+<span class="material-symbols-outlined text-tertiary/50">trending_up</span>
+</div>
+<div class="flex items-end gap-3 mt-4">
+<span class="font-headline-xl text-headline-xl text-on-surface">4.2%</span>
+<span class="font-label-sm text-label-sm text-error bg-error/10 px-2 py-0.5 rounded flex items-center mb-1 border border-error/20">
+<span class="material-symbols-outlined" style="font-size: 14px;">arrow_upward</span>
+                                0.8%
+                            </span>
+</div>
+<div class="mt-4 w-full h-1 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-error w-[60%]"></div>
+</div>
+</div>
+<!-- Metric Card 2 -->
+<div class="bg-[#1E1E1E] rounded-lg border border-primary/20 p-5 relative overflow-hidden flex-1">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-primary/40 to-transparent"></div>
+<div class="absolute -right-10 -bottom-10 w-32 h-32 bg-primary/5 rounded-full blur-2xl"></div>
+<div class="flex items-center justify-between mb-2">
+<h3 class="font-label-md text-label-md text-zinc-400 uppercase tracking-wider">Top Performing Site</h3>
+<span class="material-symbols-outlined text-primary/50">workspace_premium</span>
+</div>
+<div class="mt-2">
+<span class="font-headline-lg text-headline-lg text-primary">Site 201</span>
+<div class="font-body-md text-body-md text-zinc-300 mt-1">London, UK</div>
+</div>
+<div class="flex gap-2 mt-4">
+<span class="px-2 py-1 bg-surface-container border border-zinc-700 rounded font-label-sm text-label-sm text-zinc-300">85 Subjects</span>
+<span class="px-2 py-1 bg-primary/10 border border-primary/30 rounded font-label-sm text-label-sm text-primary">0.5% PD Rate</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Detailed Data Table Section -->
+<div class="bg-[#1E1E1E] rounded-lg border border-tertiary/20 overflow-hidden relative">
+<div class="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-tertiary/40 to-transparent"></div>
+<!-- Table Header/Filters -->
+<div class="p-5 border-b border-zinc-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+<h2 class="font-headline-md text-headline-md text-on-surface">Site Performance Data</h2>
+<div class="flex items-center gap-3">
+<!-- Search Input -->
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" style="font-size: 18px;">search</span>
+<input class="bg-surface-container border border-zinc-700 text-on-surface rounded-DEFAULT pl-9 pr-4 py-1.5 font-body-md text-body-md text-sm focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none w-full md:w-64 placeholder-zinc-500 transition-colors" placeholder="Search sites..." type="text"/>
+</div>
+<button class="p-1.5 border border-zinc-700 rounded-DEFAULT text-zinc-400 hover:text-on-surface hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-zinc-800 bg-surface-container-low font-label-sm text-label-sm text-zinc-400 uppercase tracking-wider">
+<th class="py-4 px-6 font-medium">Site ID</th>
+<th class="py-4 px-6 font-medium">Location</th>
+<th class="py-4 px-6 font-medium">PI Name</th>
+<th class="py-4 px-6 font-medium text-right">Enrolled</th>
+<th class="py-4 px-6 font-medium text-right">PD Count</th>
+<th class="py-4 px-6 font-medium text-right">PD Rate</th>
+<th class="py-4 px-6 font-medium text-center">Status</th>
+<th class="py-4 px-6 font-medium text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-sm divide-y divide-zinc-800/50">
+<!-- Row 1 (High Risk) -->
+<tr class="hover:bg-zinc-900/50 transition-colors group">
+<td class="py-4 px-6 font-medium text-on-surface">104</td>
+<td class="py-4 px-6 text-zinc-300">Miami, FL, USA</td>
+<td class="py-4 px-6 text-zinc-300">Dr. S. Rahman</td>
+<td class="py-4 px-6 text-right text-zinc-300">112</td>
+<td class="py-4 px-6 text-right text-on-surface font-medium">15</td>
+<td class="py-4 px-6 text-right">
+<span class="text-error font-medium">13.4%</span>
+</td>
+<td class="py-4 px-6 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-error/10 text-error border border-error/20">Critical</span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-tertiary hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 2 (Warning) -->
+<tr class="hover:bg-zinc-900/50 transition-colors group">
+<td class="py-4 px-6 font-medium text-on-surface">118</td>
+<td class="py-4 px-6 text-zinc-300">Berlin, DE</td>
+<td class="py-4 px-6 text-zinc-300">Dr. M. Weber</td>
+<td class="py-4 px-6 text-right text-zinc-300">64</td>
+<td class="py-4 px-6 text-right text-on-surface font-medium">5</td>
+<td class="py-4 px-6 text-right">
+<span class="text-tertiary font-medium">7.8%</span>
+</td>
+<td class="py-4 px-6 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-tertiary/10 text-tertiary border border-tertiary/20">Monitor</span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-tertiary hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 (Good) -->
+<tr class="hover:bg-zinc-900/50 transition-colors group">
+<td class="py-4 px-6 font-medium text-on-surface">201</td>
+<td class="py-4 px-6 text-zinc-300">London, UK</td>
+<td class="py-4 px-6 text-zinc-300">Dr. E. Sterling</td>
+<td class="py-4 px-6 text-right text-zinc-300">85</td>
+<td class="py-4 px-6 text-right text-on-surface font-medium">2</td>
+<td class="py-4 px-6 text-right">
+<span class="text-primary font-medium">2.3%</span>
+</td>
+<td class="py-4 px-6 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary border border-primary/20">Optimal</span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-tertiary hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 (Good) -->
+<tr class="hover:bg-zinc-900/50 transition-colors group">
+<td class="py-4 px-6 font-medium text-on-surface">042</td>
+<td class="py-4 px-6 text-zinc-300">Toronto, CA</td>
+<td class="py-4 px-6 text-zinc-300">Dr. L. Chen</td>
+<td class="py-4 px-6 text-right text-zinc-300">42</td>
+<td class="py-4 px-6 text-right text-on-surface font-medium">1</td>
+<td class="py-4 px-6 text-right">
+<span class="text-primary font-medium">2.4%</span>
+</td>
+<td class="py-4 px-6 text-center">
+<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-primary/10 text-primary border border-primary/20">Optimal</span>
+</td>
+<td class="py-4 px-6 text-center">
+<button class="text-tertiary hover:text-primary transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100">
+<span class="material-symbols-outlined" style="font-size: 20px;">visibility</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="p-4 border-t border-zinc-800 flex items-center justify-between text-sm text-zinc-500">
+<div>Showing 1 to 4 of 42 sites</div>
+<div class="flex gap-1">
+<button class="p-1 rounded hover:bg-zinc-800 text-zinc-600 cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined" style="font-size: 20px;">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-medium">1</button>
+<button class="w-8 h-8 rounded hover:bg-zinc-800 text-zinc-400 flex items-center justify-center transition-colors">2</button>
+<button class="w-8 h-8 rounded hover:bg-zinc-800 text-zinc-400 flex items-center justify-center transition-colors">3</button>
+<span class="flex items-center justify-center px-1">...</span>
+<button class="p-1 rounded hover:bg-zinc-800 text-zinc-400 transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Navigation (Visible only on md:hidden) -->
+<div class="md:hidden fixed bottom-0 left-0 w-full bg-zinc-950 border-t border-zinc-800 flex justify-around items-center h-16 z-50 pb-safe">
+<a class="flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-emerald-300 transition-colors" href="#">
+<span class="material-symbols-outlined">public</span>
+<span class="text-[10px] mt-1 font-medium">Global</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-emerald-400 bg-emerald-500/10 border-t-2 border-emerald-500 transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">compare_arrows</span>
+<span class="text-[10px] mt-1 font-semibold">Compare</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-emerald-300 transition-colors" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="text-[10px] mt-1 font-medium">Analytics</span>
+</a>
+<a class="flex flex-col items-center justify-center w-full h-full text-zinc-500 hover:text-emerald-300 transition-colors" href="#">
+<span class="material-symbols-outlined">tune</span>
+<span class="text-[10px] mt-1 font-medium">Config</span>
+</a>
+</div>
+</body></html>

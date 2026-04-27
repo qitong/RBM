@@ -27,12 +27,12 @@ function NavItem({ to, icon: Icon, label }: { to: string; icon: React.ComponentT
     <NavLink
       to={to}
       className={({ isActive }) =>
-        `flex items-center gap-3 w-full px-4 py-3 rounded-lg transition-all duration-200 ${
-          isActive ? 'bg-primary-600 text-white shadow-md' : 'hover:bg-slate-800 hover:text-white'
+        `nav-link flex items-center gap-3 w-full px-3 py-2 transition-all duration-200 ${
+          isActive ? 'active' : ''
         }`
       }
     >
-      <Icon size={20} />
+      <Icon size={18} />
       <span className="font-medium">{label}</span>
     </NavLink>
   )
@@ -48,14 +48,14 @@ function App() {
 
   return (
     <ThresholdProvider>
-      <div className="flex h-screen bg-slate-50 overflow-hidden font-sans text-slate-800">
-        <nav className="w-64 bg-slate-900 text-slate-300 flex flex-col shadow-xl z-20">
-          <div className="h-16 flex items-center px-6 font-bold text-xl text-white border-b border-slate-800 tracking-tight">
-            <Activity className="mr-3 text-primary-500" />
-            RBM 风险监控系统
+      <div className="flex h-screen bg-white overflow-hidden">
+        <nav className="w-64 bg-white flex flex-col border-r" style={{ borderColor: 'var(--color-border)' }}>
+          <div className="h-16 flex items-center px-6 border-b" style={{ borderColor: 'var(--color-border)' }}>
+            <Activity className="mr-3" style={{ color: 'var(--color-brand)' }} size={20} />
+            <span className="text-h3">RBM</span>
           </div>
-          <div className="flex-1 py-8 flex flex-col gap-2 px-4">
-            <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">功能模块</p>
+          <div className="flex-1 py-6 flex flex-col gap-1 px-4">
+            <p className="text-mono px-3 mb-4">功能模块</p>
             <NavItem to="/dashboard" icon={LayoutDashboard} label="全局风险大屏" />
             <NavItem to="/alerts" icon={AlertTriangle} label="预警跟踪与闭环" />
             <NavItem to="/benchmark" icon={BarChart3} label="中心间横向对比" />
@@ -63,18 +63,18 @@ function App() {
             <NavItem to="/investigators" icon={Users} label="研究者画像" />
             <NavItem to="/capa" icon={ClipboardCheck} label="CAPA 效率分析" />
             <div className="mt-8">
-              <p className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">系统设置</p>
+              <p className="text-mono px-3 mb-4">系统设置</p>
               <NavItem to="/thresholds" icon={Settings} label="预警阈值配置" />
             </div>
           </div>
         </nav>
 
-        <main className="flex-1 flex flex-col h-full bg-[#f4f7f9] overflow-hidden relative">
-          <header className="h-16 bg-white/80 backdrop-blur-md border-b border-slate-200 flex items-center justify-between px-8 shadow-sm z-10 sticky top-0">
-            <h1 className="text-xl font-bold tracking-tight text-slate-800 capitalize flex items-center gap-2">{title}</h1>
+        <main className="flex-1 flex flex-col h-full bg-white overflow-hidden relative">
+          <header className="h-16 bg-white border-b flex items-center justify-between px-8 sticky top-0 z-10" style={{ borderColor: 'var(--color-border)' }}>
+            <h1 className="text-h2">{title}</h1>
             <div className="flex items-center gap-4">
-              <button className="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 text-slate-700 rounded-lg text-sm font-semibold shadow-sm transition-all focus:ring-2 focus:ring-primary-500/20">
-                <Filter size={16} />
+              <button className="btn-primary">
+                <Filter size={16} className="mr-2" />
                 全局筛选
               </button>
             </div>

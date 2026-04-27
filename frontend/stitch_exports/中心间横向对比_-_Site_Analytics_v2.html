@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Site Comparison Analytics - BLUEBALLON</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-high": "#2a2a2a",
+                      "on-secondary": "#00363b",
+                      "surface": "#131313",
+                      "primary-fixed-dim": "#4ae183",
+                      "on-tertiary-container": "#31494a",
+                      "secondary": "#59d8e5",
+                      "outline-variant": "#3d4a3e",
+                      "on-primary-container": "#005027",
+                      "inverse-surface": "#e5e2e1",
+                      "surface-tint": "#4ae183",
+                      "secondary-fixed-dim": "#59d8e5",
+                      "surface-container-low": "#1c1b1b",
+                      "on-secondary-fixed": "#001f23",
+                      "on-surface": "#e5e2e1",
+                      "inverse-on-surface": "#313030",
+                      "surface-variant": "#353534",
+                      "on-surface-variant": "#bbcbbb",
+                      "on-error-container": "#ffdad6",
+                      "error-container": "#93000a",
+                      "tertiary-fixed-dim": "#b1cbcd",
+                      "surface-dim": "#131313",
+                      "tertiary": "#b9d4d5",
+                      "on-error": "#690005",
+                      "primary-fixed": "#6bfe9c",
+                      "on-secondary-fixed-variant": "#004f55",
+                      "on-tertiary": "#1c3435",
+                      "inverse-primary": "#006d37",
+                      "surface-container": "#201f1f",
+                      "primary-container": "#2ecc71",
+                      "on-tertiary-fixed": "#051f20",
+                      "background": "#131313",
+                      "on-primary-fixed": "#00210c",
+                      "surface-container-lowest": "#0e0e0e",
+                      "surface-container-highest": "#353534",
+                      "primary": "#54e98a",
+                      "tertiary-container": "#9eb8b9",
+                      "outline": "#869486",
+                      "on-secondary-container": "#003439",
+                      "surface-bright": "#393939",
+                      "on-primary": "#003919",
+                      "secondary-container": "#00a6b3",
+                      "on-primary-fixed-variant": "#005228",
+                      "on-tertiary-fixed-variant": "#334b4c",
+                      "error": "#ffb4ab",
+                      "secondary-fixed": "#87f3ff",
+                      "on-background": "#e5e2e1",
+                      "tertiary-fixed": "#cde8e9"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "unit": "4px",
+                      "margin": "40px",
+                      "container-max": "1440px",
+                      "gutter": "24px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-xl": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-xl": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.1",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+        .aurora-glow {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(46,204,113,0.15) 0%, rgba(18,18,18,0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .glass-panel {
+            background: rgba(30, 30, 30, 0.7);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(46, 204, 113, 0.2);
+            border-left: 1px solid rgba(46, 204, 113, 0.1);
+        }
+        .chart-grid-line {
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 1;
+        }
+    </style>
+</head>
+<body class="font-body-md text-body-md bg-background antialiased flex flex-col min-h-screen">
+<!-- Top Navigation -->
+<nav class="bg-[#121212]/80 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-teal-500/20 shadow-2xl shadow-black/50 font-inter tracking-tight antialiased">
+<div class="flex justify-between items-center px-10 h-16 w-full">
+<div class="flex items-center gap-8">
+<div class="text-xl font-black tracking-tighter text-[#2ECC71] drop-shadow-[0_0_8px_rgba(46,204,113,0.4)] flex items-center gap-2">
+<img alt="BlueBallon Logo" class="h-6 w-auto" data-alt="Abstract geometric logo mark with teal and green gradient on dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVy922mLfccNK3e38HUgsmymQQ9uAcRtGdprQSZELSIqiAE6Wsn5-i40mCHCRvJ8gjTPsL-tpuLRC2eiYRtmLdbjALWGCvNJJv3Y-Qk_X7tHBhceuQJQgq9C3USTxMVDv6A53M6kI3EFTCsec5-ygX2rj204AK_DR7SfjC4bX49bepNYqnM6oN4ifLMv4nz3nZio8xV9-6paLMOSALB2WjxTUaV9l2TFbrKeYEf7nDgYMNFxXp-IV5wiVt-A2Pp_legDZVoaWDGQ"/>
+                    BLUEBALLON
+                </div>
+<div class="hidden md:flex gap-6">
+<a class="text-gray-400 font-medium hover:text-[#2ECC71] hover:bg-teal-500/5 transition-all duration-300 px-3 py-2 rounded-DEFAULT active:scale-95 duration-150" href="#">Dashboard</a>
+<a class="text-gray-400 font-medium hover:text-[#2ECC71] hover:bg-teal-500/5 transition-all duration-300 px-3 py-2 rounded-DEFAULT active:scale-95 duration-150" href="#">Studies</a>
+<a class="text-gray-400 font-medium hover:text-[#2ECC71] hover:bg-teal-500/5 transition-all duration-300 px-3 py-2 rounded-DEFAULT active:scale-95 duration-150" href="#">Risk Registry</a>
+<a class="text-[#2ECC71] border-b-2 border-[#2ECC71] pb-1 font-semibold px-3 py-2" href="#">Analytics</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden lg:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant font-label-sm">search</span>
+<input class="bg-surface-container-high border-none rounded-full py-2 pl-10 pr-4 text-on-surface focus:ring-1 focus:ring-primary-container focus:outline-none w-64 text-label-md font-label-md placeholder-on-surface-variant" placeholder="Search analytics..." type="text"/>
+</div>
+<button class="text-gray-400 hover:text-[#2ECC71] hover:bg-teal-500/5 transition-all duration-300 p-2 rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+</button>
+<button class="text-gray-400 hover:text-[#2ECC71] hover:bg-teal-500/5 transition-all duration-300 p-2 rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+</button>
+<button class="text-gray-400 hover:text-[#2ECC71] hover:bg-teal-500/5 transition-all duration-300 p-2 rounded-full active:scale-95 duration-150">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content Area with Side Nav Layout -->
+<div class="flex pt-16 flex-1 h-[calc(100vh-64px)] overflow-hidden">
+<!-- Side Navigation -->
+<aside class="bg-[#1E1E1E] hidden md:flex flex-col h-full w-64 border-r border-teal-500/10 shadow-[4px_0_24px_rgba(0,0,0,0.5)] font-inter text-sm uppercase tracking-widest z-40 shrink-0">
+<div class="py-8 flex flex-col h-full">
+<div class="px-6 mb-8">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden shrink-0">
+<img alt="Clinical Researcher Profile" class="w-full h-full object-cover" data-alt="Portrait of a female clinical researcher in a modern laboratory setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAGmo-Z-Yts3zux1UYokpokasa1xSzvU0RaLjweX0UZ7EINCkH88QyiXO6Q3SOAwVIyq5gqWVy73xagVbJazVIDKRRDMvtFtW4KLg4-pMwimBP5bkSlAG3xHrhtoIcK1WZTcfVZqi0bUojRpqlihBoNrr1SCGuYiNXgYvdY07tXORUL1OhEx-nWn-73B4Fholy2lrAlrUf6duD_UnrGoHJjeFBv4WVkn9B80lD24gQlyjBUYxObWRrWTiPdL5xvErrV_KsZXWetag"/>
+</div>
+<div>
+<div class="text-[#2ECC71] font-label-sm">Study Phase III</div>
+<div class="text-gray-500 text-[10px]">Protocol: BB-2024-X1</div>
+</div>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<a class="text-gray-500 flex items-center gap-3 px-6 py-4 hover:bg-[#121212] hover:text-teal-400 transition-colors duration-200 active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                        Overview
+                    </a>
+<a class="bg-gradient-to-r from-[#2ECC71]/10 to-transparent text-[#2ECC71] border-l-4 border-[#2ECC71] flex items-center gap-3 px-6 py-4 active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">biotech</span>
+                        Site Monitoring
+                    </a>
+<a class="text-gray-500 flex items-center gap-3 px-6 py-4 hover:bg-[#121212] hover:text-teal-400 transition-colors duration-200 active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">query_stats</span>
+                        Data Quality
+                    </a>
+<a class="text-gray-500 flex items-center gap-3 px-6 py-4 hover:bg-[#121212] hover:text-teal-400 transition-colors duration-200 active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">warning</span>
+                        Safety Signals
+                    </a>
+<a class="text-gray-500 flex items-center gap-3 px-6 py-4 hover:bg-[#121212] hover:text-teal-400 transition-colors duration-200 active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">description</span>
+                        Reports
+                    </a>
+<a class="text-gray-500 flex items-center gap-3 px-6 py-4 hover:bg-[#121212] hover:text-teal-400 transition-colors duration-200 active:translate-x-1 duration-200" href="#">
+<span class="material-symbols-outlined">history</span>
+                        Audit Trail
+                    </a>
+</div>
+<div class="mt-auto px-6 pb-4">
+<button class="w-full bg-primary-container text-[#121212] font-label-md py-2 rounded-DEFAULT hover:bg-primary transition-colors flex justify-center items-center gap-2 mb-6">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                        New Analysis
+                    </button>
+<a class="text-gray-500 flex items-center gap-3 py-2 hover:text-teal-400 transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">help</span>
+                        Help Center
+                    </a>
+<a class="text-gray-500 flex items-center gap-3 py-2 hover:text-teal-400 transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">support_agent</span>
+                        Support
+                    </a>
+</div>
+</div>
+</aside>
+<!-- Main Canvas -->
+<main class="flex-1 overflow-y-auto relative p-margin">
+<div class="aurora-glow top-10 right-20"></div>
+<div class="aurora-glow bottom-40 left-10" style="background: radial-gradient(circle, rgba(89,216,229,0.1) 0%, rgba(18,18,18,0) 70%);"></div>
+<div class="max-w-container-max mx-auto relative z-10">
+<!-- Page Header -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Site Comparison Analytics</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Cross-site evaluation of enrollment velocity versus protocol deviation risk.</p>
+</div>
+<div class="flex gap-4">
+<button class="border border-outline-variant text-on-surface px-4 py-2 rounded-DEFAULT font-label-md flex items-center gap-2 hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Export Report
+                        </button>
+<button class="bg-primary-container text-[#121212] px-4 py-2 rounded-DEFAULT font-label-md flex items-center gap-2 hover:bg-primary transition-colors">
+<span class="material-symbols-outlined text-[18px]">filter_list</span>
+                            Filter Sites
+                        </button>
+</div>
+</div>
+<!-- KPI Bento Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter mb-gutter">
+<!-- KPI 1 -->
+<div class="glass-panel rounded-xl p-6">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Sites</span>
+<span class="material-symbols-outlined text-secondary">domain</span>
+</div>
+<div class="font-headline-xl text-headline-xl text-on-surface">24</div>
+<div class="mt-2 text-primary-fixed-dim font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                            +2 this month
+                        </div>
+</div>
+<!-- KPI 2 -->
+<div class="glass-panel rounded-xl p-6">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Total Enrolled</span>
+<span class="material-symbols-outlined text-secondary">group</span>
+</div>
+<div class="font-headline-xl text-headline-xl text-on-surface">842</div>
+<div class="mt-2 text-primary-fixed-dim font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                            12% vs target
+                        </div>
+</div>
+<!-- KPI 3 -->
+<div class="glass-panel rounded-xl p-6">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Avg PD Rate</span>
+<span class="material-symbols-outlined text-error">warning</span>
+</div>
+<div class="font-headline-xl text-headline-xl text-on-surface">3.2%</div>
+<div class="mt-2 text-error font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">arrow_upward</span>
+                            0.4% from avg
+                        </div>
+</div>
+<!-- KPI 4 -->
+<div class="glass-panel rounded-xl p-6">
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Sites at Risk</span>
+<span class="material-symbols-outlined text-error">gpp_maybe</span>
+</div>
+<div class="font-headline-xl text-headline-xl text-on-surface">3</div>
+<div class="mt-2 text-on-surface-variant font-label-md text-label-md">
+                            Requires intervention
+                        </div>
+</div>
+</div>
+<!-- Main Visualization Area -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter mb-gutter">
+<!-- Scatter Plot Quadrant -->
+<div class="lg:col-span-2 glass-panel rounded-xl p-6 flex flex-col">
+<div class="flex justify-between items-center mb-6">
+<h2 class="font-headline-md text-headline-md text-on-surface">Enrollment vs. PD Risk Quadrant</h2>
+<div class="flex gap-2">
+<span class="px-2 py-1 bg-surface-container-high rounded border border-outline-variant text-[10px] uppercase font-bold text-primary-fixed-dim">Optimal</span>
+<span class="px-2 py-1 bg-surface-container-high rounded border border-outline-variant text-[10px] uppercase font-bold text-secondary">Monitor</span>
+<span class="px-2 py-1 bg-surface-container-high rounded border border-outline-variant text-[10px] uppercase font-bold text-error">Critical</span>
+</div>
+</div>
+<!-- Simulated Chart Area -->
+<div class="flex-1 relative min-h-[300px] border-l border-b border-surface-variant mt-4 ml-8 mb-8">
+<!-- Grid Lines -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" xmlns="http://www.w3.org/2000/svg">
+<line class="chart-grid-line" x1="0" x2="100%" y1="25%" y2="25%"></line>
+<line class="chart-grid-line" stroke-dasharray="4" x1="0" x2="100%" y1="50%" y2="50%"></line>
+<line class="chart-grid-line" x1="0" x2="100%" y1="75%" y2="75%"></line>
+<line class="chart-grid-line" x1="25%" x2="25%" y1="0" y2="100%"></line>
+<line class="chart-grid-line" stroke-dasharray="4" x1="50%" x2="50%" y1="0" y2="100%"></line>
+<line class="chart-grid-line" x1="75%" x2="75%" y1="0" y2="100%"></line>
+</svg>
+<!-- Axis Labels -->
+<div class="absolute -left-10 top-1/2 -translate-y-1/2 -rotate-90 font-label-sm text-label-sm text-on-surface-variant whitespace-nowrap">Protocol Deviation Rate (%)</div>
+<div class="absolute -bottom-8 left-1/2 -translate-x-1/2 font-label-sm text-label-sm text-on-surface-variant">Enrollment Velocity (Pts/Mo)</div>
+<!-- Quadrant Labels -->
+<div class="absolute top-4 left-4 text-[10px] font-bold text-error/50 uppercase">High Risk / Low Enr</div>
+<div class="absolute top-4 right-4 text-[10px] font-bold text-secondary/50 uppercase">High Risk / High Enr</div>
+<div class="absolute bottom-4 left-4 text-[10px] font-bold text-on-surface-variant/50 uppercase">Low Risk / Low Enr</div>
+<div class="absolute bottom-4 right-4 text-[10px] font-bold text-primary-fixed-dim/50 uppercase">Optimal Zone</div>
+<!-- Data Points (Simulated) -->
+<!-- Optimal -->
+<div class="absolute bottom-[20%] right-[30%] w-4 h-4 rounded-full bg-primary-container/20 border-2 border-primary-container cursor-pointer hover:scale-150 transition-transform"></div>
+<div class="absolute bottom-[15%] right-[15%] w-5 h-5 rounded-full bg-primary-container/20 border-2 border-primary-container cursor-pointer hover:scale-150 transition-transform"></div>
+<div class="absolute bottom-[35%] right-[40%] w-3 h-3 rounded-full bg-primary-container/20 border-2 border-primary-container cursor-pointer hover:scale-150 transition-transform"></div>
+<!-- Monitor -->
+<div class="absolute top-[30%] right-[25%] w-6 h-6 rounded-full bg-secondary/20 border-2 border-secondary cursor-pointer hover:scale-150 transition-transform"></div>
+<div class="absolute bottom-[40%] left-[30%] w-4 h-4 rounded-full bg-secondary/20 border-2 border-secondary cursor-pointer hover:scale-150 transition-transform"></div>
+<!-- Critical -->
+<div class="absolute top-[15%] left-[20%] w-7 h-7 rounded-full bg-error/20 border-2 border-error shadow-[0_0_10px_rgba(255,180,171,0.5)] cursor-pointer hover:scale-150 transition-transform">
+<span class="absolute -top-6 -left-8 bg-surface-container-high px-2 py-1 rounded text-[10px] border border-outline-variant text-on-surface whitespace-nowrap hidden group-hover:block z-20">Site 104 (Critical)</span>
+</div>
+<div class="absolute top-[25%] left-[40%] w-5 h-5 rounded-full bg-error/20 border-2 border-error cursor-pointer hover:scale-150 transition-transform"></div>
+</div>
+</div>
+<!-- Right Column Insights -->
+<div class="flex flex-col gap-gutter">
+<div class="glass-panel rounded-xl p-6">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4">Critical Alerts</h3>
+<div class="space-y-4">
+<div class="bg-surface-container-low border border-error/30 rounded-lg p-4 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-error"></div>
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-md text-label-md text-error font-bold">Site 104 - Boston Gen</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">PD rate exceeded 8% threshold. Immediate CAPA required.</div>
+</div>
+<span class="material-symbols-outlined text-error text-[20px]">warning</span>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant rounded-lg p-4 relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-md text-label-md text-secondary font-bold">Site 212 - Mayo</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant mt-1">Enrollment velocity dropping below historical average.</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[20px]">trending_down</span>
+</div>
+</div>
+</div>
+</div>
+<div class="glass-panel rounded-xl p-6 flex-1">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-4">AI Insight</h3>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm mb-4">Based on current trajectory, <span class="text-primary-fixed-dim">Site 045</span> is predicted to reach enrollment target 3 weeks early with a 95% confidence interval of maintaining low PD rates.</p>
+<div class="w-full h-24 rounded bg-surface-container-lowest border border-outline-variant relative overflow-hidden flex items-end">
+<!-- Simple Bar chart representation -->
+<div class="w-1/4 h-[40%] bg-outline-variant/30 ml-2 rounded-t"></div>
+<div class="w-1/4 h-[60%] bg-outline-variant/30 ml-2 rounded-t"></div>
+<div class="w-1/4 h-[80%] bg-primary-container/50 ml-2 rounded-t border-t-2 border-primary-container relative">
+<div class="absolute -top-2 left-1/2 w-2 h-2 rounded-full bg-primary-container -translate-x-1/2 shadow-[0_0_5px_#2ecc71]"></div>
+</div>
+<div class="w-1/4 h-[95%] bg-outline-variant/10 ml-2 rounded-t border-t border-dashed border-primary-container/50"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Site Performance Table -->
+<div class="glass-panel rounded-xl p-0 overflow-hidden">
+<div class="p-6 border-b border-surface-variant flex justify-between items-center bg-surface-container-high/50">
+<h2 class="font-headline-md text-headline-md text-on-surface">Site Performance Roster</h2>
+<div class="flex gap-2">
+<span class="material-symbols-outlined text-on-surface-variant cursor-pointer hover:text-primary-container">more_vert</span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
+<th class="p-4 border-b border-surface-variant font-medium">Site ID / Name</th>
+<th class="p-4 border-b border-surface-variant font-medium">PI Name</th>
+<th class="p-4 border-b border-surface-variant font-medium text-right">Enrolled</th>
+<th class="p-4 border-b border-surface-variant font-medium text-right">Velocity</th>
+<th class="p-4 border-b border-surface-variant font-medium text-right">PD Rate</th>
+<th class="p-4 border-b border-surface-variant font-medium text-center">Status</th>
+<th class="p-4 border-b border-surface-variant font-medium text-center">Actions</th>
+</tr>
+</thead>
+<tbody class="font-body-md text-body-md text-on-surface text-sm">
+<tr class="hover:bg-surface-container-high/50 border-b border-surface-variant transition-colors">
+<td class="p-4">
+<div class="font-bold text-primary-fixed-dim">104 - Boston Gen</div>
+<div class="text-[10px] text-on-surface-variant">Northeast Region</div>
+</td>
+<td class="p-4 text-on-surface-variant">Dr. S. Reynolds</td>
+<td class="p-4 text-right">45</td>
+<td class="p-4 text-right">2.1/mo</td>
+<td class="p-4 text-right font-bold text-error">8.4%</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-error/10 border border-error/30 text-error text-[10px] uppercase font-bold tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span> Critical
+                                        </span>
+</td>
+<td class="p-4 text-center text-on-surface-variant">
+<button class="hover:text-primary-container transition-colors"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/50 border-b border-surface-variant transition-colors">
+<td class="p-4">
+<div class="font-bold">212 - Mayo Clinic</div>
+<div class="text-[10px] text-on-surface-variant">Midwest Region</div>
+</td>
+<td class="p-4 text-on-surface-variant">Dr. A. Chen</td>
+<td class="p-4 text-right">112</td>
+<td class="p-4 text-right">4.5/mo</td>
+<td class="p-4 text-right text-secondary">4.1%</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-secondary/10 border border-secondary/30 text-secondary text-[10px] uppercase font-bold tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Monitor
+                                        </span>
+</td>
+<td class="p-4 text-center text-on-surface-variant">
+<button class="hover:text-primary-container transition-colors"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/50 border-b border-surface-variant transition-colors">
+<td class="p-4">
+<div class="font-bold">045 - Stanford Med</div>
+<div class="text-[10px] text-on-surface-variant">West Region</div>
+</td>
+<td class="p-4 text-on-surface-variant">Dr. M. Patel</td>
+<td class="p-4 text-right">89</td>
+<td class="p-4 text-right">5.2/mo</td>
+<td class="p-4 text-right text-primary-fixed-dim">1.2%</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-primary-container/10 border border-primary-container/30 text-primary-fixed-dim text-[10px] uppercase font-bold tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim"></span> Optimal
+                                        </span>
+</td>
+<td class="p-4 text-center text-on-surface-variant">
+<button class="hover:text-primary-container transition-colors"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-high/50 transition-colors">
+<td class="p-4">
+<div class="font-bold">088 - Johns Hopkins</div>
+<div class="text-[10px] text-on-surface-variant">Mid-Atlantic Region</div>
+</td>
+<td class="p-4 text-on-surface-variant">Dr. K. Lewis</td>
+<td class="p-4 text-right">64</td>
+<td class="p-4 text-right">3.8/mo</td>
+<td class="p-4 text-right text-primary-fixed-dim">1.8%</td>
+<td class="p-4 text-center">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded bg-primary-container/10 border border-primary-container/30 text-primary-fixed-dim text-[10px] uppercase font-bold tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-fixed-dim"></span> Optimal
+                                        </span>
+</td>
+<td class="p-4 text-center text-on-surface-variant">
+<button class="hover:text-primary-container transition-colors"><span class="material-symbols-outlined text-[18px]">visibility</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

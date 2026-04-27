@@ -40,8 +40,27 @@ export interface BenchmarkRow {
   queryTotal: number
 }
 
+export interface TrendPoint {
+  x: number
+  y: number
+}
+
+export interface TrendAnalysis {
+  trendLine: TrendPoint[]
+  upperBand: TrendPoint[]
+  lowerBand: TrendPoint[]
+  slope: number
+  intercept: number
+  r_squared: number
+}
+
+export interface BenchmarkData {
+  points: BenchmarkRow[]
+  trend: TrendAnalysis
+}
+
 export function useBenchmark() {
-  return useQuery({ queryKey: ['benchmark'], queryFn: () => apiGet<BenchmarkRow[]>('/api/benchmark') })
+  return useQuery({ queryKey: ['benchmark'], queryFn: () => apiGet<BenchmarkData>('/api/benchmark') })
 }
 
 export interface CorrelationPoint {

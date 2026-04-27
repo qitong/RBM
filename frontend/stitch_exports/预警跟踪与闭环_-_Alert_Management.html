@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Alert Tracking - RBM Intelligence</title>
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#ffdad6",
+                        "primary-container": "#2ecc71",
+                        "primary-fixed-dim": "#4ae183",
+                        "surface-dim": "#131313",
+                        "on-tertiary-fixed": "#051f20",
+                        "tertiary": "#b9d4d5",
+                        "on-secondary-container": "#003439",
+                        "on-primary-container": "#005027",
+                        "on-primary-fixed-variant": "#005228",
+                        "tertiary-container": "#9eb8b9",
+                        "secondary-fixed-dim": "#59d8e5",
+                        "on-tertiary-container": "#31494a",
+                        "inverse-on-surface": "#313030",
+                        "surface-container": "#201f1f",
+                        "on-primary-fixed": "#00210c",
+                        "surface-container-high": "#2a2a2a",
+                        "surface-variant": "#353534",
+                        "surface-tint": "#4ae183",
+                        "primary-fixed": "#6bfe9c",
+                        "on-background": "#e5e2e1",
+                        "error": "#ffb4ab",
+                        "background": "#131313",
+                        "on-secondary-fixed": "#001f23",
+                        "secondary": "#59d8e5",
+                        "surface-container-highest": "#353534",
+                        "error-container": "#93000a",
+                        "on-surface": "#e5e2e1",
+                        "outline": "#869486",
+                        "surface-container-low": "#1c1b1b",
+                        "tertiary-fixed-dim": "#b1cbcd",
+                        "secondary-fixed": "#87f3ff",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-secondary-fixed-variant": "#004f55",
+                        "on-primary": "#003919",
+                        "inverse-primary": "#006d37",
+                        "on-error": "#690005",
+                        "on-surface-variant": "#bbcbbb",
+                        "tertiary-fixed": "#cde8e9",
+                        "on-secondary": "#00363b",
+                        "primary": "#54e98a",
+                        "outline-variant": "#3d4a3e",
+                        "surface-container-lowest": "#0e0e0e",
+                        "secondary-container": "#00a6b3",
+                        "surface": "#131313",
+                        "on-tertiary": "#1c3435",
+                        "on-tertiary-fixed-variant": "#334b4c"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-max": "1440px",
+                        "margin": "40px",
+                        "unit": "4px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-xl": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1.4", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-xl": ["48px", { "lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md text-body-md overflow-hidden flex h-screen">
+<!-- SideNavBar -->
+<nav class="bg-zinc-950 h-screen w-64 border-r border-zinc-800 rounded-none border-r border-emerald-500/10 flat no shadows flex flex-col h-full sticky left-0 top-0 pt-4 hidden md:flex z-40">
+<!-- Header -->
+<div class="px-6 mb-8 flex items-center gap-3">
+<img alt="Clinical Lead Avatar" class="w-10 h-10 rounded-full border border-tertiary/30 object-cover" data-alt="Close-up professional headshot of a clinical lead doctor in a modern hospital setting, confident expression, soft clinic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgoFHGVpfcN3up5F-rj8ELOw9360h4GYbUs9QDkPM_eQtSLqt5XSeggvAUkOJKeggCtL40HRcpN5klALs6dSj4Yg5EnZWNNxrq8manAHPQ-qB2KW0PLT4DAGq1Py1rccGu4CjdeM8Buwejjqicad9RXaEUM2rfqV5DIdn2v2wJT2BfFe5gUFLKmLL_FYtS0Td-iyRDlLS0V8gdgbZfBDsH-h-c282QD7GZcGO8VGrihkdxW23frw26Mt0a73R0nor6tRX71T6N0Q"/>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface text-base">Clinical Operations</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Precision Intelligence</div>
+</div>
+</div>
+<!-- Main Nav Tabs -->
+<div class="flex-1 font-inter text-sm uppercase tracking-widest text-emerald-500">
+<!-- Global Risk (Inactive) -->
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined text-lg">public</span>
+<span>Global Risk</span>
+</a>
+<!-- Alert Tracking (Active) -->
+<a class="bg-emerald-500/10 text-emerald-400 border-l-4 border-emerald-500 py-3 px-4 flex items-center gap-3" href="#">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">error</span>
+<span>Alert Tracking</span>
+</a>
+<!-- Site Comparison (Inactive) -->
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined text-lg">compare_arrows</span>
+<span>Site Comparison</span>
+</a>
+<!-- PD Analytics (Inactive) -->
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined text-lg">analytics</span>
+<span>PD Analytics</span>
+</a>
+<!-- Threshold Config (Inactive) -->
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined text-lg">tune</span>
+<span>Threshold Config</span>
+</a>
+</div>
+<!-- Footer Tabs -->
+<div class="mt-auto border-t border-zinc-800 pt-4 pb-6 font-inter text-sm uppercase tracking-widest text-emerald-500">
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined text-lg">verified_user</span>
+<span>System Status</span>
+</a>
+<a class="text-zinc-500 py-3 px-4 flex items-center gap-3 hover:bg-zinc-900 hover:text-emerald-200 transition-all duration-300 translate-x-1 duration-300" href="#">
+<span class="material-symbols-outlined text-lg">description</span>
+<span>Documentation</span>
+</a>
+</div>
+</nav>
+<!-- Main Workspace -->
+<div class="flex-1 flex flex-col min-w-0 bg-background relative">
+<!-- Background Aurora Glow -->
+<div class="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none -z-10"></div>
+<div class="absolute bottom-0 left-[20%] w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+<!-- TopAppBar -->
+<header class="bg-zinc-950/80 backdrop-blur-md text-emerald-500 font-inter tracking-tight antialiased docked full-width top-0 border-b border-emerald-500/20 border-b border-zinc-800 shadow-[0_0_15px_rgba(46,204,113,0.05)] flex justify-between items-center w-full px-6 h-16 sticky top-0 z-50">
+<div class="flex items-center gap-6">
+<!-- Brand -->
+<div class="text-emerald-400 font-black tracking-tighter text-xl flex items-center gap-2">
+<img alt="RBM Intelligence Logo" class="w-6 h-6 rounded-sm object-cover" data-alt="Abstract minimalist geometric 3D shape glowing with bright emerald green light against a pure black background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFqmcA-88c3ZmbAOuqGOG8_r2mmOi1RimTog3D6AIywnYc8nvxjPdmZF6NGplqrq5Xv0lgR5ZxeLergmb5kIijzU_1hoFpBuh7sfmbUBvpLgM1YwpZ0hWygyMq0Nf0QFM_kv1smER7-L_LK_NGIoCSsYiKFfBlizJGe5slNvdDwf0yPwM96b1tMZ8eNnzky8VyfCIZYexr_crBW96Bpe1l7PE54ubfVM1nUh83xRe5T2AfkJWPnquXYDAB_5ZuOtYp-TEV3JBnuA"/>
+<span>RBM Intelligence</span>
+</div>
+<!-- Nav Links -->
+<nav class="hidden lg:flex items-center gap-6 ml-8">
+<a class="text-zinc-400 font-medium hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors scale-95 duration-200 ease-out px-3 py-1 rounded-md text-sm" href="#">Portfolio</a>
+<a class="text-zinc-400 font-medium hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors scale-95 duration-200 ease-out px-3 py-1 rounded-md text-sm" href="#">Study A-204</a>
+<a class="text-zinc-400 font-medium hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors scale-95 duration-200 ease-out px-3 py-1 rounded-md text-sm" href="#">Site Monitoring</a>
+</nav>
+</div>
+<!-- Right Actions -->
+<div class="flex items-center gap-4">
+<!-- Search -->
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">search</span>
+<input class="bg-surface-container-high border-outline-variant/30 text-on-surface text-sm rounded-full pl-9 pr-4 py-1.5 focus:border-primary focus:ring-1 focus:ring-primary w-64 placeholder-zinc-500 transition-all duration-300 focus:w-72" placeholder="Search entity..." type="text"/>
+</div>
+<!-- Trailing Icons -->
+<div class="flex items-center gap-1">
+<button class="p-2 text-zinc-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors rounded-full relative">
+<span class="material-symbols-outlined text-xl">notifications</span>
+<span class="absolute top-1.5 right-1.5 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-2 text-zinc-400 hover:bg-emerald-500/10 hover:text-emerald-300 transition-colors rounded-full">
+<span class="material-symbols-outlined text-xl">help_outline</span>
+</button>
+</div>
+<div class="w-px h-6 bg-zinc-800 mx-2"></div>
+<!-- Profile -->
+<img alt="Clinical Researcher Profile" class="w-8 h-8 rounded-full border border-primary/30 object-cover cursor-pointer hover:border-primary transition-colors" data-alt="Professional headshot of a female clinical researcher with glasses looking forward, soft grey clinical background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVM63YgJNUkdY9iBcGV6SqmZh4-AEvbbMrqkFjpnLvbioO3sWaGO1fz4KyVSFiRJS0RN0F6Oej9IWBDNRbUBjk-PninlcODLPKB_danYqN_YS5RDPQyBY7XajSsj4AR-PVnVzkKG5jXoC01DDWgl2ury4O5Pq1A1LFWl2oNssym8bb4bEfsdoEP98NBd5fT1iB59JE78bxUbppMHYS39Au9zrldzmxh3otpHUVGM_iQ5wSrpca254FDcKou3Siyn-OlpewuYXAkA"/>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 overflow-y-auto p-margin scroll-smooth">
+<div class="max-w-[container-max] mx-auto space-y-gutter">
+<!-- Page Header -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-outline-variant/30 pb-6">
+<div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface mb-2">Alert Tracking</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">Manage risk escalation workflows and track active remediations across clinical sites.</p>
+</div>
+<div class="flex gap-3">
+<button class="bg-surface-container border border-tertiary/20 text-on-surface font-label-md text-label-md px-4 py-2 rounded-lg hover:border-secondary transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+                            Filter
+                        </button>
+<button class="bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded-lg hover:bg-primary-fixed-dim transition-colors flex items-center gap-2 shadow-[0_0_15px_rgba(46,204,113,0.2)]">
+<span class="material-symbols-outlined text-sm">add</span>
+                            New Alert
+                        </button>
+</div>
+</div>
+<!-- Bento Stats Grid -->
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter">
+<div class="bg-surface-container border-t border-primary/50 rounded-xl p-5 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-primary">warning</span>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Critical Alerts</div>
+<div class="font-headline-xl text-headline-xl text-primary">12</div>
+<div class="mt-2 text-sm text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +3 this week
+                        </div>
+</div>
+<div class="bg-surface-container border-t border-secondary/50 rounded-xl p-5 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-6xl text-secondary">pending_actions</span>
+</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">Open Remediations</div>
+<div class="font-headline-xl text-headline-xl text-secondary">45</div>
+<div class="mt-2 text-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">horizontal_rule</span> Steady
+                        </div>
+</div>
+<div class="bg-surface-container border-t border-tertiary/30 rounded-xl p-5 md:col-span-2 relative overflow-hidden flex items-center justify-between">
+<div>
+<div class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mb-2">System Health Score</div>
+<div class="flex items-baseline gap-2">
+<span class="font-headline-xl text-headline-xl text-on-surface">94</span>
+<span class="text-tertiary">/ 100</span>
+</div>
+</div>
+<div class="w-32 h-16 flex items-end gap-1 opacity-80">
+<div class="w-full bg-primary/20 rounded-t-sm" style="height: 60%"></div>
+<div class="w-full bg-primary/40 rounded-t-sm" style="height: 75%"></div>
+<div class="w-full bg-primary/60 rounded-t-sm" style="height: 85%"></div>
+<div class="w-full bg-primary/80 rounded-t-sm" style="height: 70%"></div>
+<div class="w-full bg-primary rounded-t-sm shadow-[0_0_10px_rgba(46,204,113,0.5)]" style="height: 94%"></div>
+</div>
+</div>
+</div>
+<!-- Alert Tracking List (Data Canvas) -->
+<div class="bg-surface-container border border-outline-variant/20 rounded-xl overflow-hidden mt-8">
+<div class="p-5 border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-high">
+<h2 class="font-headline-md text-headline-md text-on-surface">Active Escalations</h2>
+<div class="flex gap-2">
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">refresh</span></button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary transition-colors"><span class="material-symbols-outlined text-sm">more_vert</span></button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest/50 border-b border-outline-variant/30 font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
+<th class="p-4 font-medium">Alert ID</th>
+<th class="p-4 font-medium">Site / Subject</th>
+<th class="p-4 font-medium">Risk Metric</th>
+<th class="p-4 font-medium">Status</th>
+<th class="p-4 font-medium">Escalation Level</th>
+<th class="p-4 font-medium text-right">Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10 text-sm">
+<!-- Row 1 (High Priority) -->
+<tr class="hover:bg-surface-container-high/50 transition-colors group">
+<td class="p-4 font-mono text-tertiary">ALT-8492</td>
+<td class="p-4">
+<div class="font-medium text-on-surface">Site 104 - London</div>
+<div class="text-xs text-on-surface-variant mt-0.5">SUBJ-4421</div>
+</td>
+<td class="p-4">Protocol Deviation Rate</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-error/10 text-error border border-error/20 font-label-sm text-[10px] uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-pulse"></span> Requires Action
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden w-24">
+<div class="bg-error w-full h-full rounded-full"></div>
+</div>
+<span class="text-error font-medium text-xs">L3</span>
+</div>
+</td>
+<td class="p-4 text-right">
+<button class="text-secondary hover:text-secondary-fixed transition-colors font-label-md text-label-md">Review</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-high/50 transition-colors group">
+<td class="p-4 font-mono text-tertiary">ALT-8488</td>
+<td class="p-4">
+<div class="font-medium text-on-surface">Site 088 - Boston</div>
+<div class="text-xs text-on-surface-variant mt-0.5">Aggregate Issue</div>
+</td>
+<td class="p-4">Data Entry Latency</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-secondary/10 text-secondary border border-secondary/20 font-label-sm text-[10px] uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span> Under Review
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden w-24">
+<div class="bg-secondary w-2/3 h-full rounded-full"></div>
+</div>
+<span class="text-secondary font-medium text-xs">L2</span>
+</div>
+</td>
+<td class="p-4 text-right">
+<button class="text-secondary hover:text-secondary-fixed transition-colors font-label-md text-label-md opacity-0 group-hover:opacity-100">Review</button>
+</td>
+</tr>
+<!-- Row 3 (Remediated/Green) -->
+<tr class="hover:bg-surface-container-high/50 transition-colors group">
+<td class="p-4 font-mono text-tertiary">ALT-8475</td>
+<td class="p-4">
+<div class="font-medium text-on-surface">Site 201 - Berlin</div>
+<div class="text-xs text-on-surface-variant mt-0.5">SUBJ-9930</div>
+</td>
+<td class="p-4">Adverse Event Reporting</td>
+<td class="p-4">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 font-label-sm text-[10px] uppercase tracking-wider">
+<span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_5px_rgba(46,204,113,0.8)]"></span> Resolved
+                                        </span>
+</td>
+<td class="p-4">
+<div class="flex items-center gap-2">
+<div class="w-full bg-surface-container-lowest h-1.5 rounded-full overflow-hidden w-24">
+<div class="bg-primary w-1/3 h-full rounded-full"></div>
+</div>
+<span class="text-primary font-medium text-xs">L1</span>
+</div>
+</td>
+<td class="p-4 text-right">
+<button class="text-on-surface-variant hover:text-on-surface transition-colors font-label-md text-label-md opacity-0 group-hover:opacity-100">View Log</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-4 border-t border-outline-variant/20 bg-surface-container-lowest flex items-center justify-between">
+<span class="text-xs text-on-surface-variant">Showing 1-3 of 12 active alerts</span>
+<div class="flex gap-1">
+<button class="p-1 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface-variant disabled:opacity-50"><span class="material-symbols-outlined text-sm">chevron_left</span></button>
+<button class="p-1 rounded bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface-variant"><span class="material-symbols-outlined text-sm">chevron_right</span></button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

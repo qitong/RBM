@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#263143",
+                    "surface-dim": "#cfdaf2",
+                    "primary": "#0058be",
+                    "on-secondary-fixed": "#131b2e",
+                    "primary-container": "#2170e4",
+                    "on-surface": "#111c2d",
+                    "inverse-on-surface": "#ecf1ff",
+                    "background": "#f9f9ff",
+                    "outline": "#727785",
+                    "on-surface-variant": "#424754",
+                    "surface-container-lowest": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "tertiary-fixed-dim": "#ffb786",
+                    "surface-container-highest": "#d8e3fb",
+                    "primary-fixed-dim": "#adc6ff",
+                    "error": "#ba1a1a",
+                    "tertiary": "#924700",
+                    "error-container": "#ffdad6",
+                    "surface-container": "#e7eeff",
+                    "secondary-container": "#dae2fd",
+                    "on-primary-fixed": "#001a42",
+                    "surface-tint": "#005ac2",
+                    "surface-container-high": "#dee8ff",
+                    "tertiary-fixed": "#ffdcc6",
+                    "inverse-primary": "#adc6ff",
+                    "surface-container-low": "#f0f3ff",
+                    "on-secondary": "#ffffff",
+                    "on-primary-fixed-variant": "#004395",
+                    "on-tertiary-container": "#fffbff",
+                    "surface": "#f9f9ff",
+                    "on-tertiary-fixed-variant": "#723600",
+                    "surface-variant": "#d8e3fb",
+                    "on-error": "#ffffff",
+                    "on-tertiary": "#ffffff",
+                    "secondary-fixed": "#dae2fd",
+                    "on-secondary-container": "#5c647a",
+                    "on-primary": "#ffffff",
+                    "on-primary-container": "#fefcff",
+                    "secondary": "#565e74",
+                    "outline-variant": "#c2c6d6",
+                    "on-tertiary-fixed": "#311400",
+                    "secondary-fixed-dim": "#bec6e0",
+                    "on-secondary-fixed-variant": "#3f465c",
+                    "tertiary-container": "#b75b00",
+                    "on-background": "#111c2d",
+                    "surface-bright": "#f9f9ff",
+                    "primary-fixed": "#d8e2ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Inter"],
+                    "display": ["Inter"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        /* Custom range slider styling */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            background: #e7eeff;
+            height: 4px;
+            border-radius: 2px;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: #0058be;
+            cursor: pointer;
+            margin-top: -6px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<!-- SideNavBar Shell -->
+<aside class="bg-slate-900 h-screen w-64 fixed left-0 top-0 z-40 flex flex-col h-full py-6 shadow-2xl shadow-blue-900/20 font-['Inter'] antialiased tracking-tight">
+<div class="px-6 mb-10">
+<h1 class="text-lg font-bold tracking-tighter text-white">RBM 风险监控系统</h1>
+<p class="text-xs text-slate-400 opacity-60">Clinical Curator v2.4</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all duration-200 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>实时看板</span>
+</a>
+<a class="bg-blue-600 text-white rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 shadow-lg shadow-blue-600/30 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">settings_input_component</span>
+<span>预警阈值配置</span>
+</a>
+<a class="text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all duration-200 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">location_on</span>
+<span>研究中心监控</span>
+</a>
+<a class="text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all duration-200 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span>统计报表</span>
+</a>
+<a class="text-slate-400 hover:text-white hover:bg-slate-800/50 rounded-lg mx-2 my-1 px-4 py-3 flex items-center gap-3 transition-all duration-200 scale-95 active:scale-90 transition-transform" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>系统设置</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="bg-slate-800/50 backdrop-blur-xl rounded-xl p-4 flex items-center gap-3 border border-slate-700/30">
+<img alt="User Profile" class="w-10 h-10 rounded-full bg-slate-700" data-alt="professional portrait of a medical clinical director with a neutral expression and professional attire" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmr0JHGzmfCZu82Rm8W0WaBVTF43J1M8HXZqg-OlUk4PJISzndtGTgVQ53HB8Q6lPzvAoSj6M8Ir1z_EkibMCExSS7wg6EUNFVxocQCHM9cqB0iOSDvKFE16KDMwOX3pQmFmpNA-OCv1Y-n5vA8Pg7sxmMp-ok0799eZCz2WlgfwCu8bV6A9fbHpBlrWMgIJzZztlm3x0vo3QTOjWalnBiXqK_JOwK1n140ZplaRSrLMRlG2QvoicJfg08_4i9mgk9wUvDzRTr0g"/>
+<div class="overflow-hidden">
+<p class="text-sm font-medium text-white truncate">Admin. Zhang</p>
+<p class="text-xs text-slate-500 truncate">Principal Investigator</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 right-0 left-64 h-16 z-30 bg-white/80 backdrop-blur-md border-b border-slate-100 flex justify-between items-center px-8 w-full">
+<h2 class="text-2xl font-semibold tracking-tight text-blue-700">预警阈值配置</h2>
+<div class="flex items-center gap-6">
+<div class="relative group">
+<span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 material-symbols-outlined">search</span>
+<input class="bg-surface-container-low border-none rounded-xl pl-10 pr-4 py-2 text-sm w-64 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none" placeholder="搜索配置项..." type="text"/>
+</div>
+<div class="flex items-center gap-2">
+<button class="hover:bg-slate-50 rounded-full p-2 text-slate-500 transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-white"></span>
+</button>
+<button class="hover:bg-slate-50 rounded-full p-2 text-slate-500 transition-colors">
+<span class="material-symbols-outlined">help_outline</span>
+</button>
+<button class="hover:bg-slate-50 rounded-full p-2 text-slate-500 transition-colors">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-12 px-8 min-h-screen">
+<!-- Global Strategy Section -->
+<section class="mb-12">
+<div class="flex items-center justify-between mb-6">
+<div>
+<h3 class="text-xl font-bold text-on-surface tracking-tight">全局策略配置</h3>
+<p class="text-sm text-on-surface-variant">基于统计分布的标准差（SD）设定全局触发逻辑</p>
+</div>
+<div class="bg-surface-container-high px-4 py-2 rounded-xl text-primary font-semibold text-sm">
+                    自动同步所有未独立配置维度
+                </div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+<!-- Warning Level Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border-l-4 border-tertiary relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" style="font-variation-settings: 'FILL' 1;">warning</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<span class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed-variant">
+<span class="material-symbols-outlined">priority_high</span>
+</span>
+<h4 class="text-lg font-semibold">关注等级 (Warning Level)</h4>
+</div>
+<span class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Moderate Risk</span>
+</div>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
+                        当维度偏移量超过以下标准差倍数时，系统将触发黄色预警并建议增加监查频次。
+                    </p>
+<div class="flex items-end gap-4">
+<div class="flex-1">
+<label class="block text-[0.6875rem] font-bold text-on-surface-variant uppercase tracking-widest mb-2">阈值设定 (SD)</label>
+<input class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 text-lg font-bold text-primary focus:ring-2 focus:ring-primary/20 outline-none" step="0.1" type="number" value="2.0"/>
+</div>
+<div class="w-32 bg-tertiary-fixed-dim/20 rounded-xl px-4 py-3 border border-tertiary/10">
+<span class="block text-[0.6rem] text-tertiary font-bold uppercase">概率覆盖</span>
+<span class="text-lg font-bold text-tertiary">95.4%</span>
+</div>
+</div>
+</div>
+<!-- Action Level Card -->
+<div class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border-l-4 border-error relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-8xl" style="font-variation-settings: 'FILL' 1;">report</span>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div class="flex items-center gap-3">
+<span class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center text-on-error-container">
+<span class="material-symbols-outlined">gavel</span>
+</span>
+<h4 class="text-lg font-semibold">行动提示 (Action Level)</h4>
+</div>
+<span class="bg-error-container text-on-error-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Critical Risk</span>
+</div>
+<p class="text-sm text-on-surface-variant mb-6 leading-relaxed">
+                        核心指标严重偏离，触发红色预警。必须在24小时内启动纠正性行动方案（CAPA）。
+                    </p>
+<div class="flex items-end gap-4">
+<div class="flex-1">
+<label class="block text-[0.6875rem] font-bold text-on-surface-variant uppercase tracking-widest mb-2">阈值设定 (SD)</label>
+<input class="w-full bg-surface-container-high border-none rounded-xl px-4 py-3 text-lg font-bold text-primary focus:ring-2 focus:ring-primary/20 outline-none" step="0.1" type="number" value="3.0"/>
+</div>
+<div class="w-32 bg-error-container/20 rounded-xl px-4 py-3 border border-error/10">
+<span class="block text-[0.6rem] text-error font-bold uppercase">概率覆盖</span>
+<span class="text-lg font-bold text-error">99.7%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Dimension Configuration Section -->
+<section>
+<div class="flex items-center justify-between mb-8">
+<div>
+<h3 class="text-xl font-bold text-on-surface tracking-tight">各维度独立配置</h3>
+<p class="text-sm text-on-surface-variant">针对具体PD类型进行精细化阈值与权重覆盖</p>
+</div>
+<button class="bg-primary text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-500/20 flex items-center gap-2 hover:opacity-90 transition-all">
+<span class="material-symbols-outlined text-sm">add</span>
+<span>新增配置维度</span>
+</button>
+</div>
+<!-- Bento-style Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-8">
+<!-- Dimension Card: Informed Consent -->
+<div class="bg-surface-container-low rounded-2xl p-6 transition-all hover:shadow-xl hover:shadow-blue-900/5 group">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-3">
+<div class="p-3 bg-white rounded-xl shadow-sm text-primary">
+<span class="material-symbols-outlined">assignment_ind</span>
+</div>
+<h5 class="text-lg font-bold">知情同意 (Informed Consent)</h5>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between mb-2">
+<label class="text-[0.6875rem] font-bold text-on-surface-variant uppercase tracking-widest">影响权重 (Weight)</label>
+<span class="text-primary font-bold">85%</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" max="100" min="0" type="range" value="85"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-[0.6875rem] font-bold text-on-surface-variant uppercase">Warning SD</span>
+</div>
+<input class="w-full text-center text-xl font-extrabold text-on-surface border-none p-0 focus:ring-0 bg-transparent" type="text" value="1.5"/>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-[0.6875rem] font-bold text-on-surface-variant uppercase">Action SD</span>
+</div>
+<input class="w-full text-center text-xl font-extrabold text-on-surface border-none p-0 focus:ring-0 bg-transparent" type="text" value="2.5"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Dimension Card: Inclusion/Exclusion -->
+<div class="bg-surface-container-low rounded-2xl p-6 transition-all hover:shadow-xl hover:shadow-blue-900/5 group">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-3">
+<div class="p-3 bg-white rounded-xl shadow-sm text-primary">
+<span class="material-symbols-outlined">fact_check</span>
+</div>
+<h5 class="text-lg font-bold">入排标准 (Inclusion/Exclusion)</h5>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between mb-2">
+<label class="text-[0.6875rem] font-bold text-on-surface-variant uppercase tracking-widest">影响权重 (Weight)</label>
+<span class="text-primary font-bold">95%</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" max="100" min="0" type="range" value="95"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-[0.6875rem] font-bold text-on-surface-variant uppercase">Warning SD</span>
+</div>
+<input class="w-full text-center text-xl font-extrabold text-on-surface border-none p-0 focus:ring-0 bg-transparent" type="text" value="2.0"/>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-[0.6875rem] font-bold text-on-surface-variant uppercase">Action SD</span>
+</div>
+<input class="w-full text-center text-xl font-extrabold text-on-surface border-none p-0 focus:ring-0 bg-transparent" type="text" value="3.5"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Dimension Card: Investigational Product -->
+<div class="bg-surface-container-low rounded-2xl p-6 transition-all hover:shadow-xl hover:shadow-blue-900/5 group">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-3">
+<div class="p-3 bg-white rounded-xl shadow-sm text-primary">
+<span class="material-symbols-outlined">medication</span>
+</div>
+<h5 class="text-lg font-bold">试验药物管理 (IP Compliance)</h5>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between mb-2">
+<label class="text-[0.6875rem] font-bold text-on-surface-variant uppercase tracking-widest">影响权重 (Weight)</label>
+<span class="text-primary font-bold">70%</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-pointer accent-primary" max="100" min="0" type="range" value="70"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-[0.6875rem] font-bold text-on-surface-variant uppercase">Warning SD</span>
+</div>
+<input class="w-full text-center text-xl font-extrabold text-on-surface border-none p-0 focus:ring-0 bg-transparent" type="text" value="2.2"/>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-[0.6875rem] font-bold text-on-surface-variant uppercase">Action SD</span>
+</div>
+<input class="w-full text-center text-xl font-extrabold text-on-surface border-none p-0 focus:ring-0 bg-transparent" type="text" value="3.2"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Dimension Card: Lab Compliance -->
+<div class="bg-surface-container-low rounded-2xl p-6 transition-all hover:shadow-xl hover:shadow-blue-900/5 group opacity-80 grayscale-[0.5]">
+<div class="flex justify-between items-center mb-6">
+<div class="flex items-center gap-3">
+<div class="p-3 bg-white rounded-xl shadow-sm text-primary">
+<span class="material-symbols-outlined">science</span>
+</div>
+<h5 class="text-lg font-bold">实验室合规 (Lab Compliance)</h5>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between mb-2">
+<label class="text-[0.6875rem] font-bold text-on-surface-variant uppercase tracking-widest">影响权重 (Weight)</label>
+<span class="text-on-surface-variant font-bold">禁用</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest rounded-lg appearance-none cursor-not-allowed opacity-30" disabled="" max="100" min="0" type="range" value="40"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-dashed border-outline-variant">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-slate-300"></span>
+<span class="text-[0.6875rem] font-bold text-on-surface-variant uppercase">Warning SD</span>
+</div>
+<input class="w-full text-center text-xl font-extrabold text-slate-300 border-none p-0 focus:ring-0 bg-transparent" disabled="" type="text" value="--"/>
+</div>
+<div class="bg-surface-container-lowest p-4 rounded-xl shadow-sm border border-dashed border-outline-variant">
+<div class="flex items-center gap-2 mb-2">
+<span class="w-2 h-2 rounded-full bg-slate-300"></span>
+<span class="text-[0.6875rem] font-bold text-on-surface-variant uppercase">Action SD</span>
+</div>
+<input class="w-full text-center text-xl font-extrabold text-slate-300 border-none p-0 focus:ring-0 bg-transparent" disabled="" type="text" value="--"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Footer Actions -->
+<footer class="mt-12 pt-8 border-t border-slate-100 flex justify-end gap-4">
+<button class="px-8 py-3 rounded-xl border border-outline text-on-surface-variant font-semibold hover:bg-surface-container-low transition-colors">
+                取消更改
+            </button>
+<button class="px-10 py-3 rounded-xl bg-primary text-white font-bold shadow-xl shadow-blue-500/30 hover:translate-y-[-1px] transition-all">
+                应用配置
+            </button>
+</footer>
+</main>
+</body></html>

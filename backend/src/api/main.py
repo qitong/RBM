@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from src.edc.generator import (generate_sites, generate_site_metrics,
                                 generate_investigators, generate_investigator_metrics,
                                 generate_capa_records)
-from src.edc.correlation import compute_correlation
+from src.edc.correlation import compute_correlation, compute_trend_with_confidence
 from src.edc.forecast import linear_forecast
 
 app = FastAPI(title="RBM API", version="0.1.0")
@@ -87,17 +87,32 @@ def benchmark():
     pd_totals = [e["pdTotal"] for e in enriched]
     mean_pd = statistics.mean(pd_totals)
     sd_pd = statistics.pstdev(pd_totals) or 1
-    return [
-        {
+
+    # Create data points for analysis
+    data_points = []
+    progress_values = []
+    z_score_values = []
+
+    for e in enriched:
+        z_score = round((e["pdTotal"] - mean_pd) / sd_pd, 3)
+        data_points.append({
             "siteId": e["id"],
             "name": e["name"],
             "progressPct": e["progressPct"],
             "pdTotal": e["pdTotal"],
-            "pdZScore": round((e["pdTotal"] - mean_pd) / sd_pd, 3),
+            "pdZScore": z_score,
             "queryTotal": e["queryTotal"],
-        }
-        for e in enriched
-    ]
+        })
+        progress_values.append(e["progressPct"])
+        z_score_values.append(z_score)
+
+    # Compute trend analysis
+    trend_analysis = compute_trend_with_confidence(progress_values, z_score_values)
+
+    return {
+        "points": data_points,
+        "trend": trend_analysis,
+    }
 
 
 @app.get("/api/correlation")

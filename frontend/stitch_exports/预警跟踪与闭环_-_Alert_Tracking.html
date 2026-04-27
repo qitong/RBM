@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#111c2d",
+                        "tertiary-container": "#b75b00",
+                        "primary-fixed-dim": "#adc6ff",
+                        "on-tertiary-fixed-variant": "#723600",
+                        "primary-container": "#2170e4",
+                        "surface": "#f9f9ff",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#dee8ff",
+                        "on-secondary-fixed-variant": "#3f465c",
+                        "on-tertiary-container": "#fffbff",
+                        "tertiary": "#924700",
+                        "surface-bright": "#f9f9ff",
+                        "outline-variant": "#c2c6d6",
+                        "secondary": "#565e74",
+                        "surface-container": "#e7eeff",
+                        "secondary-fixed": "#dae2fd",
+                        "background": "#f9f9ff",
+                        "inverse-primary": "#adc6ff",
+                        "on-secondary-fixed": "#131b2e",
+                        "on-primary-fixed-variant": "#004395",
+                        "inverse-surface": "#263143",
+                        "tertiary-fixed": "#ffdcc6",
+                        "on-secondary-container": "#5c647a",
+                        "on-primary-container": "#fefcff",
+                        "outline": "#727785",
+                        "on-primary": "#ffffff",
+                        "tertiary-fixed-dim": "#ffb786",
+                        "surface-variant": "#d8e3fb",
+                        "on-tertiary": "#ffffff",
+                        "on-surface-variant": "#424754",
+                        "surface-tint": "#005ac2",
+                        "primary-fixed": "#d8e2ff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#111c2d",
+                        "on-primary-fixed": "#001a42",
+                        "surface-container-highest": "#d8e3fb",
+                        "secondary-fixed-dim": "#bec6e0",
+                        "on-error-container": "#93000a",
+                        "surface-container-low": "#f0f3ff",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#cfdaf2",
+                        "primary": "#0058be",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#dae2fd",
+                        "on-tertiary-fixed": "#311400",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "display": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body { font-family: 'Inter', sans-serif; }
+        .glass-sidebar { backdrop-filter: blur(10px); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface">
+<!-- TopAppBar -->
+<header class="fixed top-0 z-50 w-full h-16 bg-surface dark:bg-slate-950/80 backdrop-blur-xl shadow-sm dark:shadow-none flex justify-between items-center px-6">
+<div class="flex items-center gap-4">
+<span class="text-xl font-bold tracking-tighter text-blue-700 dark:text-blue-400 font-inter tracking-tight">RBM Curator</span>
+<div class="h-6 w-px bg-outline-variant/30"></div>
+<h1 class="text-on-surface font-semibold tracking-tight">预警跟踪与闭环</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative flex items-center bg-surface-container-low px-3 py-1.5 rounded-full border border-outline-variant/20">
+<span class="material-symbols-outlined text-outline text-lg" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-sm ml-2 w-48 text-on-surface-variant" placeholder="搜索中心或预警 ID..." type="text"/>
+</div>
+<div class="flex gap-2">
+<button class="p-2 rounded-full hover:bg-blue-50/50 transition-colors text-slate-500"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="p-2 rounded-full hover:bg-blue-50/50 transition-colors text-slate-500"><span class="material-symbols-outlined" data-icon="settings">settings</span></button>
+<button class="p-2 rounded-full hover:bg-blue-50/50 transition-colors text-slate-500"><span class="material-symbols-outlined" data-icon="help_outline">help_outline</span></button>
+</div>
+<div class="ml-2 w-8 h-8 rounded-full overflow-hidden bg-primary-fixed ring-2 ring-surface">
+<img class="w-full h-full object-cover" data-alt="Portrait of a medical professional clinical trial monitor in a clinical setting with soft natural light" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvCWismn-PfdMjhlpkXucGMDP4i-QuUrSYCWEaYSLCh15gzLRqyvartGUZW2qh-yAvhNHqwJXgqTvgMncqJ5AV6Idya-uIMH86vDSNPmZsk4ekr-ukzkOFn6ub22rOEcgs2jKE-VYPDswMw7ghGgBQjca-rBZXzidz5V-R8ceoQ-PX7WoPevm4R5gbJ_t3jTCJPsTnmudMeyDZ9v_xPK76niW2yx-CJEg6VELgsU6SrUdDQbeqg0uVmCSCfXTsSo3mQIM9V_lCkA"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<aside class="h-screen w-64 fixed left-0 top-0 pt-16 bg-slate-900 flex flex-col gap-2 p-4 z-40">
+<div class="px-2 py-4 mb-4">
+<h2 class="text-lg font-black text-white">Monitoring Suite</h2>
+<p class="text-xs text-slate-400 font-medium">Phase III Study v.2</p>
+</div>
+<nav class="flex-1 flex flex-col gap-1.5">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-blue-600 transition-all hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-inter text-sm font-medium">全局风险大屏</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-slate-800 text-blue-400 shadow-sm" href="#">
+<span class="material-symbols-outlined" data-icon="notification_important">notification_important</span>
+<span class="font-inter text-sm font-medium">预警跟踪与闭环</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-blue-600 transition-all hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined" data-icon="compare_arrows">compare_arrows</span>
+<span class="font-inter text-sm font-medium">中心间横向对比</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-blue-600 transition-all hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-inter text-sm font-medium">PD × Query 相关性</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-blue-600 transition-all hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-inter text-sm font-medium">研究者画像</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-400 hover:text-blue-600 transition-all hover:bg-slate-800/50" href="#">
+<span class="material-symbols-outlined" data-icon="speed">speed</span>
+<span class="font-inter text-sm font-medium">CAPA 效率分析</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-slate-800 pt-4 flex flex-col gap-1">
+<button class="w-full bg-gradient-to-br from-primary to-primary-container text-white py-2.5 rounded-xl font-semibold text-sm mb-4">New Analysis</button>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 text-xs hover:text-white" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="description">description</span>
+                Documentation
+            </a>
+<a class="flex items-center gap-3 px-3 py-2 text-slate-400 text-xs hover:text-white" href="#">
+<span class="material-symbols-outlined text-lg" data-icon="check_circle">check_circle</span>
+                System Status
+            </a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-20 p-8 min-h-screen">
+<!-- Sub-header & Stats -->
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="text-3xl font-extrabold text-on-surface tracking-tight">Vigilance Clinical Monitoring</h2>
+<p class="text-on-surface-variant mt-1">Real-time risk escalation and remediation workflow</p>
+</div>
+<div class="flex gap-4">
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-on-error-container" data-icon="priority_high">priority_high</span>
+</div>
+<div>
+<div class="text-xs text-on-surface-variant font-medium">Critical Alerts</div>
+<div class="text-xl font-bold text-error">12</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 rounded-xl flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" data-icon="hourglass_empty">hourglass_empty</span>
+</div>
+<div>
+<div class="text-xs text-on-surface-variant font-medium">Avg. Response</div>
+<div class="text-xl font-bold text-tertiary">4.2h</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Kanban Board Area -->
+<div class="grid grid-cols-3 gap-6 items-start h-[calc(100vh-280px)]">
+<!-- Column: Pending Evaluation -->
+<div class="flex flex-col h-full bg-surface-container-low rounded-xl">
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<h3 class="font-bold text-on-surface">待评估预警</h3>
+</div>
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-xs font-bold text-primary">04</span>
+</div>
+<div class="flex-1 p-3 overflow-y-auto space-y-4">
+<!-- Alert Card 1 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-transparent hover:border-outline-variant/20 transition-all">
+<div class="flex justify-between items-start mb-3">
+<span class="text-lg font-black text-primary tracking-tighter">ALR-001</span>
+<span class="px-3 py-1 rounded-full bg-error-container text-on-error-container text-[10px] font-bold uppercase">High Risk</span>
+</div>
+<div class="space-y-1 mb-4">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Site Name</span>
+<span class="font-semibold text-on-surface">Shanghai Central Hospital</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">PD Type</span>
+<span class="font-semibold text-on-surface">Inclusion Criteria</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">SD Value</span>
+<span class="font-bold text-error">2.45 σ</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="w-full py-2 px-3 border-2 border-primary text-primary text-xs font-bold rounded-xl hover:bg-primary/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="psychology">psychology</span>
+                                启动 AI 根因推演
+                            </button>
+<button class="w-full py-2 px-3 bg-on-background text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="task_alt">task_alt</span>
+                                确认 CAPA 整改闭环
+                            </button>
+</div>
+</div>
+<!-- Alert Card 2 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-transparent hover:border-outline-variant/20 transition-all">
+<div class="flex justify-between items-start mb-3">
+<span class="text-lg font-black text-primary tracking-tighter">ALR-005</span>
+<span class="px-3 py-1 rounded-full bg-tertiary-fixed text-on-tertiary-fixed-variant text-[10px] font-bold uppercase">Warning</span>
+</div>
+<div class="space-y-1 mb-4">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Site Name</span>
+<span class="font-semibold text-on-surface">Beijing Medical Univ.</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">PD Type</span>
+<span class="font-semibold text-on-surface">Consent Missing</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">SD Value</span>
+<span class="font-bold text-tertiary">1.82 σ</span>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<button class="w-full py-2 px-3 border-2 border-primary text-primary text-xs font-bold rounded-xl hover:bg-primary/5 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="psychology">psychology</span>
+                                启动 AI 根因推演
+                            </button>
+<button class="w-full py-2 px-3 bg-on-background text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="task_alt">task_alt</span>
+                                确认 CAPA 整改闭环
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Column: CAPA Execution -->
+<div class="flex flex-col h-full bg-surface-container-low rounded-xl">
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<h3 class="font-bold text-on-surface">CAPA 执行与干预</h3>
+</div>
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-xs font-bold text-tertiary">02</span>
+</div>
+<div class="flex-1 p-3 overflow-y-auto space-y-4">
+<!-- Alert Card 3 -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border border-transparent relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-1 h-full bg-tertiary"></div>
+<div class="flex justify-between items-start mb-3">
+<span class="text-lg font-black text-primary tracking-tighter">ALR-002</span>
+<div class="flex items-center text-xs text-on-surface-variant gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="timer">timer</span>
+                                2d left
+                            </div>
+</div>
+<div class="space-y-1 mb-4">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Site Name</span>
+<span class="font-semibold text-on-surface">Shenzhen Health Center</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Intervention</span>
+<span class="font-semibold text-primary">On-site Training</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">SD Value</span>
+<span class="font-bold text-secondary">1.21 σ</span>
+</div>
+</div>
+<div class="bg-surface-container-low p-2 rounded-lg mb-4 text-[11px] text-on-surface-variant italic">
+                            Monitor note: Site staff retraining scheduled for next Monday.
+                        </div>
+<button class="w-full py-2 px-3 bg-on-background text-white text-xs font-bold rounded-xl flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="verified">verified</span>
+                            确认 CAPA 整改闭环
+                        </button>
+</div>
+</div>
+</div>
+<!-- Column: Audit Closed -->
+<div class="flex flex-col h-full bg-surface-container-low rounded-xl">
+<div class="p-4 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<h3 class="font-bold text-on-surface">审计闭环</h3>
+</div>
+<span class="bg-surface-container-high px-2 py-0.5 rounded text-xs font-bold text-secondary">08</span>
+</div>
+<div class="flex-1 p-3 overflow-y-auto space-y-4 opacity-75">
+<!-- Alert Card 4 (Closed) -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-dashed border border-outline-variant/40">
+<div class="flex justify-between items-start mb-3">
+<span class="text-lg font-black text-secondary/60 tracking-tighter">ALR-008</span>
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold uppercase">Closed</span>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Site Name</span>
+<span class="font-semibold text-on-surface">Chengdu Medical</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Closed Date</span>
+<span class="font-semibold text-on-surface">2023-10-15</span>
+</div>
+</div>
+</div>
+<!-- Alert Card 5 (Closed) -->
+<div class="bg-surface-container-lowest p-5 rounded-xl border-dashed border border-outline-variant/40">
+<div class="flex justify-between items-start mb-3">
+<span class="text-lg font-black text-secondary/60 tracking-tighter">ALR-009</span>
+<span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-bold uppercase">Closed</span>
+</div>
+<div class="space-y-1">
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Site Name</span>
+<span class="font-semibold text-on-surface">Wuhan Central Hospital</span>
+</div>
+<div class="flex justify-between text-sm">
+<span class="text-on-surface-variant">Closed Date</span>
+<span class="font-semibold text-on-surface">2023-10-12</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action for Detail View -->
+<div class="fixed bottom-8 right-8 flex flex-col gap-3">
+<button class="w-14 h-14 bg-gradient-to-br from-primary to-primary-container text-white rounded-full shadow-lg shadow-primary/20 flex items-center justify-center hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-2xl" data-icon="add">add</span>
+</button>
+</div>
+</body></html>

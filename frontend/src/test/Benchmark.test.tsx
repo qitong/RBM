@@ -19,12 +19,44 @@ describe('Benchmark', () => {
   beforeEach(() => { vi.stubGlobal('fetch', vi.fn()) })
 
   it('renders ranking table rows from API', async () => {
-    (fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify([
-      { siteId: '101', name: '\u4E2D\u5FC3 101', progressPct: 50, pdTotal: 12, pdZScore: 1.2, queryTotal: 30 },
-      { siteId: '102', name: '\u4E2D\u5FC3 102', progressPct: 70, pdTotal: 4, pdZScore: -0.8, queryTotal: 10 },
-    ]), { status: 200 }))
+    const mockData = {
+      points: [
+        { siteId: '101', name: '中心 101', progressPct: 50, pdTotal: 12, pdZScore: 1.2, queryTotal: 30 },
+        { siteId: '102', name: '中心 102', progressPct: 70, pdTotal: 4, pdZScore: -0.8, queryTotal: 10 },
+      ],
+      trend: {
+        trendLine: [{ x: 40, y: 0.5 }, { x: 60, y: 1.5 }],
+        upperBand: [{ x: 40, y: 1.0 }, { x: 60, y: 2.0 }],
+        lowerBand: [{ x: 40, y: 0.0 }, { x: 60, y: 1.0 }],
+        slope: 0.05,
+        intercept: -1.5,
+        r_squared: 0.8
+      }
+    }
+    ;(fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(mockData), { status: 200 }))
     setup()
-    await waitFor(() => expect(screen.getByText('\u4E2D\u5FC3 101')).toBeInTheDocument())
-    expect(screen.getByText('\u4E2D\u5FC3 102')).toBeInTheDocument()
+    await waitFor(() => expect(screen.getByText('中心 101')).toBeInTheDocument())
+    expect(screen.getByText('中心 102')).toBeInTheDocument()
+  })
+
+  it('renders trend analysis information', async () => {
+    const mockData = {
+      points: [
+        { siteId: '101', name: '中心 101', progressPct: 50, pdTotal: 12, pdZScore: 1.2, queryTotal: 30 },
+      ],
+      trend: {
+        trendLine: [{ x: 40, y: 0.5 }, { x: 60, y: 1.5 }],
+        upperBand: [{ x: 40, y: 1.0 }, { x: 60, y: 2.0 }],
+        lowerBand: [{ x: 40, y: 0.0 }, { x: 60, y: 1.0 }],
+        slope: 0.05,
+        intercept: -1.5,
+        r_squared: 0.82
+      }
+    }
+    ;(fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(mockData), { status: 200 }))
+    setup()
+    await waitFor(() => expect(screen.getByText('R² = 0.82')).toBeInTheDocument())
+    expect(screen.getByText('斜率: +0.05')).toBeInTheDocument()
+    expect(screen.getByText('入组进度 vs PD z-score')).toBeInTheDocument()
   })
 })
