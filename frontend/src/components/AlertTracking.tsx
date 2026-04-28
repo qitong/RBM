@@ -94,9 +94,9 @@ export default function AlertTracking() {
   return (
     <div>
       <header className="mb-8">
-        <div className="flex justify-between items-end">
-          <div className="max-w-3xl">
-            <h1 className="text-h1 mb-4">预警跟踪与闭环管理</h1>
+        <div className="flex justify-between items-end gap-8">
+          <div style={{ flex: '1 1 auto', minWidth: 0 }}>
+            <h2 className="text-h1 mb-4">预警跟踪与闭环管理</h2>
             <p className="text-large leading-relaxed">
               监控、调查并解决所有活跃临床站点的安全信号。系统持续接入结构化和非结构化源数据。
             </p>

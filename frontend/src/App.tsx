@@ -1,4 +1,4 @@
-import { Activity, LayoutDashboard, Settings, Filter, AlertTriangle, BarChart3, GitCompareArrows, Users, ClipboardCheck } from 'lucide-react'
+import { Activity, LayoutDashboard, Settings, Filter, AlertTriangle, BarChart3, GitCompareArrows, Users, ClipboardCheck, ListTodo, UserRound, DatabaseZap, LineChart, ScrollText, BookOpen } from 'lucide-react'
 import { NavLink, Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { ThresholdProvider } from './context/ThresholdContext'
 import GlobalDashboard from './components/GlobalDashboard'
@@ -11,6 +11,12 @@ import InvestigatorList from './components/InvestigatorList'
 import InvestigatorProfile from './components/InvestigatorProfile'
 import ForecastChart from './components/ForecastChart'
 import CapaEfficiency from './components/CapaEfficiency'
+import TaskCenter from './components/TaskCenter'
+import SubjectProfiles from './components/SubjectProfiles'
+import DataQuality from './components/DataQuality'
+import RiskForecast from './components/RiskForecast'
+import AuditTrail from './components/AuditTrail'
+import ReportCenter from './components/ReportCenter'
 
 const TAB_TITLES: Record<string, string> = {
   '/dashboard': '全局风险大屏',
@@ -20,6 +26,12 @@ const TAB_TITLES: Record<string, string> = {
   '/correlation': 'PD \u00D7 Query \u76F8\u5173\u6027',
   '/investigators': '\u7814\u7A76\u8005\u753B\u50CF',
   '/capa': 'CAPA \u6548\u7387\u5206\u6790',
+  '/tasks': '\u5de5\u5355\u4e2d\u5fc3',
+  '/subjects': '\u53d7\u8bd5\u8005\u753b\u50cf',
+  '/data-quality': '\u6570\u636e\u8d28\u91cf',
+  '/risk-forecast': '\u98ce\u9669\u9884\u6d4b',
+  '/audit': '\u5ba1\u8ba1\u8ffd\u8e2a',
+  '/reports': '\u62a5\u544a\u4e2d\u5fc3',
 }
 
 function NavItem({ to, icon: Icon, label }: { to: string; icon: React.ComponentType<{ size?: number }>; label: string }) {
@@ -62,6 +74,12 @@ function App() {
             <NavItem to="/correlation" icon={GitCompareArrows} label="PD × Query 相关性" />
             <NavItem to="/investigators" icon={Users} label="研究者画像" />
             <NavItem to="/capa" icon={ClipboardCheck} label="CAPA 效率分析" />
+            <NavItem to="/tasks" icon={ListTodo} label="工单中心" />
+            <NavItem to="/subjects" icon={UserRound} label="受试者画像" />
+            <NavItem to="/data-quality" icon={DatabaseZap} label="数据质量" />
+            <NavItem to="/risk-forecast" icon={LineChart} label="风险预测" />
+            <NavItem to="/audit" icon={ScrollText} label="审计追踪" />
+            <NavItem to="/reports" icon={BookOpen} label="报告中心" />
             <div className="mt-8">
               <p className="text-mono px-3 mb-4">系统设置</p>
               <NavItem to="/thresholds" icon={Settings} label="预警阈值配置" />
@@ -93,6 +111,12 @@ function App() {
               <Route path="/investigators/:invId" element={<InvestigatorProfile />} />
               <Route path="/forecast/:siteId" element={<ForecastChart />} />
               <Route path="/capa" element={<CapaEfficiency />} />
+              <Route path="/tasks" element={<TaskCenter />} />
+              <Route path="/subjects" element={<SubjectProfiles />} />
+              <Route path="/data-quality" element={<DataQuality />} />
+              <Route path="/risk-forecast" element={<RiskForecast />} />
+              <Route path="/audit" element={<AuditTrail />} />
+              <Route path="/reports" element={<ReportCenter />} />
             </Routes>
           </div>
         </main>

@@ -171,3 +171,129 @@ export function useCapaList() {
 export function useCapaEfficiency() {
   return useQuery({ queryKey: ['capa-efficiency'], queryFn: () => apiGet<CapaEfficiency>('/api/capa/efficiency') })
 }
+
+export interface Task {
+  taskId: string
+  title: string
+  relatedAlertId: string | null
+  siteId: string
+  siteName: string
+  assignee: string
+  category: string
+  status: 'To Do' | 'In Progress' | 'Resolved'
+  priority: 'Low' | 'Medium' | 'High' | 'Critical'
+  createdAt: string
+  dueDate: string
+}
+
+export function useTaskList() {
+  return useQuery({ queryKey: ['tasks'], queryFn: () => apiGet<Task[]>('/api/tasks') })
+}
+
+export interface SubjectEvent {
+  type: 'AE' | 'PD' | 'MissedVisit'
+  date: string
+  severity: string
+  description: string
+}
+
+export interface Subject {
+  subjectId: string
+  siteId: string
+  siteName: string
+  enrollmentDate: string
+  riskScore: number
+  aeCount: number
+  pdCount: number
+  missedVisitCount: number
+  events: SubjectEvent[]
+}
+
+export function useSubjectList() {
+  return useQuery({ queryKey: ['subjects'], queryFn: () => apiGet<Subject[]>('/api/subjects') })
+}
+
+export interface SiteDataQuality {
+  siteId: string
+  siteName: string
+  metricsMonth: string
+  avgEntryDelayDays: number
+  totalQueriesIssued: number
+  openQueries: number
+  resolvedQueries: number
+  avgQueryResolutionDays: number
+  missingPagesCount: number
+}
+
+export function useDataQuality() {
+  return useQuery({ queryKey: ['data-quality'], queryFn: () => apiGet<SiteDataQuality[]>('/api/data-quality') })
+}
+
+export interface ForecastHistoryPoint {
+  month: string
+  value: number
+}
+
+export interface SiteForecast {
+  siteId: string
+  siteName: string
+  metricName: string
+  historicalData: ForecastHistoryPoint[]
+  forecast: {
+    nextMonth: string
+    predictedValue: number
+    confidenceInterval: [number, number]
+  }
+}
+
+export function useRiskForecast() {
+  return useQuery({ queryKey: ['risk-forecast'], queryFn: () => apiGet<SiteForecast[]>('/api/risk-forecast') })
+}
+
+export type AuditActionType =
+  | 'UPDATE_THRESHOLD'
+  | 'CLOSE_ALERT'
+  | 'CREATE_TASK'
+  | 'RESOLVE_TASK'
+  | 'UPDATE_SUBJECT'
+  | 'EXPORT_REPORT'
+
+export interface AuditLog {
+  logId: string
+  timestamp: string
+  userId: string
+  userName: string
+  actionType: AuditActionType
+  description: string
+  details: Record<string, unknown>
+}
+
+export function useAuditLogs() {
+  return useQuery({ queryKey: ['audit-logs'], queryFn: () => apiGet<AuditLog[]>('/api/audit-logs') })
+}
+
+export type ReportType = 'Monthly' | 'SiteDeepDive' | 'CapaAnalysis' | 'Custom'
+
+export interface ReportSummary {
+  totalCriticalAlerts: number
+  unresolvedTasks: number
+  avgEntryDelayDays: number
+  highestRiskSite: string
+}
+
+export interface Report {
+  reportId: string
+  title: string
+  type: ReportType
+  period: string
+  generatedBy: string
+  generatedAt: string
+  status: 'Ready' | 'Generating' | 'Failed'
+  format: 'PDF' | 'Excel'
+  sizeMb: number
+  summary: ReportSummary
+}
+
+export function useReportList() {
+  return useQuery({ queryKey: ['reports'], queryFn: () => apiGet<Report[]>('/api/reports') })
+}

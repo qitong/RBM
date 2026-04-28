@@ -23,6 +23,12 @@ function getFallbackPath(path: string): string | null {
     '/api/sites': '/api/sites.json',
     '/api/capa': '/api/capa.json',
     '/api/capa/efficiency': '/api/capa/efficiency.json',
+    '/api/tasks': '/api/tasks.json',
+    '/api/subjects': '/api/subjects.json',
+    '/api/data-quality': '/api/data-quality.json',
+    '/api/risk-forecast': '/api/risk-forecast.json',
+    '/api/audit-logs': '/api/audit-logs.json',
+    '/api/reports': '/api/reports.json',
   }
   if (staticMap[path]) return staticMap[path]
 

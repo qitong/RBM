@@ -21,7 +21,7 @@ export default function ThresholdConfig() {
        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-6 border-b border-outline-variant relative z-10">
           <div className="flex items-center gap-6">
              <div>
-                <h1 className="text-3xl font-bold text-on-surface">Threshold Configuration</h1>
+                <h2 className="text-3xl font-bold text-on-surface">Threshold Configuration</h2>
                 <p className="text-on-surface-variant mt-1">Manage global risk tolerance and define statistical boundaries for signal detection.</p>
              </div>
           </div>

@@ -1,0 +1,58 @@
+[
+  {
+    "siteId": "S-001", "siteName": "北京协和医院",
+    "metricsMonth": "2026-04",
+    "avgEntryDelayDays": 7.4,
+    "totalQueriesIssued": 143, "openQueries": 28, "resolvedQueries": 115,
+    "avgQueryResolutionDays": 5.2, "missingPagesCount": 6
+  },
+  {
+    "siteId": "S-002", "siteName": "南京鼓楼医院",
+    "metricsMonth": "2026-04",
+    "avgEntryDelayDays": 3.1,
+    "totalQueriesIssued": 89, "openQueries": 7, "resolvedQueries": 82,
+    "avgQueryResolutionDays": 2.8, "missingPagesCount": 1
+  },
+  {
+    "siteId": "S-003", "siteName": "上海瑞金医院",
+    "metricsMonth": "2026-04",
+    "avgEntryDelayDays": 5.9,
+    "totalQueriesIssued": 120, "openQueries": 15, "resolvedQueries": 105,
+    "avgQueryResolutionDays": 3.5, "missingPagesCount": 2
+  },
+  {
+    "siteId": "S-004", "siteName": "杭州邵逸夫医院",
+    "metricsMonth": "2026-04",
+    "avgEntryDelayDays": 2.0,
+    "totalQueriesIssued": 67, "openQueries": 4, "resolvedQueries": 63,
+    "avgQueryResolutionDays": 2.1, "missingPagesCount": 0
+  },
+  {
+    "siteId": "S-005", "siteName": "成都华西医院",
+    "metricsMonth": "2026-04",
+    "avgEntryDelayDays": 9.2,
+    "totalQueriesIssued": 158, "openQueries": 41, "resolvedQueries": 117,
+    "avgQueryResolutionDays": 6.7, "missingPagesCount": 9
+  },
+  {
+    "siteId": "S-006", "siteName": "武汉同济医院",
+    "metricsMonth": "2026-04",
+    "avgEntryDelayDays": 4.2,
+    "totalQueriesIssued": 95, "openQueries": 11, "resolvedQueries": 84,
+    "avgQueryResolutionDays": 3.9, "missingPagesCount": 3
+  },
+  {
+    "siteId": "S-007", "siteName": "广州中山医院",
+    "metricsMonth": "2026-04",
+    "avgEntryDelayDays": 6.8,
+    "totalQueriesIssued": 112, "openQueries": 19, "resolvedQueries": 93,
+    "avgQueryResolutionDays": 4.4, "missingPagesCount": 4
+  },
+  {
+    "siteId": "S-008", "siteName": "天津总医院",
+    "metricsMonth": "2026-04",
+    "avgEntryDelayDays": 1.8,
+    "totalQueriesIssued": 54, "openQueries": 3, "resolvedQueries": 51,
+    "avgQueryResolutionDays": 1.9, "missingPagesCount": 0
+  }
+]

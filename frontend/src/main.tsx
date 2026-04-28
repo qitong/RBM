@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <DataSourceProvider>
-        <BrowserRouter>
+        <BrowserRouter basename="/RBM">
           <App />
         </BrowserRouter>
       </DataSourceProvider>

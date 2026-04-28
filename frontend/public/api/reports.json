@@ -1,0 +1,104 @@
+[
+  {
+    "reportId": "RPT-20260425-006",
+    "title": "2026-04 月度风险监控报告",
+    "type": "Monthly",
+    "period": "2026-04",
+    "generatedBy": "赵晓燕",
+    "generatedAt": "2026-04-25T09:00:00Z",
+    "status": "Ready",
+    "format": "PDF",
+    "sizeMb": 3.1,
+    "summary": {
+      "totalCriticalAlerts": 3,
+      "unresolvedTasks": 5,
+      "avgEntryDelayDays": 4.2,
+      "highestRiskSite": "北京协和医院"
+    }
+  },
+  {
+    "reportId": "RPT-20260415-005",
+    "title": "北京协和医院 Q1 深度分析报告",
+    "type": "SiteDeepDive",
+    "period": "2026-Q1",
+    "generatedBy": "李建国",
+    "generatedAt": "2026-04-15T14:30:00Z",
+    "status": "Ready",
+    "format": "PDF",
+    "sizeMb": 1.8,
+    "summary": {
+      "totalCriticalAlerts": 5,
+      "unresolvedTasks": 2,
+      "avgEntryDelayDays": 7.4,
+      "highestRiskSite": "北京协和医院"
+    }
+  },
+  {
+    "reportId": "RPT-20260325-004",
+    "title": "2026-03 月度风险监控报告",
+    "type": "Monthly",
+    "period": "2026-03",
+    "generatedBy": "赵晓燕",
+    "generatedAt": "2026-03-25T10:00:00Z",
+    "status": "Ready",
+    "format": "PDF",
+    "sizeMb": 2.9,
+    "summary": {
+      "totalCriticalAlerts": 2,
+      "unresolvedTasks": 8,
+      "avgEntryDelayDays": 5.1,
+      "highestRiskSite": "成都华西医院"
+    }
+  },
+  {
+    "reportId": "RPT-20260310-003",
+    "title": "CAPA 效率专项分析报告",
+    "type": "CapaAnalysis",
+    "period": "2026-Q1",
+    "generatedBy": "李建国",
+    "generatedAt": "2026-03-10T11:15:00Z",
+    "status": "Ready",
+    "format": "Excel",
+    "sizeMb": 0.6,
+    "summary": {
+      "totalCriticalAlerts": 0,
+      "unresolvedTasks": 12,
+      "avgEntryDelayDays": 0,
+      "highestRiskSite": "武汉同济医院"
+    }
+  },
+  {
+    "reportId": "RPT-20260225-002",
+    "title": "2026-02 月度风险监控报告",
+    "type": "Monthly",
+    "period": "2026-02",
+    "generatedBy": "赵晓燕",
+    "generatedAt": "2026-02-25T09:30:00Z",
+    "status": "Ready",
+    "format": "PDF",
+    "sizeMb": 2.7,
+    "summary": {
+      "totalCriticalAlerts": 1,
+      "unresolvedTasks": 6,
+      "avgEntryDelayDays": 4.8,
+      "highestRiskSite": "上海瑞金医院"
+    }
+  },
+  {
+    "reportId": "RPT-20260125-001",
+    "title": "2026-01 月度风险监控报告",
+    "type": "Monthly",
+    "period": "2026-01",
+    "generatedBy": "赵晓燕",
+    "generatedAt": "2026-01-25T09:00:00Z",
+    "status": "Ready",
+    "format": "PDF",
+    "sizeMb": 2.5,
+    "summary": {
+      "totalCriticalAlerts": 0,
+      "unresolvedTasks": 3,
+      "avgEntryDelayDays": 3.9,
+      "highestRiskSite": "广州中山大学附属医院"
+    }
+  }
+]

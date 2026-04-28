@@ -1,0 +1,175 @@
+[
+  {
+    "subjectId": "SUBJ-1047",
+    "siteId": "S-001",
+    "siteName": "北京协和医院",
+    "enrollmentDate": "2026-01-08T00:00:00Z",
+    "riskScore": 91,
+    "aeCount": 3,
+    "pdCount": 2,
+    "missedVisitCount": 1,
+    "events": [
+      { "type": "AE", "date": "2026-02-03T00:00:00Z", "severity": "Grade 3", "description": "血小板减少" },
+      { "type": "PD", "date": "2026-02-18T00:00:00Z", "severity": "Major", "description": "知情同意书签署日期晚于筛选期检查" },
+      { "type": "AE", "date": "2026-03-05T00:00:00Z", "severity": "Grade 2", "description": "轻度肝功能异常" },
+      { "type": "MissedVisit", "date": "2026-03-20T00:00:00Z", "severity": "—", "description": "V3 访视未按期完成" },
+      { "type": "PD", "date": "2026-04-01T00:00:00Z", "severity": "Minor", "description": "试验用药服用窗口期超出±3天" },
+      { "type": "AE", "date": "2026-04-10T00:00:00Z", "severity": "Grade 1", "description": "轻微恶心" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1023",
+    "siteId": "S-003",
+    "siteName": "上海瑞金医院",
+    "enrollmentDate": "2026-01-15T00:00:00Z",
+    "riskScore": 78,
+    "aeCount": 2,
+    "pdCount": 2,
+    "missedVisitCount": 0,
+    "events": [
+      { "type": "PD", "date": "2026-02-10T00:00:00Z", "severity": "Major", "description": "入排标准：HbA1c 值超出允许范围" },
+      { "type": "AE", "date": "2026-02-25T00:00:00Z", "severity": "Grade 2", "description": "上呼吸道感染" },
+      { "type": "PD", "date": "2026-03-15T00:00:00Z", "severity": "Minor", "description": "SAE报告延迟超过24h" },
+      { "type": "AE", "date": "2026-04-02T00:00:00Z", "severity": "Grade 1", "description": "轻微头晕" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1089",
+    "siteId": "S-005",
+    "siteName": "成都华西医院",
+    "enrollmentDate": "2026-01-22T00:00:00Z",
+    "riskScore": 72,
+    "aeCount": 1,
+    "pdCount": 2,
+    "missedVisitCount": 2,
+    "events": [
+      { "type": "MissedVisit", "date": "2026-02-28T00:00:00Z", "severity": "—", "description": "V2 访视缺席（受试者失联）" },
+      { "type": "PD", "date": "2026-03-10T00:00:00Z", "severity": "Minor", "description": "合并用药未在规定时间内录入EDC" },
+      { "type": "MissedVisit", "date": "2026-03-28T00:00:00Z", "severity": "—", "description": "V3 访视缺席" },
+      { "type": "AE", "date": "2026-04-08T00:00:00Z", "severity": "Grade 2", "description": "关节疼痛" },
+      { "type": "PD", "date": "2026-04-15T00:00:00Z", "severity": "Minor", "description": "实验室检查未按方案时间窗完成" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1062",
+    "siteId": "S-001",
+    "siteName": "北京协和医院",
+    "enrollmentDate": "2026-01-30T00:00:00Z",
+    "riskScore": 65,
+    "aeCount": 2,
+    "pdCount": 1,
+    "missedVisitCount": 1,
+    "events": [
+      { "type": "AE", "date": "2026-02-20T00:00:00Z", "severity": "Grade 2", "description": "皮疹" },
+      { "type": "PD", "date": "2026-03-08T00:00:00Z", "severity": "Minor", "description": "知情同意书版本未及时更新" },
+      { "type": "MissedVisit", "date": "2026-03-25T00:00:00Z", "severity": "—", "description": "V3 访视延迟完成" },
+      { "type": "AE", "date": "2026-04-05T00:00:00Z", "severity": "Grade 1", "description": "疲劳感" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1031",
+    "siteId": "S-007",
+    "siteName": "广州中山医院",
+    "enrollmentDate": "2026-02-03T00:00:00Z",
+    "riskScore": 58,
+    "aeCount": 3,
+    "pdCount": 0,
+    "missedVisitCount": 0,
+    "events": [
+      { "type": "AE", "date": "2026-02-28T00:00:00Z", "severity": "Grade 1", "description": "头痛" },
+      { "type": "AE", "date": "2026-03-12T00:00:00Z", "severity": "Grade 2", "description": "腹泻" },
+      { "type": "AE", "date": "2026-04-01T00:00:00Z", "severity": "Grade 1", "description": "食欲减退" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1115",
+    "siteId": "S-002",
+    "siteName": "南京鼓楼医院",
+    "enrollmentDate": "2026-02-10T00:00:00Z",
+    "riskScore": 52,
+    "aeCount": 1,
+    "pdCount": 1,
+    "missedVisitCount": 1,
+    "events": [
+      { "type": "PD", "date": "2026-03-05T00:00:00Z", "severity": "Minor", "description": "访视窗口期超出±7天" },
+      { "type": "AE", "date": "2026-03-18T00:00:00Z", "severity": "Grade 1", "description": "轻微咳嗽" },
+      { "type": "MissedVisit", "date": "2026-04-10T00:00:00Z", "severity": "—", "description": "V4 访视推迟" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1008",
+    "siteId": "S-004",
+    "siteName": "杭州邵逸夫医院",
+    "enrollmentDate": "2026-01-05T00:00:00Z",
+    "riskScore": 45,
+    "aeCount": 2,
+    "pdCount": 0,
+    "missedVisitCount": 0,
+    "events": [
+      { "type": "AE", "date": "2026-02-14T00:00:00Z", "severity": "Grade 1", "description": "轻微鼻塞" },
+      { "type": "AE", "date": "2026-03-22T00:00:00Z", "severity": "Grade 1", "description": "注射部位轻度红肿" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1073",
+    "siteId": "S-003",
+    "siteName": "上海瑞金医院",
+    "enrollmentDate": "2026-02-18T00:00:00Z",
+    "riskScore": 38,
+    "aeCount": 1,
+    "pdCount": 1,
+    "missedVisitCount": 0,
+    "events": [
+      { "type": "PD", "date": "2026-03-20T00:00:00Z", "severity": "Minor", "description": "试验日记漏填2天" },
+      { "type": "AE", "date": "2026-04-05T00:00:00Z", "severity": "Grade 1", "description": "轻微胃部不适" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1041",
+    "siteId": "S-006",
+    "siteName": "武汉同济医院",
+    "enrollmentDate": "2026-02-05T00:00:00Z",
+    "riskScore": 28,
+    "aeCount": 1,
+    "pdCount": 0,
+    "missedVisitCount": 0,
+    "events": [
+      { "type": "AE", "date": "2026-03-15T00:00:00Z", "severity": "Grade 1", "description": "轻度肌肉酸痛" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1099",
+    "siteId": "S-007",
+    "siteName": "广州中山医院",
+    "enrollmentDate": "2026-03-01T00:00:00Z",
+    "riskScore": 18,
+    "aeCount": 0,
+    "pdCount": 0,
+    "missedVisitCount": 1,
+    "events": [
+      { "type": "MissedVisit", "date": "2026-04-05T00:00:00Z", "severity": "—", "description": "V2 访视轻微延迟（5天）" }
+    ]
+  },
+  {
+    "subjectId": "SUBJ-1056",
+    "siteId": "S-002",
+    "siteName": "南京鼓楼医院",
+    "enrollmentDate": "2026-01-25T00:00:00Z",
+    "riskScore": 12,
+    "aeCount": 0,
+    "pdCount": 0,
+    "missedVisitCount": 0,
+    "events": []
+  },
+  {
+    "subjectId": "SUBJ-1017",
+    "siteId": "S-004",
+    "siteName": "杭州邵逸夫医院",
+    "enrollmentDate": "2026-01-12T00:00:00Z",
+    "riskScore": 8,
+    "aeCount": 0,
+    "pdCount": 0,
+    "missedVisitCount": 0,
+    "events": []
+  }
+]
