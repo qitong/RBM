@@ -190,11 +190,34 @@ export function useTaskList() {
   return useQuery({ queryKey: ['tasks'], queryFn: () => apiGet<Task[]>('/api/tasks') })
 }
 
-export interface SubjectEvent {
-  type: 'AE' | 'PD' | 'MissedVisit'
+export type ClinicalEventType = 'AE' | 'SAE' | 'Diagnosis' | 'LabFinding' | 'TreatmentChange' | 'Surgery' | 'Progression' | 'Hospitalization'
+export type TrialEventType = 'Screening' | 'Enrollment' | 'Visit' | 'PD' | 'MissedVisit' | 'EarlyTermination' | 'StudyDrugHold'
+
+export interface ClinicalEvent {
+  type: ClinicalEventType
   date: string
   severity: string
   description: string
+}
+
+export interface TrialEvent {
+  type: TrialEventType
+  date: string
+  severity: string
+  description: string
+}
+
+export interface ProblemItem {
+  diagnosis: string
+  onsetDate: string
+  category: string
+}
+
+export interface Treatment {
+  name: string
+  type: 'medication' | 'surgery' | 'procedure'
+  startDate: string
+  status: 'ongoing' | 'discontinued' | 'completed'
 }
 
 export interface Subject {
@@ -206,7 +229,10 @@ export interface Subject {
   aeCount: number
   pdCount: number
   missedVisitCount: number
-  events: SubjectEvent[]
+  problemList: ProblemItem[]
+  treatments: Treatment[]
+  clinicalEvents: ClinicalEvent[]
+  trialEvents: TrialEvent[]
 }
 
 export function useSubjectList() {

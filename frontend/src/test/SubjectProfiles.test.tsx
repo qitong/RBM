@@ -14,8 +14,12 @@ const MOCK_SUBJECTS = [
     aeCount: 3,
     pdCount: 2,
     missedVisitCount: 1,
-    events: [
+    problemList: [],
+    treatments: [],
+    clinicalEvents: [
       { type: 'AE', date: '2026-02-03T00:00:00Z', severity: 'Grade 3', description: '血小板减少' },
+    ],
+    trialEvents: [
       { type: 'PD', date: '2026-02-18T00:00:00Z', severity: 'Major', description: '知情同意书签署日期晚于筛选期检查' },
     ],
   },
@@ -28,9 +32,12 @@ const MOCK_SUBJECTS = [
     aeCount: 1,
     pdCount: 1,
     missedVisitCount: 0,
-    events: [
+    problemList: [],
+    treatments: [],
+    clinicalEvents: [
       { type: 'AE', date: '2026-03-01T00:00:00Z', severity: 'Grade 1', description: '轻度头晕' },
     ],
+    trialEvents: [],
   },
   {
     subjectId: 'SUBJ-1008',
@@ -41,7 +48,10 @@ const MOCK_SUBJECTS = [
     aeCount: 0,
     pdCount: 0,
     missedVisitCount: 0,
-    events: [],
+    problemList: [],
+    treatments: [],
+    clinicalEvents: [],
+    trialEvents: [],
   },
 ]
 
@@ -101,16 +111,16 @@ describe('SubjectProfiles', () => {
   it('renders timeline events in detail panel', async () => {
     (fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(MOCK_SUBJECTS), { status: 200 }))
     setup()
-    await waitFor(() => expect(screen.getByText('血小板减少')).toBeInTheDocument())
-    expect(screen.getByText('知情同意书签署日期晚于筛选期检查')).toBeInTheDocument()
+    await waitFor(() => expect(screen.getAllByText('血小板减少').length).toBeGreaterThanOrEqual(1))
+    expect(screen.getAllByText('知情同意书签署日期晚于筛选期检查').length).toBeGreaterThanOrEqual(1)
   })
 
-  it('shows 暂无事件记录 when subject has no events', async () => {
+  it('shows 暂无时间轴事件 when subject has no events', async () => {
     (fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(MOCK_SUBJECTS), { status: 200 }))
     setup()
     await waitFor(() => expect(screen.getByText('SUBJ-1008')).toBeInTheDocument())
     fireEvent.click(screen.getByText('SUBJ-1008'))
-    await waitFor(() => expect(screen.getByText('暂无事件记录')).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText('暂无时间轴事件')).toBeInTheDocument())
   })
 
   it('shows error state on fetch failure', async () => {

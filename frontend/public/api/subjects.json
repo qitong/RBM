@@ -5,16 +5,45 @@
     "siteName": "北京协和医院",
     "enrollmentDate": "2026-01-08T00:00:00Z",
     "riskScore": 91,
-    "aeCount": 3,
+    "aeCount": 4,
     "pdCount": 2,
     "missedVisitCount": 1,
-    "events": [
-      { "type": "AE", "date": "2026-02-03T00:00:00Z", "severity": "Grade 3", "description": "血小板减少" },
+    "problemList": [
+      { "diagnosis": "2型糖尿病合并慢性肾病（CKD 3期）", "onsetDate": "2021-07-21", "category": "内分泌与代谢" },
+      { "diagnosis": "高血压（2级）", "onsetDate": "2019-03-15", "category": "心血管" },
+      { "diagnosis": "混合型高脂血症", "onsetDate": "2021-08-11", "category": "心血管" },
+      { "diagnosis": "银屑病关节炎", "onsetDate": "2020-06-10", "category": "肌肉骨骼" }
+    ],
+    "treatments": [
+      { "name": "胰岛素（长效）40U qn", "type": "medication", "startDate": "2021-07-21", "status": "ongoing" },
+      { "name": "二甲双胍 500mg bid", "type": "medication", "startDate": "2021-08-01", "status": "ongoing" },
+      { "name": "氨氯地平 5mg qd", "type": "medication", "startDate": "2019-03-15", "status": "ongoing" },
+      { "name": "阿托伐他汀 20mg qd → 40mg qd", "type": "medication", "startDate": "2021-08-11", "status": "ongoing" },
+      { "name": "关节镜清理术（右膝）", "type": "surgery", "startDate": "2023-11-05", "status": "completed" }
+    ],
+    "clinicalEvents": [
+      { "type": "LabFinding", "date": "2026-01-12T00:00:00Z", "severity": "异常", "description": "基线检查：HbA1c 7.8%，eGFR 45 mL/min，PLT 128×10⁹/L，ALT 32 U/L" },
+      { "type": "AE", "date": "2026-02-03T00:00:00Z", "severity": "Grade 3", "description": "血小板减少（PLT 42×10⁹/L），较基线下降67%，考虑药物相关" },
+      { "type": "LabFinding", "date": "2026-02-10T00:00:00Z", "severity": "异常", "description": "HbA1c 9.2%（基线 7.8%），空腹血糖 11.3 mmol/L，血糖控制恶化" },
+      { "type": "TreatmentChange", "date": "2026-02-15T00:00:00Z", "severity": "—", "description": "胰岛素长效剂量上调 40U→48U qn，加强血糖监测（每日2次）" },
+      { "type": "Hospitalization", "date": "2026-02-20T00:00:00Z", "severity": "住院3天", "description": "因Grade 3血小板减少入院观察，输注血小板1个治疗量，48h后PLT回升至89×10⁹/L" },
+      { "type": "AE", "date": "2026-03-05T00:00:00Z", "severity": "Grade 2", "description": "轻度肝功能异常：ALT 85 U/L（正常上限3×ULN），考虑与阿托伐他汀相关" },
+      { "type": "LabFinding", "date": "2026-03-12T00:00:00Z", "severity": "异常", "description": "eGFR 38 mL/min（基线45，下降15%），SCr 1.6 mg/dL，肾功能进一步下降" },
+      { "type": "LabFinding", "date": "2026-03-18T00:00:00Z", "severity": "异常", "description": "LDL-C 4.1 mmol/L（目标值<2.6），TC 5.9 mmol/L，血脂未达标" },
+      { "type": "TreatmentChange", "date": "2026-03-22T00:00:00Z", "severity": "—", "description": "阿托伐他汀剂量上调 20mg→40mg qd，监测LFT（2周后复查）" },
+      { "type": "AE", "date": "2026-04-05T00:00:00Z", "severity": "Grade 2", "description": "双踝轻度水肿，考虑与氨氯地平相关，利尿剂暂不干预，密切随访" },
+      { "type": "AE", "date": "2026-04-10T00:00:00Z", "severity": "Grade 1", "description": "轻微恶心，持续约3天，进食后好转，考虑与二甲双胍相关" },
+      { "type": "LabFinding", "date": "2026-04-18T00:00:00Z", "severity": "好转", "description": "HbA1c 8.1%（较上次9.2%改善），PLT 112×10⁹/L（持续回升），eGFR 40 mL/min（稳定）" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2025-12-20T00:00:00Z", "severity": "—", "description": "筛选访视（V0），完成入排确认" },
+      { "type": "Enrollment", "date": "2026-01-08T00:00:00Z", "severity": "—", "description": "完成入组，首次给药（Day 1）" },
+      { "type": "Visit", "date": "2026-01-22T00:00:00Z", "severity": "—", "description": "V1 访视（D14）" },
+      { "type": "Visit", "date": "2026-02-05T00:00:00Z", "severity": "—", "description": "V2 访视（D28）" },
       { "type": "PD", "date": "2026-02-18T00:00:00Z", "severity": "Major", "description": "知情同意书签署日期晚于筛选期检查" },
-      { "type": "AE", "date": "2026-03-05T00:00:00Z", "severity": "Grade 2", "description": "轻度肝功能异常" },
-      { "type": "MissedVisit", "date": "2026-03-20T00:00:00Z", "severity": "—", "description": "V3 访视未按期完成" },
+      { "type": "MissedVisit", "date": "2026-03-20T00:00:00Z", "severity": "—", "description": "V3 计划访视未按期完成（延迟4周）" },
       { "type": "PD", "date": "2026-04-01T00:00:00Z", "severity": "Minor", "description": "试验用药服用窗口期超出±3天" },
-      { "type": "AE", "date": "2026-04-10T00:00:00Z", "severity": "Grade 1", "description": "轻微恶心" }
+      { "type": "Visit", "date": "2026-04-08T00:00:00Z", "severity": "—", "description": "V4 访视（D91）" }
     ]
   },
   {
@@ -23,14 +52,39 @@
     "siteName": "上海瑞金医院",
     "enrollmentDate": "2026-01-15T00:00:00Z",
     "riskScore": 78,
-    "aeCount": 2,
+    "aeCount": 3,
     "pdCount": 2,
     "missedVisitCount": 0,
-    "events": [
-      { "type": "PD", "date": "2026-02-10T00:00:00Z", "severity": "Major", "description": "入排标准：HbA1c 值超出允许范围" },
-      { "type": "AE", "date": "2026-02-25T00:00:00Z", "severity": "Grade 2", "description": "上呼吸道感染" },
+    "problemList": [
+      { "diagnosis": "2型糖尿病（血糖控制不佳）", "onsetDate": "2018-04-10", "category": "内分泌与代谢" },
+      { "diagnosis": "慢性阻塞性肺病（COPD，GOLD II级）", "onsetDate": "2022-09-01", "category": "呼吸系统" },
+      { "diagnosis": "慢性肾功能不全（CKD 2期）", "onsetDate": "2023-02-14", "category": "泌尿系统" }
+    ],
+    "treatments": [
+      { "name": "格列美脲 4mg qd", "type": "medication", "startDate": "2018-04-10", "status": "ongoing" },
+      { "name": "沙丁胺醇吸入剂 PRN", "type": "medication", "startDate": "2022-09-01", "status": "ongoing" },
+      { "name": "布地奈德/福莫特罗 160/4.5μg bid", "type": "medication", "startDate": "2022-10-01", "status": "ongoing" },
+      { "name": "厄贝沙坦 150mg qd", "type": "medication", "startDate": "2023-02-14", "status": "ongoing" }
+    ],
+    "clinicalEvents": [
+      { "type": "LabFinding", "date": "2026-01-20T00:00:00Z", "severity": "异常", "description": "基线：HbA1c 10.1%（已知超出入排允许范围），FBG 13.2 mmol/L，SCr 1.3 mg/dL" },
+      { "type": "LabFinding", "date": "2026-02-05T00:00:00Z", "severity": "异常", "description": "肺功能：FEV1/FVC 0.62（较前下降），COPD急性加重风险升高" },
+      { "type": "AE", "date": "2026-02-25T00:00:00Z", "severity": "Grade 2", "description": "上呼吸道感染合并轻度喘息加重，予阿莫西林-克拉维酸钾 875mg bid×5天，沙丁胺醇按需使用" },
+      { "type": "TreatmentChange", "date": "2026-02-25T00:00:00Z", "severity": "—", "description": "加用短效β₂受体激动剂（沙丁胺醇雾化），同期增加布地奈德剂量观察" },
+      { "type": "LabFinding", "date": "2026-03-10T00:00:00Z", "severity": "好转", "description": "复查血常规：WBC 6.2×10⁹/L（感染控制），CRP 3.1 mg/L（正常），肺部感染消退" },
+      { "type": "LabFinding", "date": "2026-04-02T00:00:00Z", "severity": "异常", "description": "SCr 1.4 mg/dL，eGFR 52 mL/min（较基线下降8%），肾功能轻度下降" },
+      { "type": "AE", "date": "2026-04-02T00:00:00Z", "severity": "Grade 1", "description": "轻微头晕，持续约1天，无神经系统阳性体征，疑与降糖药低血糖相关" },
+      { "type": "TreatmentChange", "date": "2026-04-08T00:00:00Z", "severity": "—", "description": "格列美脲减量至 2mg qd（防止低血糖），加强血糖自我监测" },
+      { "type": "AE", "date": "2026-04-15T00:00:00Z", "severity": "Grade 1", "description": "轻度干咳，考虑与厄贝沙坦相关，观察2周" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2025-12-28T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-01-15T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "PD", "date": "2026-02-10T00:00:00Z", "severity": "Major", "description": "入排标准违背：HbA1c 值超出允许范围" },
+      { "type": "Visit", "date": "2026-02-12T00:00:00Z", "severity": "—", "description": "V2 访视（D28）" },
       { "type": "PD", "date": "2026-03-15T00:00:00Z", "severity": "Minor", "description": "SAE报告延迟超过24h" },
-      { "type": "AE", "date": "2026-04-02T00:00:00Z", "severity": "Grade 1", "description": "轻微头晕" }
+      { "type": "Visit", "date": "2026-03-26T00:00:00Z", "severity": "—", "description": "V3 访视（D70）" },
+      { "type": "Visit", "date": "2026-04-16T00:00:00Z", "severity": "—", "description": "V4 访视（D91）" }
     ]
   },
   {
@@ -39,15 +93,38 @@
     "siteName": "成都华西医院",
     "enrollmentDate": "2026-01-22T00:00:00Z",
     "riskScore": 72,
-    "aeCount": 1,
+    "aeCount": 2,
     "pdCount": 2,
     "missedVisitCount": 2,
-    "events": [
+    "problemList": [
+      { "diagnosis": "类风湿性关节炎（活动期）", "onsetDate": "2017-11-20", "category": "肌肉骨骼" },
+      { "diagnosis": "骨质疏松症（T-score -2.8）", "onsetDate": "2020-05-08", "category": "肌肉骨骼" },
+      { "diagnosis": "贫血（慢性病贫血）", "onsetDate": "2021-03-10", "category": "血液系统" }
+    ],
+    "treatments": [
+      { "name": "甲氨蝶呤 10mg 每周一次", "type": "medication", "startDate": "2017-11-20", "status": "ongoing" },
+      { "name": "叶酸 5mg 每周（甲氨蝶呤对日）", "type": "medication", "startDate": "2017-11-20", "status": "ongoing" },
+      { "name": "碳酸钙D3 600mg qd", "type": "medication", "startDate": "2020-05-08", "status": "ongoing" },
+      { "name": "阿仑膦酸钠 70mg 每周", "type": "medication", "startDate": "2021-06-01", "status": "ongoing" },
+      { "name": "关节置换术（右膝）", "type": "surgery", "startDate": "2021-08-15", "status": "completed" }
+    ],
+    "clinicalEvents": [
+      { "type": "LabFinding", "date": "2026-01-25T00:00:00Z", "severity": "异常", "description": "基线：ESR 45 mm/h（偏高），CRP 18.2 mg/L，Hb 10.8 g/dL（轻度贫血），DAS28评分 4.1（中等活动度）" },
+      { "type": "LabFinding", "date": "2026-02-20T00:00:00Z", "severity": "异常", "description": "ESR 52 mm/h（较基线升高），RF 1:80阳性，提示RA活动度增加" },
+      { "type": "LabFinding", "date": "2026-03-05T00:00:00Z", "severity": "异常", "description": "DXA复查：腰椎T-score -2.9（较前-2.8轻度进展），骨折风险升高" },
+      { "type": "AE", "date": "2026-04-08T00:00:00Z", "severity": "Grade 2", "description": "关节疼痛加重（右膝VAS 6/10），伴晨僵>1h，疑与试验用药相关或RA进展" },
+      { "type": "TreatmentChange", "date": "2026-04-10T00:00:00Z", "severity": "—", "description": "临时加用泼尼松 10mg qd×7天（关节疼痛爆发处理），甲氨蝶呤维持不变" },
+      { "type": "AE", "date": "2026-04-20T00:00:00Z", "severity": "Grade 1", "description": "轻度口腔溃疡（甲氨蝶呤常见副作用），予叶酸加量对症处理" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2026-01-05T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-01-22T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "Visit", "date": "2026-02-05T00:00:00Z", "severity": "—", "description": "V1 访视（D14）" },
       { "type": "MissedVisit", "date": "2026-02-28T00:00:00Z", "severity": "—", "description": "V2 访视缺席（受试者失联）" },
       { "type": "PD", "date": "2026-03-10T00:00:00Z", "severity": "Minor", "description": "合并用药未在规定时间内录入EDC" },
-      { "type": "MissedVisit", "date": "2026-03-28T00:00:00Z", "severity": "—", "description": "V3 访视缺席" },
-      { "type": "AE", "date": "2026-04-08T00:00:00Z", "severity": "Grade 2", "description": "关节疼痛" },
-      { "type": "PD", "date": "2026-04-15T00:00:00Z", "severity": "Minor", "description": "实验室检查未按方案时间窗完成" }
+      { "type": "MissedVisit", "date": "2026-03-28T00:00:00Z", "severity": "—", "description": "V3 访视缺席，电话追访确认" },
+      { "type": "PD", "date": "2026-04-15T00:00:00Z", "severity": "Minor", "description": "实验室检查未按方案时间窗完成" },
+      { "type": "Visit", "date": "2026-04-20T00:00:00Z", "severity": "—", "description": "V4 访视（补访，延迟23天）" }
     ]
   },
   {
@@ -56,14 +133,35 @@
     "siteName": "北京协和医院",
     "enrollmentDate": "2026-01-30T00:00:00Z",
     "riskScore": 65,
-    "aeCount": 2,
+    "aeCount": 3,
     "pdCount": 1,
     "missedVisitCount": 1,
-    "events": [
-      { "type": "AE", "date": "2026-02-20T00:00:00Z", "severity": "Grade 2", "description": "皮疹" },
+    "problemList": [
+      { "diagnosis": "系统性红斑狼疮（SLE，轻-中度活动）", "onsetDate": "2015-06-22", "category": "免疫系统" },
+      { "diagnosis": "狼疮肾炎（LN II型）", "onsetDate": "2016-03-10", "category": "泌尿系统" }
+    ],
+    "treatments": [
+      { "name": "羟氯喹 200mg bid", "type": "medication", "startDate": "2015-06-22", "status": "ongoing" },
+      { "name": "醋酸泼尼松 10mg qd（维持量）", "type": "medication", "startDate": "2015-06-22", "status": "ongoing" },
+      { "name": "他克莫司 1mg bid", "type": "medication", "startDate": "2016-05-10", "status": "ongoing" }
+    ],
+    "clinicalEvents": [
+      { "type": "LabFinding", "date": "2026-02-01T00:00:00Z", "severity": "异常", "description": "基线：anti-dsDNA 1:40，C3 0.72 g/L（偏低），24h尿蛋白 0.4g，SLEDAI评分 6（轻度活动）" },
+      { "type": "AE", "date": "2026-02-20T00:00:00Z", "severity": "Grade 2", "description": "面部蝶形红斑加重，光敏性皮疹扩散至颈部，疑SLE皮肤受累加重" },
+      { "type": "LabFinding", "date": "2026-02-25T00:00:00Z", "severity": "异常", "description": "anti-dsDNA 1:80（较基线1:40升高），C3 0.58 g/L（下降），提示SLE活动度升高" },
+      { "type": "TreatmentChange", "date": "2026-02-27T00:00:00Z", "severity": "—", "description": "泼尼松临时上调 10mg→20mg qd×2周后逐步减量，加强防晒医嘱" },
+      { "type": "LabFinding", "date": "2026-03-15T00:00:00Z", "severity": "好转", "description": "anti-dsDNA 1:40（回至基线水平），C3 0.68 g/L（回升），皮疹明显消退" },
+      { "type": "TreatmentChange", "date": "2026-03-20T00:00:00Z", "severity": "—", "description": "泼尼松按计划减量回 10mg qd（2周减量方案完成）" },
+      { "type": "AE", "date": "2026-04-05T00:00:00Z", "severity": "Grade 1", "description": "疲劳感，持续约1周，与SLE疾病状态或激素减量相关" },
+      { "type": "LabFinding", "date": "2026-04-15T00:00:00Z", "severity": "好转", "description": "C3 0.75 g/L（正常范围），24h尿蛋白 0.3g（稳定），SLEDAI 4（低度活动）" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2026-01-12T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-01-30T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "Visit", "date": "2026-02-13T00:00:00Z", "severity": "—", "description": "V1 访视（D14）" },
       { "type": "PD", "date": "2026-03-08T00:00:00Z", "severity": "Minor", "description": "知情同意书版本未及时更新" },
-      { "type": "MissedVisit", "date": "2026-03-25T00:00:00Z", "severity": "—", "description": "V3 访视延迟完成" },
-      { "type": "AE", "date": "2026-04-05T00:00:00Z", "severity": "Grade 1", "description": "疲劳感" }
+      { "type": "MissedVisit", "date": "2026-03-25T00:00:00Z", "severity": "—", "description": "V3 访视延迟完成（迟7天）" },
+      { "type": "Visit", "date": "2026-04-10T00:00:00Z", "severity": "—", "description": "V4 访视（D70）" }
     ]
   },
   {
@@ -72,13 +170,36 @@
     "siteName": "广州中山医院",
     "enrollmentDate": "2026-02-03T00:00:00Z",
     "riskScore": 58,
-    "aeCount": 3,
+    "aeCount": 4,
     "pdCount": 0,
     "missedVisitCount": 0,
-    "events": [
-      { "type": "AE", "date": "2026-02-28T00:00:00Z", "severity": "Grade 1", "description": "头痛" },
-      { "type": "AE", "date": "2026-03-12T00:00:00Z", "severity": "Grade 2", "description": "腹泻" },
-      { "type": "AE", "date": "2026-04-01T00:00:00Z", "severity": "Grade 1", "description": "食欲减退" }
+    "problemList": [
+      { "diagnosis": "冠心病（稳定型心绞痛，PCI术后）", "onsetDate": "2020-01-14", "category": "心血管" },
+      { "diagnosis": "高血压（1级，已控制）", "onsetDate": "2018-08-20", "category": "心血管" },
+      { "diagnosis": "高尿酸血症", "onsetDate": "2022-06-15", "category": "内分泌与代谢" }
+    ],
+    "treatments": [
+      { "name": "阿司匹林 100mg qd", "type": "medication", "startDate": "2020-01-14", "status": "ongoing" },
+      { "name": "氯吡格雷 75mg qd", "type": "medication", "startDate": "2020-02-01", "status": "discontinued" },
+      { "name": "美托洛尔缓释片 47.5mg qd", "type": "medication", "startDate": "2020-01-14", "status": "ongoing" },
+      { "name": "非布司他 40mg qd", "type": "medication", "startDate": "2022-06-15", "status": "ongoing" },
+      { "name": "冠状动脉支架置入术（LAD近段）", "type": "surgery", "startDate": "2020-02-01", "status": "completed" }
+    ],
+    "clinicalEvents": [
+      { "type": "LabFinding", "date": "2026-02-08T00:00:00Z", "severity": "正常", "description": "基线：BP 128/82 mmHg，心率 68 bpm，BNP 45 pg/mL，ECG窦性心律" },
+      { "type": "AE", "date": "2026-02-28T00:00:00Z", "severity": "Grade 1", "description": "头痛，位于双侧颞部，持续2天，考虑与血管扩张效应相关，NSAIDs对症处理" },
+      { "type": "LabFinding", "date": "2026-03-03T00:00:00Z", "severity": "异常", "description": "血压 155/92 mmHg（偏高），心率 75 bpm，尿酸 520 μmol/L（轻度升高）" },
+      { "type": "TreatmentChange", "date": "2026-03-05T00:00:00Z", "severity": "—", "description": "美托洛尔暂时上调至 71.25mg qd，加强血压监测" },
+      { "type": "AE", "date": "2026-03-12T00:00:00Z", "severity": "Grade 2", "description": "腹泻（每日4-5次，水样便），持续3天，予口服补液盐+蒙脱石散，未使用抗生素" },
+      { "type": "LabFinding", "date": "2026-04-02T00:00:00Z", "severity": "正常", "description": "血压 132/84 mmHg（已控制），TC 4.2 mmol/L，LDL-C 1.8 mmol/L（达标），尿酸 410 μmol/L" },
+      { "type": "AE", "date": "2026-04-05T00:00:00Z", "severity": "Grade 1", "description": "食欲减退，轻微，持续约5天，考虑与研究药物相关，无需干预" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2026-01-18T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-02-03T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "Visit", "date": "2026-02-17T00:00:00Z", "severity": "—", "description": "V1 访视（D14）" },
+      { "type": "Visit", "date": "2026-03-03T00:00:00Z", "severity": "—", "description": "V2 访视（D28）" },
+      { "type": "Visit", "date": "2026-04-05T00:00:00Z", "severity": "—", "description": "V3 访视（D61）" }
     ]
   },
   {
@@ -87,13 +208,29 @@
     "siteName": "南京鼓楼医院",
     "enrollmentDate": "2026-02-10T00:00:00Z",
     "riskScore": 52,
-    "aeCount": 1,
+    "aeCount": 2,
     "pdCount": 1,
     "missedVisitCount": 1,
-    "events": [
+    "problemList": [
+      { "diagnosis": "2型糖尿病（血糖控制良好）", "onsetDate": "2016-07-30", "category": "内分泌与代谢" },
+      { "diagnosis": "慢性胃炎", "onsetDate": "2019-11-20", "category": "消化系统" }
+    ],
+    "treatments": [
+      { "name": "西格列汀 100mg qd", "type": "medication", "startDate": "2016-07-30", "status": "ongoing" },
+      { "name": "奥美拉唑 20mg qd（晨起空腹）", "type": "medication", "startDate": "2019-11-20", "status": "ongoing" }
+    ],
+    "clinicalEvents": [
+      { "type": "LabFinding", "date": "2026-02-15T00:00:00Z", "severity": "正常", "description": "基线：HbA1c 6.9%，FBG 7.1 mmol/L，血糖控制良好，胃镜提示浅表性胃炎稳定" },
+      { "type": "AE", "date": "2026-03-18T00:00:00Z", "severity": "Grade 1", "description": "轻微咳嗽，持续约1周，无发热，无痰，考虑与研究药物或季节相关" },
+      { "type": "LabFinding", "date": "2026-04-05T00:00:00Z", "severity": "正常", "description": "HbA1c 6.7%（略有改善），肝肾功能正常，血常规正常" },
+      { "type": "AE", "date": "2026-04-12T00:00:00Z", "severity": "Grade 1", "description": "胃部不适（上腹轻度胀痛），与已知慢性胃炎相关，奥美拉唑继续使用" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2026-01-25T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-02-10T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
       { "type": "PD", "date": "2026-03-05T00:00:00Z", "severity": "Minor", "description": "访视窗口期超出±7天" },
-      { "type": "AE", "date": "2026-03-18T00:00:00Z", "severity": "Grade 1", "description": "轻微咳嗽" },
-      { "type": "MissedVisit", "date": "2026-04-10T00:00:00Z", "severity": "—", "description": "V4 访视推迟" }
+      { "type": "Visit", "date": "2026-03-10T00:00:00Z", "severity": "—", "description": "V2 访视（D28，延迟）" },
+      { "type": "MissedVisit", "date": "2026-04-10T00:00:00Z", "severity": "—", "description": "V4 访视推迟，待重新安排" }
     ]
   },
   {
@@ -105,9 +242,23 @@
     "aeCount": 2,
     "pdCount": 0,
     "missedVisitCount": 0,
-    "events": [
-      { "type": "AE", "date": "2026-02-14T00:00:00Z", "severity": "Grade 1", "description": "轻微鼻塞" },
-      { "type": "AE", "date": "2026-03-22T00:00:00Z", "severity": "Grade 1", "description": "注射部位轻度红肿" }
+    "problemList": [
+      { "diagnosis": "甲状腺功能减退症（桥本甲状腺炎）", "onsetDate": "2019-10-05", "category": "内分泌与代谢" }
+    ],
+    "treatments": [
+      { "name": "左甲状腺素钠 75μg qd（空腹）", "type": "medication", "startDate": "2019-10-05", "status": "ongoing" }
+    ],
+    "clinicalEvents": [
+      { "type": "LabFinding", "date": "2026-01-10T00:00:00Z", "severity": "正常", "description": "基线：TSH 2.1 mIU/L（正常），FT4 1.2 ng/dL，甲功控制良好" },
+      { "type": "AE", "date": "2026-02-14T00:00:00Z", "severity": "Grade 1", "description": "轻微鼻塞，伴流涕2天，无发热，考虑上呼吸道感染，无需处理" },
+      { "type": "AE", "date": "2026-03-22T00:00:00Z", "severity": "Grade 1", "description": "注射部位轻度红肿（直径约1cm），48h后自行消退，无化脓" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2025-12-20T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-01-05T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "Visit", "date": "2026-01-19T00:00:00Z", "severity": "—", "description": "V1 访视（D14）" },
+      { "type": "Visit", "date": "2026-02-16T00:00:00Z", "severity": "—", "description": "V2 访视（D42）" },
+      { "type": "Visit", "date": "2026-03-25T00:00:00Z", "severity": "—", "description": "V3 访视（D79）" }
     ]
   },
   {
@@ -119,9 +270,22 @@
     "aeCount": 1,
     "pdCount": 1,
     "missedVisitCount": 0,
-    "events": [
+    "problemList": [
+      { "diagnosis": "高血压（1级，已控制）", "onsetDate": "2021-05-12", "category": "心血管" }
+    ],
+    "treatments": [
+      { "name": "缬沙坦 80mg qd", "type": "medication", "startDate": "2021-05-12", "status": "ongoing" }
+    ],
+    "clinicalEvents": [
+      { "type": "LabFinding", "date": "2026-02-22T00:00:00Z", "severity": "正常", "description": "基线：BP 126/78 mmHg，SCr 0.9 mg/dL，血常规正常，肝酶正常" },
+      { "type": "AE", "date": "2026-04-05T00:00:00Z", "severity": "Grade 1", "description": "轻微胃部不适（上腹隐痛），持续2天后自行缓解，考虑饮食相关" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2026-02-03T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-02-18T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
       { "type": "PD", "date": "2026-03-20T00:00:00Z", "severity": "Minor", "description": "试验日记漏填2天" },
-      { "type": "AE", "date": "2026-04-05T00:00:00Z", "severity": "Grade 1", "description": "轻微胃部不适" }
+      { "type": "Visit", "date": "2026-03-25T00:00:00Z", "severity": "—", "description": "V2 访视（D35）" },
+      { "type": "Visit", "date": "2026-04-15T00:00:00Z", "severity": "—", "description": "V3 访视（D56）" }
     ]
   },
   {
@@ -133,8 +297,16 @@
     "aeCount": 1,
     "pdCount": 0,
     "missedVisitCount": 0,
-    "events": [
-      { "type": "AE", "date": "2026-03-15T00:00:00Z", "severity": "Grade 1", "description": "轻度肌肉酸痛" }
+    "problemList": [],
+    "treatments": [],
+    "clinicalEvents": [
+      { "type": "AE", "date": "2026-03-15T00:00:00Z", "severity": "Grade 1", "description": "轻度肌肉酸痛，可能与运动相关，无需处理" }
+    ],
+    "trialEvents": [
+      { "type": "Screening", "date": "2026-01-20T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-02-05T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "Visit", "date": "2026-02-19T00:00:00Z", "severity": "—", "description": "V1 访视（D14）" },
+      { "type": "Visit", "date": "2026-03-19T00:00:00Z", "severity": "—", "description": "V2 访视（D42）" }
     ]
   },
   {
@@ -146,8 +318,14 @@
     "aeCount": 0,
     "pdCount": 0,
     "missedVisitCount": 1,
-    "events": [
-      { "type": "MissedVisit", "date": "2026-04-05T00:00:00Z", "severity": "—", "description": "V2 访视轻微延迟（5天）" }
+    "problemList": [],
+    "treatments": [],
+    "clinicalEvents": [],
+    "trialEvents": [
+      { "type": "Screening", "date": "2026-02-15T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-03-01T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "MissedVisit", "date": "2026-04-05T00:00:00Z", "severity": "—", "description": "V2 访视轻微延迟（5天）" },
+      { "type": "Visit", "date": "2026-04-10T00:00:00Z", "severity": "—", "description": "V2 访视补访完成" }
     ]
   },
   {
@@ -159,7 +337,16 @@
     "aeCount": 0,
     "pdCount": 0,
     "missedVisitCount": 0,
-    "events": []
+    "problemList": [],
+    "treatments": [],
+    "clinicalEvents": [],
+    "trialEvents": [
+      { "type": "Screening", "date": "2026-01-10T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-01-25T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "Visit", "date": "2026-02-08T00:00:00Z", "severity": "—", "description": "V1 访视（D14）" },
+      { "type": "Visit", "date": "2026-03-08T00:00:00Z", "severity": "—", "description": "V2 访视（D42）" },
+      { "type": "Visit", "date": "2026-04-05T00:00:00Z", "severity": "—", "description": "V3 访视（D70）" }
+    ]
   },
   {
     "subjectId": "SUBJ-1017",
@@ -170,6 +357,15 @@
     "aeCount": 0,
     "pdCount": 0,
     "missedVisitCount": 0,
-    "events": []
+    "problemList": [],
+    "treatments": [],
+    "clinicalEvents": [],
+    "trialEvents": [
+      { "type": "Screening", "date": "2025-12-28T00:00:00Z", "severity": "—", "description": "筛选访视（V0）" },
+      { "type": "Enrollment", "date": "2026-01-12T00:00:00Z", "severity": "—", "description": "入组并首次给药" },
+      { "type": "Visit", "date": "2026-01-26T00:00:00Z", "severity": "—", "description": "V1 访视（D14）" },
+      { "type": "Visit", "date": "2026-02-23T00:00:00Z", "severity": "—", "description": "V2 访视（D42）" },
+      { "type": "Visit", "date": "2026-03-23T00:00:00Z", "severity": "—", "description": "V3 访视（D70）" }
+    ]
   }
 ]

@@ -52,14 +52,21 @@ const HYPOTHESES_TEMPLATES: Record<string, any> = {
 
 export default function AlertTracking() {
   const { checkOutlier } = useThresholds();
-  const [alerts, setAlerts] = useState(() => 
+  const [alerts, setAlerts] = useState(() =>
     initialAlerts.map((a: any) => {
       const type = a.metricValue < 0 ? 'LOW' : 'HIGH';
       const status = checkOutlier(a.metricValue, a.dimension);
+      let hypothesis: string | undefined;
+      if (a.status === 'In Review' || a.status === 'Closed') {
+        const typeTemplates = HYPOTHESES_TEMPLATES[type] || HYPOTHESES_TEMPLATES['HIGH'];
+        const templates = typeTemplates[a.dimension] || typeTemplates['default'];
+        hypothesis = templates[Math.floor(Math.random() * templates.length)];
+      }
       return {
         ...a,
         type,
-        severity: status === 'action' ? 'Red' : 'Yellow'
+        severity: status === 'action' ? 'Red' : 'Yellow',
+        ...(hypothesis !== undefined ? { hypothesis } : {})
       };
     })
   );
@@ -253,8 +260,8 @@ export default function AlertTracking() {
 
       {/* RCA Modal */}
       {activeRCA && (
-        <div className="fixed inset-0 bg-black bg-opacity-20 z-50 flex items-center justify-center p-8">
-          <div className="card-featured shadow-2xl w-full max-w-2xl overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-8" style={{ backgroundColor: 'rgba(0,0,0,0.35)' }}>
+          <div className="card-featured shadow-2xl w-full overflow-hidden" style={{ maxWidth: '42rem' }}>
             <div className="p-6 border-b flex justify-between items-start" style={{ borderColor: 'var(--color-border)' }}>
               <div>
                 <h3 className="text-h2 flex items-center gap-3">
