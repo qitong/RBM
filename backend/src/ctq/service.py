@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
+from src.ctq.adapter import PENDING_CAPABILITIES, effective_thresholds
 from src.ctq.extractor import DISCLAIMER
 
 MONITORING_METHODS = ("SDV", "SDR", "CENTRAL_REVIEW", "SYSTEM_CHECK")
@@ -214,16 +215,20 @@ def rollback_active(operator: str, reason: str, study_code: str | None) -> dict:
 
 def get_active(study_code: str | None) -> dict:
     version = _resolve_active(study_code)
+    active = None if version is None else _public_version(version)
     return {
         "ok": True,
         "dataSourceMode": "synthetic",
         "disclaimer": DISCLAIMER,
         "riskFieldMap": RISK_FIELD_MAP,
         "readEntry": {
+            "page": "/thresholds",
             "appliesTo": ["CategoryConfig.warningThreshold", "CategoryConfig.actionThreshold"],
             "doesNotOverwrite": ["localStorage.rbm_threshold_configs", "benchmark.pdZScore"],
         },
-        "active": None if version is None else _public_version(version),
+        "pendingCapabilities": PENDING_CAPABILITIES,
+        "active": active,
+        "effectiveThresholds": effective_thresholds(active),
     }
 
 

@@ -1,5 +1,21 @@
 import { ShieldCheck, Info, Save, RotateCcw, SlidersHorizontal } from 'lucide-react';
+import { ApiError } from '../api/client';
+import { useActiveMonitoringPlan } from '../api/hooks';
 import { useThresholds } from '../context/ThresholdContext';
+import { thresholdsForReadEntry } from '../ctq/adaptApprovedPlan';
+
+function readError(error: unknown): string {
+  if (error instanceof ApiError) {
+    try {
+      const parsed = JSON.parse(error.body) as { code?: string; message?: string }
+      if (parsed.code) return `${parsed.code}：${parsed.message ?? ''}`.trim()
+    } catch {
+      return error.message
+    }
+    return error.message
+  }
+  return error instanceof Error ? error.message : '请求失败'
+}
 
 export default function ThresholdConfig() {
   const { 
@@ -11,6 +27,9 @@ export default function ThresholdConfig() {
     setGlobalAction,
     saveConfigs 
   } = useThresholds();
+  const plan = useActiveMonitoringPlan();
+  const effective = thresholdsForReadEntry(plan.data);
+  const pending = plan.data?.pendingCapabilities ?? [];
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 max-w-[1440px] mx-auto space-y-6 relative z-10 pb-12">
@@ -40,6 +59,33 @@ export default function ThresholdConfig() {
              </button>
           </div>
        </header>
+
+       <section aria-label="已生效监测计划" className="bg-surface-container-high rounded-xl p-6 border border-outline-variant/50 relative z-10">
+          <div className="flex items-center gap-3 mb-3">
+             <Info className="text-secondary" size={20} />
+             <h2 className="text-xl font-bold text-on-surface">已生效监测计划</h2>
+          </div>
+          <p className="text-sm text-on-surface-variant mb-4">
+             这里只显示已经人工批准的版本。未批准候选不会写成生效规则，下面的本地滑块仍是演示配置。
+          </p>
+          {plan.isLoading && <p className="text-sm text-on-surface">正在读取已批准监测计划</p>}
+          {plan.isError && (
+             <p className="text-sm text-on-surface" role="alert">生效计划读取失败：{readError(plan.error)}。未显示为已生效规则。</p>
+          )}
+          {plan.isSuccess && effective.length === 0 && (
+             <p className="text-sm text-on-surface">尚无已批准监测计划</p>
+          )}
+          {effective.map((row) => (
+             <p key={`${row.versionId}-${row.id}`} className="text-sm text-on-surface">
+                {row.id} 已生效预警 {row.warningThreshold} / 行动 {row.actionThreshold} · {row.monitoringMethod} · {row.versionId} · {row.approvedBy}
+             </p>
+          ))}
+          {pending.map((item) => (
+             <p key={item.id} className="text-sm text-on-surface-variant mt-3">
+                独立待决能力：{item.id}（{item.status}）。{item.reason}
+             </p>
+          ))}
+       </section>
 
        {/* Bento Grid Layout */}
        <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 relative z-10">

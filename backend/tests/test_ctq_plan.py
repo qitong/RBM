@@ -57,7 +57,11 @@ def test_unapproved_candidates_do_not_take_effect():
 
     active = client.get("/api/ctq/active")
     assert active.status_code == 200
-    assert active.json()["active"] is None
+    payload = active.json()
+    assert payload["active"] is None
+    assert payload["effectiveThresholds"] == []
+    assert payload["pendingCapabilities"][0]["id"] == "critical-data-extractor"
+    assert payload["pendingCapabilities"][0]["status"] == "pending_decision"
     versions = client.get("/api/ctq/versions")
     assert versions.json()["versions"] == []
 
@@ -85,9 +89,22 @@ def test_approval_creates_a_new_version_with_operator_time_and_hash():
     assert version["studyQtls"][0]["candidateId"] == "QTL-01"
     assert "pdZScore" in str(client.get("/api/ctq/active").json()["riskFieldMap"])
 
-    active = client.get("/api/ctq/active").json()["active"]
+    active_body = client.get("/api/ctq/active").json()
+    active = active_body["active"]
     assert active["versionId"] == "MP-0001"
     assert active["status"] == "approved"
+    assert active_body["effectiveThresholds"] == [{
+        "id": "INFORMED CONSENT",
+        "labelKey": "INFORMED CONSENT",
+        "warningThreshold": 4.0,
+        "actionThreshold": 9.0,
+        "monitoringMethod": "CENTRAL_REVIEW",
+        "candidateId": "KRI-01",
+        "versionId": "MP-0001",
+        "approvedBy": "审阅员-合成甲",
+        "readEntry": "ThresholdConfig",
+        "effective": True,
+    }]
 
 
 def test_reject_leaves_the_previous_approved_version_active():

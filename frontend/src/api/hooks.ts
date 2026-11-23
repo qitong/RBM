@@ -396,8 +396,18 @@ export interface ActivePlanResponse {
   dataSourceMode: 'synthetic'
   disclaimer: string
   active: ApprovedMonitoringVersion | null
+  effectiveThresholds?: Array<{
+    id: string
+    warningThreshold: number
+    actionThreshold: number
+    monitoringMethod: string | null
+    candidateId: string | null
+    versionId: string | null
+    effective: boolean
+  }>
+  pendingCapabilities?: Array<{ id: string; status: string; reason: string }>
   riskFieldMap: Array<{ rbmField: string; joinsOn?: string; source?: string; note?: string }>
-  readEntry: { appliesTo: string[]; doesNotOverwrite: string[] }
+  readEntry: { page?: string; appliesTo: string[]; doesNotOverwrite: string[] }
 }
 
 export interface CtqVersionsResponse {
