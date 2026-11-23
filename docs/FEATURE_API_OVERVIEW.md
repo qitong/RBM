@@ -32,7 +32,7 @@ PR #3 尚未合并，多一条流程：
 
 本地：桌面克隆有未提交文件，不作为开发或文档事实来源。只读对照用干净工作区。
 
-CI：`main` 在 push 后构建 `frontend` 并部署 GitHub Pages。PR 另有不部署的测试 CI。
+CI：`main` 在 push 后构建 `frontend` 并部署 GitHub Pages。未合并的 PR #3 分支另有不部署的测试 CI；本概览 PR 没有自动检查。
 
 已部署：https://qitong.github.io/RBM/ 是 `main` `6eb098a` 的前端静态演示，环境 `github-pages`，2026-10-22 成功。它不包含 `/ctq-plan`，也没有 FastAPI。把文档或功能 PR 合并进 `main` 会触发这次 Pages 部署，所以文档不能单独当成上线，也不能当成后端已上线。
 
