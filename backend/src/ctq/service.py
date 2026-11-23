@@ -178,6 +178,7 @@ def approve_draft(draft_id: str, operator: str, decisions: list[dict]) -> dict:
                 "actionThreshold": rule["actionThreshold"],
                 "monitoringMethod": rule["monitoringMethod"],
                 "candidateId": rule["candidateId"],
+                "unit": rule.get("unit"),
                 "source": "approved_kri",
             }
             for rule in accepted_rules
@@ -331,6 +332,7 @@ def _accepted_rule(candidate: dict, decision: dict, categories: set[str]) -> dic
         "warningThreshold": warning,
         "actionThreshold": action,
         "monitoringMethod": method,
+        "unit": candidate.get("unit"),
         "quote": candidate["quote"],
         "line": candidate["line"],
     }

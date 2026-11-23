@@ -41,6 +41,7 @@ function approvedBody() {
         actionThreshold: 9,
         monitoringMethod: 'CENTRAL_REVIEW',
         candidateId: 'KRI-01',
+        unit: '百分比',
         source: 'approved_kri',
       }],
     },
@@ -78,7 +79,9 @@ describe('existing threshold page reads the approved plan', () => {
     vi.mocked(fetch).mockImplementation(() => jsonResponse(approvedBody()))
     setup()
     await waitFor(() => expect(screen.getByText(/INFORMED CONSENT 已生效预警 4 \/ 行动 9/)).toBeInTheDocument())
-    await waitFor(() => expect(screen.getByDisplayValue('9')).toBeInTheDocument())
+    expect(screen.getByText(/百分比/)).toBeInTheDocument()
+    expect(screen.getByText(/不写入 SD 滑块/)).toBeInTheDocument()
+    expect(screen.queryByDisplayValue('9')).not.toBeInTheDocument()
     expect(screen.getByText(/MP-0001/)).toBeInTheDocument()
     expect(screen.getByText(/审阅员-合成甲/)).toBeInTheDocument()
     expect(screen.getByText(/独立待决能力：critical-data-extractor/)).toBeInTheDocument()

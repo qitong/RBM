@@ -5,6 +5,8 @@ export interface EffectiveThreshold {
   labelKey: string
   warningThreshold: number
   actionThreshold: number
+  unit: string | null
+  appliesToSdPreset: boolean
   monitoringMethod: string | null
   candidateId: string | null
   versionId: string | null
@@ -23,6 +25,8 @@ export function adaptApprovedPlan(active: ApprovedMonitoringVersion | null | und
       labelKey: item.rbmCategoryId,
       warningThreshold: item.warningThreshold,
       actionThreshold: item.actionThreshold,
+      unit: item.unit ?? null,
+      appliesToSdPreset: item.unit === 'SD',
       monitoringMethod: item.monitoringMethod,
       candidateId: item.candidateId,
       versionId: active.versionId,
@@ -40,10 +44,18 @@ export function thresholdsForReadEntry(body: ActivePlanResponse | undefined): Ef
 export function applyApprovedPresets<T extends { id: string; warningThreshold: number; actionThreshold: number }>(
   categories: T[],
   active: ApprovedMonitoringVersion | null | undefined,
+  defaults: T[] = [],
 ): Array<T & { presetFromPlan: boolean }> {
-  const locked = new Map(adaptApprovedPlan(active).map((row) => [row.id, row]))
-  return categories.map((category) => {
-    const row = locked.get(category.id)
+  const sdRows = adaptApprovedPlan(active).filter((row) => row.unit === 'SD')
+  const list = [...categories]
+  for (const row of sdRows) {
+    if (!list.some((category) => category.id === row.id)) {
+      const fallback = defaults.find((category) => category.id === row.id)
+      if (fallback) list.push(fallback)
+    }
+  }
+  return list.map((category) => {
+    const row = sdRows.find((item) => item.id === category.id)
     if (!row) return { ...category, presetFromPlan: false }
     return {
       ...category,

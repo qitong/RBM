@@ -55,7 +55,6 @@ export default function AlertTracking() {
   const [alerts, setAlerts] = useState(() =>
     initialAlerts.map((a: any) => {
       const type = a.metricValue < 0 ? 'LOW' : 'HIGH';
-      const status = checkOutlier(a.metricValue, a.dimension);
       let hypothesis: string | undefined;
       if (a.status === 'In Review' || a.status === 'Closed') {
         const typeTemplates = HYPOTHESES_TEMPLATES[type] || HYPOTHESES_TEMPLATES['HIGH'];
@@ -65,11 +64,14 @@ export default function AlertTracking() {
       return {
         ...a,
         type,
-        severity: status === 'action' ? 'Red' : 'Yellow',
         ...(hypothesis !== undefined ? { hypothesis } : {})
       };
     })
   );
+  const liveAlerts = alerts.map((alert) => ({
+    ...alert,
+    severity: checkOutlier(alert.metricValue, alert.dimension) === 'action' ? 'Red' : 'Yellow',
+  }));
 
   const [activeRCA, setActiveRCA] = useState<any>(null);
 
@@ -126,12 +128,12 @@ export default function AlertTracking() {
               待评估
             </h3>
             <span className="badge badge-error">
-              {alerts.filter((i:any) => i.status === 'Open').length}
+              {liveAlerts.filter((i:any) => i.status === 'Open').length}
             </span>
           </div>
           <div className="space-y-6">
-            {alerts.filter((i:any) => i.status === 'Open').map((item: any) => (
-              <article key={item.id} className="card-minimal border-l-4" style={{ borderLeftColor: 'var(--color-error)' }}>
+            {liveAlerts.filter((i:any) => i.status === 'Open').map((item: any) => (
+              <article key={item.id} data-alert-id={item.id} data-severity={item.severity} className="card-minimal border-l-4" style={{ borderLeftColor: 'var(--color-error)' }}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex gap-2">
                     <span className={`badge ${item.type === 'HIGH' ? 'badge-error' : 'badge-warning'} flex items-center gap-1`}>
@@ -185,12 +187,12 @@ export default function AlertTracking() {
               CAPA执行
             </h3>
             <span className="badge badge-warning">
-              {alerts.filter((i:any) => i.status === 'In Review').length}
+              {liveAlerts.filter((i:any) => i.status === 'In Review').length}
             </span>
           </div>
           <div className="space-y-6">
-            {alerts.filter((i:any) => i.status === 'In Review').map((item: any) => (
-              <article key={item.id} className="card-minimal border-l-4 relative" style={{ borderLeftColor: 'var(--color-warning)' }}>
+            {liveAlerts.filter((i:any) => i.status === 'In Review').map((item: any) => (
+              <article key={item.id} data-alert-id={item.id} data-severity={item.severity} className="card-minimal border-l-4 relative" style={{ borderLeftColor: 'var(--color-warning)' }}>
                 <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ background: 'linear-gradient(135deg, var(--color-brand), transparent)' }}></div>
                 <div className="flex justify-between items-start mb-4 relative z-10">
                   <div className="flex gap-2">
@@ -232,12 +234,12 @@ export default function AlertTracking() {
               审计闭环
             </h3>
             <span className="badge badge-success">
-              {alerts.filter((i:any) => i.status === 'Closed').length}
+              {liveAlerts.filter((i:any) => i.status === 'Closed').length}
             </span>
           </div>
           <div className="space-y-6">
-            {alerts.filter((i:any) => i.status === 'Closed').map((item: any) => (
-              <article key={item.id} className="card-minimal border-l-4 opacity-80" style={{ borderLeftColor: 'var(--color-brand)' }}>
+            {liveAlerts.filter((i:any) => i.status === 'Closed').map((item: any) => (
+              <article key={item.id} data-alert-id={item.id} data-severity={item.severity} className="card-minimal border-l-4 opacity-80" style={{ borderLeftColor: 'var(--color-brand)' }}>
                 <div className="flex justify-between items-start mb-4">
                   <div className="flex gap-2">
                     <span className="badge badge-success flex items-center gap-1">

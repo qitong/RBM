@@ -372,6 +372,7 @@ export interface LegacyThresholdMapping {
   actionThreshold: number
   monitoringMethod: MonitoringMethod
   candidateId: string
+  unit?: string | null
   source: 'approved_kri'
 }
 

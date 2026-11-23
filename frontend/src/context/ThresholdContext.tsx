@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { apiSendStrict } from '../api/client';
-import type { ActivePlanResponse, ApprovedMonitoringVersion } from '../api/hooks';
-import { applyApprovedPresets } from '../ctq/adaptApprovedPlan';
+import { useActiveMonitoringPlan } from '../api/hooks';
+import { adaptApprovedPlan, applyApprovedPresets } from '../ctq/adaptApprovedPlan';
 
 export interface CategoryConfig {
   id: string;
@@ -22,6 +21,7 @@ interface ThresholdContextType {
   setGlobalAction: (val: number) => void;
   saveConfigs: () => void;
   checkOutlier: (value: number, categoryId?: string) => 'action' | 'warning' | 'normal';
+  checkApprovedMetric: (value: number, candidateId: string) => 'action' | 'warning' | 'normal' | null;
 }
 
 const DEFAULT_CATEGORIES: CategoryConfig[] = [
@@ -41,7 +41,8 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [categories, setCategories] = useState<CategoryConfig[]>(DEFAULT_CATEGORIES);
   const [globalWarning, setGlobalWarning] = useState(2.0);
   const [globalAction, setGlobalAction] = useState(3.0);
-  const [approvedPlan, setApprovedPlan] = useState<ApprovedMonitoringVersion | null>(null);
+  const planQuery = useActiveMonitoringPlan();
+  const approvedPlan = planQuery.data?.active ?? null;
 
   // Non-approved fields may still come from this browser. Approved warning and
   // action values are applied afterwards from the local plan file.
@@ -59,22 +60,11 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, []);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    let cancelled = false;
-    apiSendStrict<ActivePlanResponse>('/api/ctq/active', { signal: controller.signal })
-      .then((body) => { if (!cancelled) setApprovedPlan(body.active); })
-      .catch(() => { if (!cancelled) setApprovedPlan(null); });
-    return () => {
-      cancelled = true;
-      controller.abort();
-    };
-  }, []);
-
   const resolvedCategories = useMemo(
-    () => applyApprovedPresets(categories, approvedPlan),
+    () => applyApprovedPresets(categories, approvedPlan, DEFAULT_CATEGORIES),
     [categories, approvedPlan],
   );
+  const approvedMetrics = useMemo(() => adaptApprovedPlan(approvedPlan), [approvedPlan]);
 
   const updateCategory = (id: string, updates: Partial<CategoryConfig>) => {
     setCategories(prev => prev.map(cat => {
@@ -116,6 +106,15 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return 'normal';
   };
 
+  const checkApprovedMetric = (value: number, candidateId: string): 'action' | 'warning' | 'normal' | null => {
+    const rule = approvedMetrics.find((item) => item.candidateId === candidateId);
+    if (!rule) return null;
+    const absVal = Math.abs(value);
+    if (absVal >= rule.actionThreshold) return 'action';
+    if (absVal >= rule.warningThreshold) return 'warning';
+    return 'normal';
+  };
+
   return (
     <ThresholdContext.Provider value={{ 
       categories: resolvedCategories, 
@@ -125,7 +124,8 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       setGlobalWarning, 
       setGlobalAction,
       saveConfigs,
-      checkOutlier
+      checkOutlier,
+      checkApprovedMetric,
     }}>
       {children}
     </ThresholdContext.Provider>

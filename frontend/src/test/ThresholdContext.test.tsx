@@ -1,6 +1,27 @@
+import { useState, type ReactNode } from 'react'
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { renderHook, act, waitFor } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ThresholdProvider, useThresholds } from '../context/ThresholdContext'
+
+let queryClient: QueryClient
+
+function Harness({ children }: { children: ReactNode }) {
+  const [client] = useState(() => {
+    const created = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+    queryClient = created
+    return created
+  })
+  return (
+    <QueryClientProvider client={client}>
+      <ThresholdProvider>{children}</ThresholdProvider>
+    </QueryClientProvider>
+  )
+}
+
+function jsonResponse(body: unknown) {
+  return Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))
+}
 
 describe('useThresholds', () => {
   beforeEach(() => {
@@ -9,22 +30,22 @@ describe('useThresholds', () => {
   })
 
   it('provides default global warning threshold of 2.0', () => {
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     expect(result.current.globalWarning).toBe(2.0)
   })
 
   it('provides default global action threshold of 3.0', () => {
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     expect(result.current.globalAction).toBe(3.0)
   })
 
   it('provides 8 default categories', () => {
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     expect(result.current.categories).toHaveLength(8)
   })
 
   it('updates a category weight', () => {
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     act(() => {
       result.current.updateCategory('INFORMED CONSENT', { weight: 0.5 })
     })
@@ -33,7 +54,7 @@ describe('useThresholds', () => {
   })
 
   it('checkOutlier uses category-specific thresholds when categoryId provided', () => {
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     act(() => {
       result.current.updateCategory('INFORMED CONSENT', { warningThreshold: 1.0, actionThreshold: 2.0 })
     })
@@ -41,14 +62,14 @@ describe('useThresholds', () => {
   })
 
   it('checkOutlier falls back to global thresholds when no categoryId', () => {
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     expect(result.current.checkOutlier(2.5)).toBe('warning')
     expect(result.current.checkOutlier(3.5)).toBe('action')
     expect(result.current.checkOutlier(1.0)).toBe('normal')
   })
 
   it('persists config to localStorage on saveConfigs', () => {
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     act(() => { result.current.setGlobalWarning(1.5) })
     act(() => { result.current.saveConfigs() })
     const saved = JSON.parse(localStorage.getItem('rbm_threshold_configs') ?? '{}')
@@ -61,7 +82,7 @@ describe('useThresholds', () => {
       globalAction: 2.5,
       categories: [],
     }))
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     expect(result.current.globalWarning).toBe(1.5)
     expect(result.current.globalAction).toBe(2.5)
   })
@@ -77,7 +98,7 @@ describe('useThresholds', () => {
       active: null,
       candidates: [{ id: 'KRI-99', approvalStatus: 'candidate', warningThreshold: 8, actionThreshold: 10 }],
     }), { status: 200 })))
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     await waitFor(() => expect(fetch).toHaveBeenCalled())
     const cat = result.current.categories.find(item => item.id === 'INFORMED CONSENT')
     expect(cat?.warningThreshold).toBe(1.2)
@@ -105,11 +126,12 @@ describe('useThresholds', () => {
           actionThreshold: 9,
           monitoringMethod: 'CENTRAL_REVIEW',
           candidateId: 'KRI-01',
+          unit: 'SD',
           source: 'approved_kri',
         }],
       },
     }), { status: 200 })))
-    const { result } = renderHook(() => useThresholds(), { wrapper: ThresholdProvider })
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
     await waitFor(() => {
       const cat = result.current.categories.find(item => item.id === 'INFORMED CONSENT')
       expect(cat?.actionThreshold).toBe(9)
@@ -126,5 +148,104 @@ describe('useThresholds', () => {
     expect(result.current.checkOutlier(3.5, 'INFORMED CONSENT')).toBe('normal')
     const saved = JSON.parse(localStorage.getItem('rbm_threshold_configs') ?? '{}')
     expect(saved.categories[0].actionThreshold).toBe(2.2)
+  })
+
+  it('keeps a percentage rule off the sd preset and judges that metric in its own unit', async () => {
+    localStorage.setItem('rbm_threshold_configs', JSON.stringify({
+      categories: [
+        { id: 'INFORMED CONSENT', label: '知情同意', weight: 0.25, warningThreshold: 1.2, actionThreshold: 2.2, enabled: true },
+      ],
+    }))
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
+      ok: true,
+      active: {
+        versionId: 'MP-0001',
+        status: 'approved',
+        approvalStatus: 'approved',
+        approvedBy: '审阅员-合成甲',
+        legacyThresholdMap: [{
+          rbmCategoryId: 'INFORMED CONSENT',
+          warningThreshold: 4,
+          actionThreshold: 9,
+          monitoringMethod: 'CENTRAL_REVIEW',
+          candidateId: 'KRI-01',
+          unit: '百分比',
+          source: 'approved_kri',
+        }],
+      },
+    }))
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => expect(result.current.checkApprovedMetric(3, 'KRI-01')).toBe('normal'))
+    const cat = result.current.categories.find(item => item.id === 'INFORMED CONSENT')
+    expect(cat?.warningThreshold).toBe(1.2)
+    expect(cat?.actionThreshold).toBe(2.2)
+    expect(cat?.presetFromPlan).toBe(false)
+    expect(result.current.checkOutlier(3.5, 'INFORMED CONSENT')).toBe('action')
+    expect(result.current.checkApprovedMetric(3, 'KRI-01')).toBe('normal')
+    expect(result.current.checkApprovedMetric(5, 'KRI-01')).toBe('warning')
+    expect(result.current.checkApprovedMetric(9, 'KRI-01')).toBe('action')
+  })
+
+  it('still applies an approved sd preset when that category is missing from localStorage', async () => {
+    localStorage.setItem('rbm_threshold_configs', JSON.stringify({
+      categories: [
+        { id: 'INCLUSION EXCLUSION', label: '入排标准', weight: 0.15, warningThreshold: 1.1, actionThreshold: 1.6, enabled: true },
+      ],
+    }))
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
+      ok: true,
+      active: {
+        versionId: 'MP-0003',
+        status: 'approved',
+        approvalStatus: 'approved',
+        approvedBy: '审阅员-合成甲',
+        legacyThresholdMap: [{
+          rbmCategoryId: 'INFORMED CONSENT',
+          warningThreshold: 1.2,
+          actionThreshold: 1.4,
+          monitoringMethod: 'SDV',
+          candidateId: 'KRI-03',
+          unit: 'SD',
+          source: 'approved_kri',
+        }],
+      },
+    }))
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => {
+      const cat = result.current.categories.find(item => item.id === 'INFORMED CONSENT')
+      expect(cat?.actionThreshold).toBe(1.4)
+    })
+    expect(result.current.checkOutlier(1.3, 'INFORMED CONSENT')).toBe('warning')
+    expect(result.current.checkOutlier(1.3)).toBe('normal')
+  })
+
+  it('follows a newly approved or rolled-back version without remounting', async () => {
+    let active: unknown = null
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({ ok: true, active }))
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => expect(fetch).toHaveBeenCalled())
+    expect(result.current.checkOutlier(3.5, 'INFORMED CONSENT')).toBe('action')
+
+    active = {
+      versionId: 'MP-0008',
+      status: 'approved',
+      approvalStatus: 'approved',
+      approvedBy: '审阅员-合成甲',
+      legacyThresholdMap: [{
+        rbmCategoryId: 'INFORMED CONSENT',
+        warningThreshold: 4,
+        actionThreshold: 9,
+        monitoringMethod: 'CENTRAL_REVIEW',
+        candidateId: 'KRI-08',
+        unit: 'SD',
+        source: 'approved_kri',
+      }],
+    }
+    await act(async () => { await queryClient.invalidateQueries({ queryKey: ['ctq-active'] }) })
+    await waitFor(() => expect(result.current.checkOutlier(3.5, 'INFORMED CONSENT')).toBe('normal'))
+
+    active = null
+    await act(async () => { await queryClient.invalidateQueries({ queryKey: ['ctq-active'] }) })
+    await waitFor(() => expect(result.current.checkOutlier(3.5, 'INFORMED CONSENT')).toBe('action'))
   })
 })

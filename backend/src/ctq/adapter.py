@@ -29,11 +29,14 @@ def effective_thresholds(active: dict | None) -> list[dict]:
         action = item.get("actionThreshold")
         if not category_id or warning is None or action is None:
             continue
+        unit = item.get("unit")
         rows.append({
             "id": category_id,
             "labelKey": category_id,
             "warningThreshold": warning,
             "actionThreshold": action,
+            "unit": unit,
+            "appliesToSdPreset": unit == "SD",
             "monitoringMethod": item.get("monitoringMethod"),
             "candidateId": item.get("candidateId"),
             "versionId": active.get("versionId"),

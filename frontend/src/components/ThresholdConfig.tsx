@@ -66,7 +66,7 @@ export default function ThresholdConfig() {
              <h2 className="text-xl font-bold text-on-surface">已生效监测计划</h2>
           </div>
              <p className="text-sm text-on-surface-variant mb-4">
-             已批准类别的预警和行动阈值以本机计划为准，并用于该类的超限判断。未批准候选不改变预设。
+             单位为 SD 的已批准规则写入对应类别的超限判断。其他单位只按该指标自己的阈值判断，不改 SD 滑块。未批准候选不改变预设。
           </p>
           {plan.isLoading && <p className="text-sm text-on-surface">正在读取已批准监测计划</p>}
           {plan.isError && (
@@ -77,7 +77,8 @@ export default function ThresholdConfig() {
           )}
           {effective.map((row) => (
              <p key={`${row.versionId}-${row.id}`} className="text-sm text-on-surface">
-                {row.id} 已生效预警 {row.warningThreshold} / 行动 {row.actionThreshold} · {row.monitoringMethod} · {row.versionId} · {row.approvedBy}
+                {row.id} 已生效预警 {row.warningThreshold} / 行动 {row.actionThreshold} {row.unit ?? ''} · {row.monitoringMethod} · {row.versionId} · {row.approvedBy}
+                {row.appliesToSdPreset ? ' · 已写入 SD 预设' : ' · 不写入 SD 滑块'}
              </p>
           ))}
           {pending.map((item) => (

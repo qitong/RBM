@@ -5,6 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.api.main import app
+from src.ctq.adapter import effective_thresholds
 from src.ctq.service import reload_store, reset_store
 
 FIXTURE = Path(__file__).parent / "fixtures" / "synthetic_mist_protocol.txt"
@@ -85,6 +86,7 @@ def test_approval_creates_a_new_version_with_operator_time_and_hash():
         "actionThreshold": 9.0,
         "monitoringMethod": "CENTRAL_REVIEW",
         "candidateId": "KRI-01",
+        "unit": "百分比",
         "source": "approved_kri",
     }]
     assert version["studyQtls"][0]["candidateId"] == "QTL-01"
@@ -103,6 +105,8 @@ def test_approval_creates_a_new_version_with_operator_time_and_hash():
         "candidateId": "KRI-01",
         "versionId": "MP-0001",
         "approvedBy": "审阅员-合成甲",
+        "unit": "百分比",
+        "appliesToSdPreset": False,
         "readEntry": "ThresholdConfig",
         "effective": True,
     }]
@@ -156,6 +160,8 @@ def test_restart_reloads_the_approved_version_and_its_history():
     assert active["active"]["status"] == "approved"
     assert active["effectiveThresholds"][0]["id"] == "INFORMED CONSENT"
     assert active["effectiveThresholds"][0]["actionThreshold"] == 9
+    assert active["effectiveThresholds"][0]["unit"] == "百分比"
+    assert active["effectiveThresholds"][0]["appliesToSdPreset"] is False
     events = client.get("/api/ctq/versions").json()["events"]
     assert [event["type"] for event in events] == ["extract", "approve"]
 
@@ -235,3 +241,35 @@ def test_malformed_candidate_does_not_create_a_draft():
     })
     assert missing.status_code == 404
     assert missing.json()["code"] == "DRAFT_NOT_FOUND"
+
+
+def test_only_an_sd_unit_applies_to_the_sd_preset():
+    active = {
+        "approvalStatus": "approved",
+        "status": "approved",
+        "versionId": "MP-0002",
+        "approvedBy": "审阅员-合成甲",
+        "legacyThresholdMap": [
+            {
+                "rbmCategoryId": "INFORMED CONSENT",
+                "warningThreshold": 4,
+                "actionThreshold": 9,
+                "monitoringMethod": "CENTRAL_REVIEW",
+                "candidateId": "KRI-01",
+                "source": "approved_kri",
+                "unit": "百分比",
+            },
+            {
+                "rbmCategoryId": "SAFETY REPORTING",
+                "warningThreshold": 1.5,
+                "actionThreshold": 2.5,
+                "monitoringMethod": "SDV",
+                "candidateId": "KRI-02",
+                "source": "approved_kri",
+                "unit": "SD",
+            },
+        ],
+    }
+    rows = {row["candidateId"]: row for row in effective_thresholds(active)}
+    assert rows["KRI-01"]["appliesToSdPreset"] is False
+    assert rows["KRI-02"]["appliesToSdPreset"] is True
