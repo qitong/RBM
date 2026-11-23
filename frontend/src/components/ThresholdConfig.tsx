@@ -65,8 +65,8 @@ export default function ThresholdConfig() {
              <Info className="text-secondary" size={20} />
              <h2 className="text-xl font-bold text-on-surface">已生效监测计划</h2>
           </div>
-          <p className="text-sm text-on-surface-variant mb-4">
-             这里只显示已经人工批准的版本。未批准候选不会写成生效规则，下面的本地滑块仍是演示配置。
+             <p className="text-sm text-on-surface-variant mb-4">
+             已批准类别的预警和行动阈值以本机计划为准，并用于该类的超限判断。未批准候选不改变预设。
           </p>
           {plan.isLoading && <p className="text-sm text-on-surface">正在读取已批准监测计划</p>}
           {plan.isError && (
@@ -240,19 +240,19 @@ export default function ThresholdConfig() {
                               <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider block mb-2">Deviation Trigger (SD)</label>
                               <div className="flex items-center gap-2">
                                  <button 
-                                   disabled={!cat.enabled}
+                                   disabled={!cat.enabled || cat.presetFromPlan}
                                    onClick={() => updateCategory(cat.id, { actionThreshold: Math.max(0, parseFloat((cat.actionThreshold - 0.1).toFixed(1))) })}
                                    className="w-8 h-8 rounded bg-surface border border-outline-variant flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors disabled:opacity-50"
                                  >-</button>
                                  <input 
                                    type="number" step="0.1" 
                                    value={cat.actionThreshold}
-                                   disabled={!cat.enabled}
+                                   disabled={!cat.enabled || cat.presetFromPlan}
                                    onChange={(e) => updateCategory(cat.id, { actionThreshold: parseFloat(e.target.value) })}
                                    className="flex-1 bg-surface border border-outline-variant rounded p-2 text-center text-on-surface font-medium focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary h-8 disabled:opacity-50" 
                                  />
                                  <button 
-                                   disabled={!cat.enabled}
+                                   disabled={!cat.enabled || cat.presetFromPlan}
                                    onClick={() => updateCategory(cat.id, { actionThreshold: parseFloat((cat.actionThreshold + 0.1).toFixed(1)) })}
                                    className="w-8 h-8 rounded bg-surface border border-outline-variant flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors disabled:opacity-50"
                                  >+</button>

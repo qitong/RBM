@@ -7,7 +7,10 @@ every prior version.
 
 from __future__ import annotations
 
+import json
+import os
 from datetime import datetime, timezone
+from pathlib import Path
 
 from src.ctq.adapter import PENDING_CAPABILITIES, effective_thresholds
 from src.ctq.extractor import DISCLAIMER
@@ -58,11 +61,58 @@ class _Store:
 
 
 _STORE = _Store()
+_DEFAULT_STORE = Path(__file__).resolve().parents[3] / "var" / "ctq-monitoring-plan.json"
+
+
+def store_path() -> Path:
+    raw = os.environ.get("RBM_CTQ_STORE")
+    if raw:
+        return Path(raw)
+    return _DEFAULT_STORE
 
 
 def reset_store() -> None:
+    """Drop memory and the current store file. Tests use this for isolation."""
     global _STORE
     _STORE = _Store()
+    path = store_path()
+    if path.exists():
+        path.unlink()
+
+
+def reload_store() -> None:
+    """Replace memory with the on-disk plan. This is what a process restart does."""
+    global _STORE
+    _STORE = _Store()
+    _load()
+
+
+def _load() -> None:
+    path = store_path()
+    if not path.exists():
+        return
+    data = json.loads(path.read_text(encoding="utf-8"))
+    _STORE.drafts = data.get("drafts") or {}
+    _STORE.versions = data.get("versions") or {}
+    _STORE.version_order = list(data.get("version_order") or [])
+    _STORE.events = list(data.get("events") or [])
+    seq = data.get("seq") or {}
+    for key in ("DR", "MP", "EV"):
+        _STORE._seq[key] = int(seq.get(key) or 0)
+
+
+def _save() -> None:
+    path = store_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "drafts": _STORE.drafts,
+        "versions": _STORE.versions,
+        "version_order": _STORE.version_order,
+        "events": _STORE.events,
+        "seq": _STORE._seq,
+        "note": "本机监测计划文件，不是正式临床库。",
+    }
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def create_draft(parsed: dict) -> dict:
@@ -79,6 +129,7 @@ def create_draft(parsed: dict) -> dict:
     }
     _STORE.drafts[draft_id] = draft
     _event("extract", None, {"draftId": draft_id, "sourceHash": draft["sourceHash"], "studyCode": draft["studyCode"]})
+    _save()
     return _public_draft(draft)
 
 
@@ -148,6 +199,7 @@ def approve_draft(draft_id: str, operator: str, decisions: list[dict]) -> dict:
         "studyCode": draft["studyCode"],
         "previousVersionId": previous_id,
     })
+    _save()
     return {
         "ok": True,
         "dataSourceMode": "synthetic",
@@ -174,6 +226,7 @@ def reject_draft(draft_id: str, operator: str, reason: str) -> dict:
         "activeVersionId": None if active is None else active["versionId"],
         "sourceHash": draft["sourceHash"],
     })
+    _save()
     return {
         "ok": True,
         "dataSourceMode": "synthetic",
@@ -203,6 +256,7 @@ def rollback_active(operator: str, reason: str, study_code: str | None) -> dict:
         "studyCode": current["studyCode"],
         "sourceHash": previous["sourceHash"],
     })
+    _save()
     return {
         "ok": True,
         "dataSourceMode": "synthetic",
@@ -224,7 +278,8 @@ def get_active(study_code: str | None) -> dict:
         "readEntry": {
             "page": "/thresholds",
             "appliesTo": ["CategoryConfig.warningThreshold", "CategoryConfig.actionThreshold"],
-            "doesNotOverwrite": ["localStorage.rbm_threshold_configs", "benchmark.pdZScore"],
+            "presetSource": "local-plan-file",
+            "doesNotOverwrite": ["benchmark.pdZScore", "CategoryConfig.weight"],
         },
         "pendingCapabilities": PENDING_CAPABILITIES,
         "active": active,
@@ -385,3 +440,6 @@ def _event(event_type: str, operator: str | None, detail: dict) -> None:
 
 def _now() -> str:
     return datetime.now(timezone.utc).isoformat()
+
+
+_load()

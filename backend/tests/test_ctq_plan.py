@@ -5,7 +5,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.api.main import app
-from src.ctq.service import reset_store
+from src.ctq.service import reload_store, reset_store
 
 FIXTURE = Path(__file__).parent / "fixtures" / "synthetic_mist_protocol.txt"
 PROTOCOL = FIXTURE.read_text(encoding="utf-8")
@@ -15,7 +15,8 @@ client = TestClient(app)
 
 
 @pytest.fixture(autouse=True)
-def _clean_store():
+def _clean_store(tmp_path, monkeypatch):
+    monkeypatch.setenv("RBM_CTQ_STORE", str(tmp_path / "plan.json"))
     reset_store()
     yield
     reset_store()
@@ -144,6 +145,27 @@ def test_rollback_restores_the_previous_approved_version_and_keeps_history():
     assert by_id == {"MP-0001": "approved", "MP-0002": "rolled_back"}
     assert any(event["type"] == "rollback" for event in listed["events"])
     assert len(listed["events"]) == 5
+
+
+def test_restart_reloads_the_approved_version_and_its_history():
+    draft_id = client.post("/api/ctq/extract", json={"protocolText": PROTOCOL}).json()["draftId"]
+    assert _approve(draft_id).status_code == 200
+    reload_store()
+    active = client.get("/api/ctq/active").json()
+    assert active["active"]["versionId"] == "MP-0001"
+    assert active["active"]["status"] == "approved"
+    assert active["effectiveThresholds"][0]["id"] == "INFORMED CONSENT"
+    assert active["effectiveThresholds"][0]["actionThreshold"] == 9
+    events = client.get("/api/ctq/versions").json()["events"]
+    assert [event["type"] for event in events] == ["extract", "approve"]
+
+
+def test_restart_after_extract_only_still_has_no_effective_preset():
+    client.post("/api/ctq/extract", json={"protocolText": PROTOCOL})
+    reload_store()
+    active = client.get("/api/ctq/active").json()
+    assert active["active"] is None
+    assert active["effectiveThresholds"] == []
 
 
 def test_rollback_without_a_previous_version_keeps_the_pointer():

@@ -36,3 +36,20 @@ export function thresholdsForReadEntry(body: ActivePlanResponse | undefined): Ef
   if (!body) return []
   return adaptApprovedPlan(body.active)
 }
+
+export function applyApprovedPresets<T extends { id: string; warningThreshold: number; actionThreshold: number }>(
+  categories: T[],
+  active: ApprovedMonitoringVersion | null | undefined,
+): Array<T & { presetFromPlan: boolean }> {
+  const locked = new Map(adaptApprovedPlan(active).map((row) => [row.id, row]))
+  return categories.map((category) => {
+    const row = locked.get(category.id)
+    if (!row) return { ...category, presetFromPlan: false }
+    return {
+      ...category,
+      warningThreshold: row.warningThreshold,
+      actionThreshold: row.actionThreshold,
+      presetFromPlan: true,
+    }
+  })
+}

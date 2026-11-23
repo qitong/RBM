@@ -53,6 +53,13 @@ function approvedBody() {
   }
 }
 
+function jsonResponse(body: unknown, status = 200) {
+  return Promise.resolve(new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  }))
+}
+
 function setup() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
@@ -68,21 +75,22 @@ describe('existing threshold page reads the approved plan', () => {
   beforeEach(() => { vi.stubGlobal('fetch', vi.fn()) })
 
   it('shows the approved plan on the existing threshold page', async () => {
-    vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify(approvedBody()), { status: 200 }))
+    vi.mocked(fetch).mockImplementation(() => jsonResponse(approvedBody()))
     setup()
     await waitFor(() => expect(screen.getByText(/INFORMED CONSENT 已生效预警 4 \/ 行动 9/)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByDisplayValue('9')).toBeInTheDocument())
     expect(screen.getByText(/MP-0001/)).toBeInTheDocument()
     expect(screen.getByText(/审阅员-合成甲/)).toBeInTheDocument()
     expect(screen.getByText(/独立待决能力：critical-data-extractor/)).toBeInTheDocument()
   })
 
   it('does not present an unapproved candidate as an effective rule', async () => {
-    vi.mocked(fetch).mockResolvedValue(new Response(JSON.stringify({
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
       ...BASE,
       active: null,
       effectiveThresholds: [],
       candidates: [{ id: 'KRI-99', title: '不应生效的候选', approvalStatus: 'candidate' }],
-    }), { status: 200 }))
+    }))
     setup()
     await waitFor(() => expect(screen.getByText('尚无已批准监测计划')).toBeInTheDocument())
     expect(screen.queryByText(/不应生效的候选/)).not.toBeInTheDocument()

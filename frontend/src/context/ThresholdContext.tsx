@@ -1,4 +1,7 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { apiSendStrict } from '../api/client';
+import type { ActivePlanResponse, ApprovedMonitoringVersion } from '../api/hooks';
+import { applyApprovedPresets } from '../ctq/adaptApprovedPlan';
 
 export interface CategoryConfig {
   id: string;
@@ -7,6 +10,7 @@ export interface CategoryConfig {
   warningThreshold: number; // e.g. 2.0 SD
   actionThreshold: number;  // e.g. 3.0 SD
   enabled: boolean;
+  presetFromPlan?: boolean;
 }
 
 interface ThresholdContextType {
@@ -37,14 +41,16 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [categories, setCategories] = useState<CategoryConfig[]>(DEFAULT_CATEGORIES);
   const [globalWarning, setGlobalWarning] = useState(2.0);
   const [globalAction, setGlobalAction] = useState(3.0);
+  const [approvedPlan, setApprovedPlan] = useState<ApprovedMonitoringVersion | null>(null);
 
-  // Load from localStorage on mount
+  // Non-approved fields may still come from this browser. Approved warning and
+  // action values are applied afterwards from the local plan file.
   useEffect(() => {
     const saved = localStorage.getItem('rbm_threshold_configs');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.categories) setCategories(parsed.categories);
+        if (parsed.categories?.length) setCategories(parsed.categories);
         if (parsed.globalWarning) setGlobalWarning(parsed.globalWarning);
         if (parsed.globalAction) setGlobalAction(parsed.globalAction);
       } catch (e) {
@@ -53,15 +59,40 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, []);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    let cancelled = false;
+    apiSendStrict<ActivePlanResponse>('/api/ctq/active', { signal: controller.signal })
+      .then((body) => { if (!cancelled) setApprovedPlan(body.active); })
+      .catch(() => { if (!cancelled) setApprovedPlan(null); });
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, []);
+
+  const resolvedCategories = useMemo(
+    () => applyApprovedPresets(categories, approvedPlan),
+    [categories, approvedPlan],
+  );
+
   const updateCategory = (id: string, updates: Partial<CategoryConfig>) => {
-    setCategories(prev => prev.map(cat => cat.id === id ? { ...cat, ...updates } : cat));
+    setCategories(prev => prev.map(cat => {
+      if (cat.id !== id) return cat;
+      const next = { ...updates };
+      if (approvedPlan && applyApprovedPresets([cat], approvedPlan)[0].presetFromPlan) {
+        delete next.warningThreshold;
+        delete next.actionThreshold;
+      }
+      return { ...cat, ...next };
+    }));
   };
 
   const saveConfigs = () => {
     localStorage.setItem('rbm_threshold_configs', JSON.stringify({
       categories,
       globalWarning,
-      globalAction
+      globalAction,
     }));
     alert("配置已成功保存并应用！");
   };
@@ -73,7 +104,7 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     let warning = globalWarning;
 
     if (categoryId) {
-      const cat = categories.find(c => c.id === categoryId);
+      const cat = resolvedCategories.find(c => c.id === categoryId);
       if (cat) {
         action = cat.actionThreshold;
         warning = cat.warningThreshold;
@@ -87,7 +118,7 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
 
   return (
     <ThresholdContext.Provider value={{ 
-      categories, 
+      categories: resolvedCategories, 
       updateCategory, 
       globalWarning, 
       globalAction, 
