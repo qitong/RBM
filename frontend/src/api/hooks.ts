@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { apiGet } from './client'
+import { apiGet, apiSendStrict } from './client'
 
 export interface Site {
   id: string
@@ -322,4 +322,102 @@ export interface Report {
 
 export function useReportList() {
   return useQuery({ queryKey: ['reports'], queryFn: () => apiGet<Report[]>('/api/reports') })
+}
+
+export type CtqCandidateKind = 'critical_data' | 'ctq' | 'qtl' | 'kri'
+export type MonitoringMethod = 'SDV' | 'SDR' | 'CENTRAL_REVIEW' | 'SYSTEM_CHECK'
+
+export interface CtqCandidate {
+  id: string
+  kind: CtqCandidateKind
+  approvalStatus: 'candidate'
+  title: string
+  quote: string
+  line: number
+  rbmCategoryId: string | null
+  linkedProcess: string | null
+  suggestedWarning: number | null
+  suggestedAction: number | null
+  unit: string | null
+}
+
+export interface CtqDraft {
+  ok: true
+  dataSourceMode: 'synthetic'
+  disclaimer: string
+  draftId: string
+  approvalStatus: 'unapproved'
+  studyCode: string
+  studyTitle: string
+  sourceHash: string
+  unlinkedCriticalData: string[]
+  candidates: CtqCandidate[]
+}
+
+export interface MonitoringRule {
+  candidateId: string
+  kind: CtqCandidateKind
+  title: string
+  rbmCategoryId: string | null
+  warningThreshold: number | null
+  actionThreshold: number | null
+  monitoringMethod: MonitoringMethod
+  quote: string
+  line: number
+}
+
+export interface LegacyThresholdMapping {
+  rbmCategoryId: string
+  warningThreshold: number
+  actionThreshold: number
+  monitoringMethod: MonitoringMethod
+  candidateId: string
+  source: 'approved_kri'
+}
+
+export interface ApprovedMonitoringVersion {
+  versionId: string
+  status: 'approved' | 'superseded' | 'rolled_back'
+  approvalStatus: 'approved'
+  studyCode: string
+  studyTitle: string
+  sourceHash: string
+  sourceDraftId: string
+  approvedBy: string
+  approvedAt: string
+  previousVersionId: string | null
+  rules: MonitoringRule[]
+  legacyThresholdMap: LegacyThresholdMapping[]
+  studyQtls: MonitoringRule[]
+}
+
+export interface ActivePlanResponse {
+  ok: true
+  dataSourceMode: 'synthetic'
+  disclaimer: string
+  active: ApprovedMonitoringVersion | null
+  riskFieldMap: Array<{ rbmField: string; joinsOn?: string; source?: string; note?: string }>
+  readEntry: { appliesTo: string[]; doesNotOverwrite: string[] }
+}
+
+export interface CtqVersionsResponse {
+  ok: true
+  dataSourceMode: 'synthetic'
+  disclaimer: string
+  versions: ApprovedMonitoringVersion[]
+  events: Array<{ eventId: string; type: string; at: string; operator: string | null }>
+}
+
+export function useActiveMonitoringPlan() {
+  return useQuery({
+    queryKey: ['ctq-active'],
+    queryFn: () => apiSendStrict<ActivePlanResponse>('/api/ctq/active'),
+  })
+}
+
+export function useCtqVersions() {
+  return useQuery({
+    queryKey: ['ctq-versions'],
+    queryFn: () => apiSendStrict<CtqVersionsResponse>('/api/ctq/versions'),
+  })
 }

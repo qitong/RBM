@@ -1,4 +1,4 @@
-import { Activity, LayoutDashboard, Settings, Filter, AlertTriangle, BarChart3, GitCompareArrows, Users, ClipboardCheck, ListTodo, UserRound, DatabaseZap, LineChart, ScrollText, BookOpen } from 'lucide-react'
+import { Activity, LayoutDashboard, Settings, Filter, AlertTriangle, BarChart3, GitCompareArrows, Users, ClipboardCheck, ListTodo, UserRound, DatabaseZap, LineChart, ScrollText, BookOpen, FileText } from 'lucide-react'
 import { NavLink, Route, Routes, Navigate, useLocation } from 'react-router-dom'
 import { ThresholdProvider } from './context/ThresholdContext'
 import GlobalDashboard from './components/GlobalDashboard'
@@ -17,6 +17,7 @@ import DataQuality from './components/DataQuality'
 import RiskForecast from './components/RiskForecast'
 import AuditTrail from './components/AuditTrail'
 import ReportCenter from './components/ReportCenter'
+import CtqPrelude from './components/CtqPrelude'
 
 const TAB_TITLES: Record<string, string> = {
   '/dashboard': '全局风险大屏',
@@ -32,6 +33,7 @@ const TAB_TITLES: Record<string, string> = {
   '/risk-forecast': '\u98ce\u9669\u9884\u6d4b',
   '/audit': '\u5ba1\u8ba1\u8ffd\u8e2a',
   '/reports': '\u62a5\u544a\u4e2d\u5fc3',
+  '/ctq-plan': '监测计划审阅',
 }
 
 function NavItem({ to, icon: Icon, label }: { to: string; icon: React.ComponentType<{ size?: number }>; label: string }) {
@@ -80,6 +82,7 @@ function App() {
             <NavItem to="/risk-forecast" icon={LineChart} label="风险预测" />
             <NavItem to="/audit" icon={ScrollText} label="审计追踪" />
             <NavItem to="/reports" icon={BookOpen} label="报告中心" />
+            <NavItem to="/ctq-plan" icon={FileText} label="监测计划审阅" />
             <div className="mt-8">
               <p className="text-mono px-3 mb-4">系统设置</p>
               <NavItem to="/thresholds" icon={Settings} label="预警阈值配置" />
@@ -117,6 +120,7 @@ function App() {
               <Route path="/risk-forecast" element={<RiskForecast />} />
               <Route path="/audit" element={<AuditTrail />} />
               <Route path="/reports" element={<ReportCenter />} />
+              <Route path="/ctq-plan" element={<CtqPrelude />} />
             </Routes>
           </div>
         </main>
