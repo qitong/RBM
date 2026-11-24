@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>合成逾期签署比例的公开入口</title>
+  <style>
+    body { font-family: sans-serif; line-height: 1.5; max-width: 42rem; margin: 2rem auto; color: #1c1c1c; }
+    code { background: #f3f3f3; padding: 0.1rem 0.3rem; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border: 1px solid #ccc; padding: 0.4rem 0.6rem; text-align: left; }
+  </style>
+</head>
+<body>
+  <h1>合成逾期签署比例</h1>
+  <p>这是合成演示的入口说明，不是临床监测，也不是监管符合性说明。数据只来自虚构研究 <code>SYN-FICTION-MIST-001</code>。</p>
+  <h2>页面和接口</h2>
+  <ul>
+    <li>页面：本机前端的 <code>/thresholds</code>。卡片只读已批准的 CtQ 计划。</li>
+    <li><code>POST /api/ctq/extract</code>：送入带虚构研究编号的合成文本，得到未生效候选。</li>
+    <li><code>POST /api/ctq/drafts/{id}/approve</code>：人写下预警和行动界限。方案里的 4 和 9 只是建议值。</li>
+    <li><code>GET /api/ctq/active</code>：读取当前已批准计划。Pages 上没有这个接口。</li>
+  </ul>
+  <h2>合成值 9 的判断</h2>
+  <p>页面上的观察值固定为合成常数 9，单位是百分比。等级用的是这次批准写下的界限，等于界限即算越界。</p>
+  <table>
+    <tr><th>输入</th><th>在批准界限为 4 和 9 时</th></tr>
+    <tr><td>3.9</td><td>正常</td></tr>
+    <tr><td>4</td><td>预警</td></tr>
+    <tr><td>9</td><td>行动</td></tr>
+    <tr><td>没有已批准计划</td><td>失败，不给等级</td></tr>
+    <tr><td>已批准计划属于别的研究</td><td>失败，不给等级</td></tr>
+  </table>
+  <h2>可重复命令</h2>
+  <p>在 <code>frontend</code> 目录运行 <code>npm run blackbox</code>。它会启动本机 API，并走上面的公开入口。</p>
+  <p><code>checkApprovedMetric</code> 会取绝对值，也不校验单位。它不是这个入口。</p>
+</body>
+</html>

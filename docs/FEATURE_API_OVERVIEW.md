@@ -36,7 +36,7 @@ CtQ 计划文件和 RBQM 阈值版本是两套存储，本概览不把它们当�
 
 本地桌面克隆有未提交文件，不作为开发或文档事实来源。
 
-CI：push `main` 或手动触发时，构建 `frontend` 并部署 GitHub Pages，该工作流不跑测试。`pull_request` 上的 CI 跑后端 pytest 和前端 tsc、vitest，不部署。这次文档 PR 是否通过，以它自己的检查为准；没有检查结果不是通过。
+CI：`pull_request` 和 push `main` 都跑后端 pytest，以及前端的安装、tsc、vitest 和 `npm run build`。其中 `npm run blackbox` 会启动本机 API，从公开的 `/api/ctq/active` 和阈值页卡片核对合成逾期签署比例。push `main` 或手动触发时，另一个工作流只构建前端并部署 GitHub Pages，那个工作流不跑这些测试。没有检查结果不是通过。
 
 已部署：https://qitong.github.io/RBM/ 对应 `main` `cc03bb1`，环境 `github-pages`，部署成功于 2026-11-24T13:54:24Z。它是合成前端演示，没有 FastAPI，不是临床监测上线。阈值页上的百分比卡片在 Pages 读不到已批准计划，因此只显示无法判断，不会在站点上给出等级。
 
