@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
+import { useActiveMonitoringPlan } from '../api/hooks';
+import { adaptApprovedPlan, applyApprovedPresets } from '../ctq/adaptApprovedPlan';
 
 export interface CategoryConfig {
   id: string;
@@ -7,6 +9,7 @@ export interface CategoryConfig {
   warningThreshold: number; // e.g. 2.0 SD
   actionThreshold: number;  // e.g. 3.0 SD
   enabled: boolean;
+  presetFromPlan?: boolean;
 }
 
 interface ThresholdContextType {
@@ -18,6 +21,7 @@ interface ThresholdContextType {
   setGlobalAction: (val: number) => void;
   saveConfigs: () => void;
   checkOutlier: (value: number, categoryId?: string) => 'action' | 'warning' | 'normal';
+  checkApprovedMetric: (value: number, candidateId: string) => 'action' | 'warning' | 'normal' | null;
 }
 
 const DEFAULT_CATEGORIES: CategoryConfig[] = [
@@ -37,14 +41,17 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
   const [categories, setCategories] = useState<CategoryConfig[]>(DEFAULT_CATEGORIES);
   const [globalWarning, setGlobalWarning] = useState(2.0);
   const [globalAction, setGlobalAction] = useState(3.0);
+  const planQuery = useActiveMonitoringPlan();
+  const approvedPlan = planQuery.data?.active ?? null;
 
-  // Load from localStorage on mount
+  // Non-approved fields may still come from this browser. Approved warning and
+  // action values are applied afterwards from the local plan file.
   useEffect(() => {
     const saved = localStorage.getItem('rbm_threshold_configs');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        if (parsed.categories) setCategories(parsed.categories);
+        if (parsed.categories?.length) setCategories(parsed.categories);
         if (parsed.globalWarning) setGlobalWarning(parsed.globalWarning);
         if (parsed.globalAction) setGlobalAction(parsed.globalAction);
       } catch (e) {
@@ -53,15 +60,29 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     }
   }, []);
 
+  const resolvedCategories = useMemo(
+    () => applyApprovedPresets(categories, approvedPlan, DEFAULT_CATEGORIES),
+    [categories, approvedPlan],
+  );
+  const approvedMetrics = useMemo(() => adaptApprovedPlan(approvedPlan), [approvedPlan]);
+
   const updateCategory = (id: string, updates: Partial<CategoryConfig>) => {
-    setCategories(prev => prev.map(cat => cat.id === id ? { ...cat, ...updates } : cat));
+    setCategories(prev => prev.map(cat => {
+      if (cat.id !== id) return cat;
+      const next = { ...updates };
+      if (approvedPlan && applyApprovedPresets([cat], approvedPlan)[0].presetFromPlan) {
+        delete next.warningThreshold;
+        delete next.actionThreshold;
+      }
+      return { ...cat, ...next };
+    }));
   };
 
   const saveConfigs = () => {
     localStorage.setItem('rbm_threshold_configs', JSON.stringify({
       categories,
       globalWarning,
-      globalAction
+      globalAction,
     }));
     alert("配置已成功保存并应用！");
   };
@@ -73,7 +94,7 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     let warning = globalWarning;
 
     if (categoryId) {
-      const cat = categories.find(c => c.id === categoryId);
+      const cat = resolvedCategories.find(c => c.id === categoryId);
       if (cat) {
         action = cat.actionThreshold;
         warning = cat.warningThreshold;
@@ -85,16 +106,26 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return 'normal';
   };
 
+  const checkApprovedMetric = (value: number, candidateId: string): 'action' | 'warning' | 'normal' | null => {
+    const rule = approvedMetrics.find((item) => item.candidateId === candidateId);
+    if (!rule) return null;
+    const absVal = Math.abs(value);
+    if (absVal >= rule.actionThreshold) return 'action';
+    if (absVal >= rule.warningThreshold) return 'warning';
+    return 'normal';
+  };
+
   return (
     <ThresholdContext.Provider value={{ 
-      categories, 
+      categories: resolvedCategories, 
       updateCategory, 
       globalWarning, 
       globalAction, 
       setGlobalWarning, 
       setGlobalAction,
       saveConfigs,
-      checkOutlier
+      checkOutlier,
+      checkApprovedMetric,
     }}>
       {children}
     </ThresholdContext.Provider>

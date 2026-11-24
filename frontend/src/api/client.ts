@@ -29,6 +29,7 @@ function getFallbackPath(path: string): string | null {
     '/api/risk-forecast': '/api/risk-forecast.json',
     '/api/audit-logs': '/api/audit-logs.json',
     '/api/reports': '/api/reports.json',
+    // /api/ctq/* is intentionally absent. Plan and approval failures must stay visible.
   }
   if (staticMap[path]) return staticMap[path]
 
@@ -112,4 +113,19 @@ export async function apiGet<T>(path: string): Promise<T> {
     }
     throw new ApiError(0, `API unavailable and no fallback for: ${path}`)
   }
+}
+
+/** Plan, approval, and rollback calls. A failed response is returned as an error. */
+export async function apiSendStrict<T>(path: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(`${baseUrl()}${path}`, {
+    ...init,
+    headers: {
+      Accept: 'application/json',
+      ...(init?.body ? { 'Content-Type': 'application/json' } : {}),
+      ...(init?.headers ?? {}),
+    },
+  })
+  const text = await res.text()
+  if (!res.ok) throw new ApiError(res.status, text || res.statusText)
+  return (text ? JSON.parse(text) : null) as T
 }

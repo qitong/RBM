@@ -5,8 +5,10 @@ from src.edc.generator import (generate_sites, generate_site_metrics,
                                 generate_capa_records)
 from src.edc.correlation import compute_correlation, compute_trend_with_confidence
 from src.edc.forecast import linear_forecast
+from src.api.ctq_routes import router as ctq_router
 
 app = FastAPI(title="RBM API", version="0.1.0")
+app.include_router(ctq_router)
 
 app.add_middleware(
     CORSMiddleware,

@@ -12,6 +12,9 @@ venv/
 node_modules/
 dist/
 
+# Local monitoring-plan file. Not a clinical database and not source.
+/var/
+
 # Logs
 *.log
 uvicorn.log
