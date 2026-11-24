@@ -18,13 +18,14 @@ function jsonResponse(body: unknown) {
   return Promise.resolve(new Response(JSON.stringify(body), { status: 200 }))
 }
 
-function plan(unit: string) {
+function plan(unit: string, studyCode = 'SYN-FICTION-MIST-001') {
   return {
     ok: true,
     active: {
       versionId: 'MP-0001',
       status: 'approved',
       approvalStatus: 'approved',
+      studyCode,
       approvedBy: '审阅员-合成甲',
       legacyThresholdMap: [{
         rbmCategoryId: 'INFORMED CONSENT',
@@ -67,6 +68,14 @@ describe('OverdueConsentJudgment', () => {
     expect(failure).toHaveAttribute('data-judgment', 'failed')
     expect(failure).toHaveTextContent('没有改用静态 JSON')
     expect(screen.queryByText(/判断：/)).not.toBeInTheDocument()
+  })
+
+  it('does not judge the fictional rate with another study plan', async () => {
+    vi.mocked(fetch).mockImplementation(() => jsonResponse(plan('百分比', 'SYN-OTHER-STUDY')))
+    render(<Harness><OverdueConsentJudgment /></Harness>)
+    const failure = await screen.findByRole('alert')
+    await waitFor(() => expect(failure).toHaveAttribute('data-failure', 'WRONG_STUDY'))
+    expect(screen.queryByText(/判断：行动/)).not.toBeInTheDocument()
   })
 
   it('rejects an SD unit instead of judging 9 as 9 SD', async () => {

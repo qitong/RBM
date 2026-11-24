@@ -7,6 +7,7 @@ const FAILURE_TEXT: Record<PercentJudgeFailure, string> = {
   MISSING_VALUE: '无法判断。这条合成指标没有数值，没有改用静态 JSON。',
   INVALID_VALUE: '无法判断。数值不是大于等于 0 的百分比，没有改用标准差。',
   MISSING_RULE: '无法判断。已批准计划里没有这条百分比规则。',
+  WRONG_STUDY: '无法判断。已批准计划不是虚构研究 SYN-FICTION-MIST-001。',
   WRONG_UNIT: '无法判断。这条规则的单位不是百分比，没有把它当成标准差。',
   INVALID_BOUNDS: '无法判断。预警界限必须小于行动界限。',
 }
@@ -19,7 +20,7 @@ export default function OverdueConsentJudgment() {
     (row) => row.candidateId === SYNTHETIC_OVERDUE_CONSENT.candidateId,
   ) ?? null
   const judgment = plan.isSuccess
-    ? judgeOverdueConsentRate(SYNTHETIC_OVERDUE_CONSENT.value, rule)
+    ? judgeOverdueConsentRate(SYNTHETIC_OVERDUE_CONSENT.value, rule, plan.data?.active?.studyCode)
     : null
 
   return (

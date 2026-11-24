@@ -9,6 +9,7 @@ export type PercentJudgeFailure =
   | 'MISSING_VALUE'
   | 'INVALID_VALUE'
   | 'MISSING_RULE'
+  | 'WRONG_STUDY'
   | 'WRONG_UNIT'
   | 'INVALID_BOUNDS'
 
@@ -31,9 +32,13 @@ function finiteNumber(value: number): boolean {
 export function judgeOverdueConsentRate(
   value: number | null | undefined,
   rule: PercentRuleInput | null | undefined,
+  studyCode: string | null | undefined,
 ): PercentJudgeResult {
   if (value === null || value === undefined) return { ok: false, code: 'MISSING_VALUE' }
   if (!finiteNumber(value) || value < 0) return { ok: false, code: 'INVALID_VALUE' }
+  if (studyCode !== SYNTHETIC_OVERDUE_CONSENT.studyCode) {
+    return { ok: false, code: studyCode ? 'WRONG_STUDY' : 'MISSING_RULE' }
+  }
   if (!rule || rule.candidateId !== OVERDUE_CONSENT_CANDIDATE) return { ok: false, code: 'MISSING_RULE' }
   if (rule.unit !== PERCENT_UNIT) return { ok: false, code: 'WRONG_UNIT' }
   if (!finiteNumber(rule.warningThreshold) || !finiteNumber(rule.actionThreshold)
