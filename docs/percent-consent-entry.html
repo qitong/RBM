@@ -32,6 +32,7 @@
   </table>
   <h2>可重复命令</h2>
   <p>在 <code>frontend</code> 目录运行 <code>npm run blackbox</code>。它会启动本机 API，并走上面的公开入口。</p>
+  <p>Pages 只在同一次 <code>main</code> 的 CI 全部成功、且该提交仍是当前 <code>main</code> 时才更新合成页面。页面上仍然没有这些接口。失败、取消、跳过或已经过期的提交不会发布。</p>
   <p><code>checkApprovedMetric</code> 会取绝对值，也不校验单位。它不是这个入口。</p>
 </body>
 </html>

@@ -1,27 +1,60 @@
 name: Deploy Frontend to GitHub Pages
 
+# Publish the synthetic frontend only after CI succeeds for the exact commit
+# that is still main. Failed, cancelled, skipped, empty, and stale results do
+# not upload or deploy. This workflow does not run the test suite.
 on:
-  push:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
+  actions: read
 
 concurrency:
   group: pages
   cancel-in-progress: false
 
 jobs:
-  build:
+  gate:
     runs-on: ubuntu-latest
+    outputs:
+      sha: ${{ steps.decide.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require a fully successful CI run for current main
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          THIS_REF: ${{ github.ref }}
+          WORKFLOW_RUN_ID: ${{ github.event_name == 'workflow_run' && github.event.workflow_run.id || '' }}
+        run: python3 scripts/pages_deploy_gate.py decide-live
+
+  build:
+    needs: gate
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     defaults:
       run:
         working-directory: ./frontend
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+
+      - name: Confirm main is still this SHA
+        working-directory: ${{ github.workspace }}
+        env:
+          EXPECTED_SHA: ${{ needs.gate.outputs.sha }}
+        run: python3 scripts/pages_deploy_gate.py assert-main
 
       - uses: actions/setup-node@v4
         with:
@@ -32,16 +65,35 @@ jobs:
       - run: npm ci
       - run: npm run build
 
+      - name: Confirm main again before upload
+        working-directory: ${{ github.workspace }}
+        env:
+          EXPECTED_SHA: ${{ needs.gate.outputs.sha }}
+        run: python3 scripts/pages_deploy_gate.py assert-main
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: frontend/dist
 
   deploy:
-    needs: build
+    needs: [gate, build]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.gate.outputs.sha }}
+
+      - name: Confirm main again before publish
+        env:
+          EXPECTED_SHA: ${{ needs.gate.outputs.sha }}
+        run: python3 scripts/pages_deploy_gate.py assert-main
+
       - id: deployment
         uses: actions/deploy-pages@v4
