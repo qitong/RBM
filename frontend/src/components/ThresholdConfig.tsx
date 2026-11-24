@@ -1,8 +1,11 @@
 import { ShieldCheck, Info, Save, RotateCcw, SlidersHorizontal } from 'lucide-react';
 import { ApiError } from '../api/client';
-import { useActiveMonitoringPlan } from '../api/hooks';
+import { postThresholdVersion, useActiveMonitoringPlan, useRbqmThresholds } from '../api/hooks';
 import { useThresholds } from '../context/ThresholdContext';
 import { thresholdsForReadEntry } from '../ctq/adaptApprovedPlan';
+import SyntheticNote from '../rbqm/SyntheticNote';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 
 function readError(error: unknown): string {
   if (error instanceof ApiError) {
@@ -28,6 +31,9 @@ export default function ThresholdConfig() {
     saveConfigs 
   } = useThresholds();
   const plan = useActiveMonitoringPlan();
+  const versions = useRbqmThresholds();
+  const queryClient = useQueryClient();
+  const [versionMessage, setVersionMessage] = useState('');
   const effective = thresholdsForReadEntry(plan.data);
   const pending = plan.data?.pendingCapabilities ?? [];
 
@@ -86,6 +92,78 @@ export default function ThresholdConfig() {
                 独立待决能力：{item.id}（{item.status}）。{item.reason}
              </p>
           ))}
+       </section>
+
+       <section aria-label="研究级与中心级阈值版本" className="bg-surface-container-high rounded-xl p-6 border border-outline-variant/50 relative z-10">
+          <h2 className="text-xl font-bold text-on-surface mb-2">研究级与中心级阈值版本</h2>
+          <SyntheticNote />
+          <p className="text-sm text-on-surface-variant mt-2 mb-4">
+             研究级 QTL 管全研究容忍限，中心级 KRI 管单个合成中心。预警阈必须小于行动阈，权重不能为负。不合格的版本不会保存。
+          </p>
+          {versions.data?.rules.map((rule) => (
+             <p key={rule.thresholdId ?? `${rule.scope}-${rule.metric}`} className="text-sm text-on-surface">
+                {rule.scope === 'study_qtl' ? '研究级 QTL' : '中心级 KRI'} · {rule.metric} · 预警 {rule.warningThreshold} / 行动 {rule.actionThreshold} {rule.unit} · {rule.configVersion}
+             </p>
+          ))}
+          {!versions.data && <p className="text-sm text-on-surface">未读到阈值版本契约，浏览器滑块不会被当成已批准版本。</p>}
+          {versionMessage && <p role="alert" className="text-sm text-on-surface mt-3">{versionMessage}</p>}
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              className="px-4 py-2 rounded-lg border border-outline-variant text-sm"
+              onClick={async () => {
+                try {
+                  await postThresholdVersion({
+                    operator: '合成质量员甲',
+                    rules: [{
+                      scope: 'site_kri',
+                      ctqId: 'CTQ-ICF',
+                      metric: 'informed_consent_sd',
+                      dimension: 'INFORMED CONSENT',
+                      unit: 'SD',
+                      warningThreshold: 2,
+                      actionThreshold: 3,
+                      weight: 0.25,
+                      rationale: '合成中心级 KRI，预警阈低于行动阈。',
+                    }],
+                  })
+                  await queryClient.invalidateQueries({ queryKey: ['rbqm-thresholds'] })
+                  setVersionMessage('版本已保存')
+                } catch (error) {
+                  setVersionMessage(readError(error))
+                }
+              }}
+            >
+              提交中心级 KRI 版本
+            </button>
+            <button
+              type="button"
+              className="px-4 py-2 rounded-lg border border-outline-variant text-sm"
+              onClick={async () => {
+                try {
+                  await postThresholdVersion({
+                    operator: '合成质量员甲',
+                    rules: [{
+                      scope: 'site_kri',
+                      ctqId: 'CTQ-ICF',
+                      metric: 'informed_consent_sd',
+                      dimension: 'INFORMED CONSENT',
+                      unit: 'SD',
+                      warningThreshold: 4,
+                      actionThreshold: 3,
+                      weight: -1,
+                      rationale: '合成反例',
+                    }],
+                  })
+                  setVersionMessage('版本已保存')
+                } catch (error) {
+                  setVersionMessage(readError(error))
+                }
+              }}
+            >
+              提交一个不合格的阈值版本
+            </button>
+          </div>
        </section>
 
        {/* Bento Grid Layout */}

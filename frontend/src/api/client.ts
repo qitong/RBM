@@ -29,7 +29,8 @@ function getFallbackPath(path: string): string | null {
     '/api/risk-forecast': '/api/risk-forecast.json',
     '/api/audit-logs': '/api/audit-logs.json',
     '/api/reports': '/api/reports.json',
-    // /api/ctq/* is intentionally absent. Plan and approval failures must stay visible.
+    // /api/ctq/* and /api/rbqm/* are intentionally absent.
+    // Plan, approval, and risk-workflow failures must stay visible.
   }
   if (staticMap[path]) return staticMap[path]
 
@@ -113,6 +114,51 @@ export async function apiGet<T>(path: string): Promise<T> {
     }
     throw new ApiError(0, `API unavailable and no fallback for: ${path}`)
   }
+}
+
+/**
+ * Contract reads. A failed response is returned as an error.
+ * Static JSON is used only when VITE_RBQM_STATIC_FALLBACK=1 and the network itself fails.
+ */
+export async function apiGetStrict<T>(path: string): Promise<T> {
+  let res: Response
+  try {
+    res = await fetch(`${baseUrl()}${path}`, { headers: { Accept: 'application/json' } })
+  } catch (error) {
+    if (import.meta.env.VITE_RBQM_STATIC_FALLBACK === '1' && path.startsWith('/api/rbqm')) {
+      return readExplicitRbqmFallback<T>(path)
+    }
+    const message = error instanceof Error ? error.message : 'API unavailable'
+    throw new ApiError(0, message)
+  }
+  const text = await res.text()
+  if (!res.ok) throw new ApiError(res.status, text || res.statusText)
+  return (text ? JSON.parse(text) : null) as T
+}
+
+async function readExplicitRbqmFallback<T>(path: string): Promise<T> {
+  const base = import.meta.env.BASE_URL ?? '/'
+  const fallbackUrl = `${base}api/rbqm-offline.json`.replace(/\/\//g, '/')
+  const fbRes = await fetch(fallbackUrl)
+  if (!fbRes.ok) throw new ApiError(fbRes.status, 'explicit synthetic fallback unavailable')
+  const marker = await fbRes.json() as {
+    fallbackActive?: boolean
+    datasets?: Record<string, unknown>
+    isSynthetic?: boolean
+    disclaimer?: string
+    dataSourceMode?: string
+  }
+  if (marker.fallbackActive !== true) {
+    throw new ApiError(0, 'static fallback missing fallbackActive')
+  }
+  return {
+    ok: true,
+    dataSourceMode: marker.dataSourceMode ?? 'synthetic',
+    isSynthetic: true,
+    disclaimer: marker.disclaimer,
+    fallbackActive: true,
+    data: marker.datasets?.[path] ?? null,
+  } as T
 }
 
 /** Plan, approval, and rollback calls. A failed response is returned as an error. */

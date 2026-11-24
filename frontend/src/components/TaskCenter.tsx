@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Clock, AlertCircle, CheckCircle2, Circle, User, Building2, Tag, ChevronDown } from 'lucide-react'
 import { useTaskList } from '../api/hooks'
+import SyntheticNote from '../rbqm/SyntheticNote'
 import type { Task } from '../api/hooks'
 
 const PRIORITY_CONFIG: Record<Task['priority'], { label: string; color: string; bg: string }> = {
@@ -165,6 +166,8 @@ export default function TaskCenter() {
 
   return (
     <div className="animate-in fade-in duration-300">
+      <SyntheticNote />
+      <p className="text-small mb-4">看板来自合成监查行动。这里的列移动不关闭风险；关闭必须经过预警页的状态机。</p>
       <SummaryBar tasks={data} />
 
       <div className="grid gap-6" style={{ gridTemplateColumns: 'repeat(3, 1fr)', alignItems: 'start' }}>

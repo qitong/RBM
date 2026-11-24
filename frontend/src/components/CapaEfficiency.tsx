@@ -1,5 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { useCapaEfficiency } from '../api/hooks'
+import SyntheticNote from '../rbqm/SyntheticNote'
 
 function KpiCard({ label, value }: { label: string; value: string | number }) {
   return (
@@ -20,6 +21,7 @@ export default function CapaEfficiency() {
 
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
+      <SyntheticNote />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <KpiCard label={'\u5E73\u5747\u5468\u671F (\u5929)'} value={avgCycleTimeDays} />
         <KpiCard label={'\u4E2D\u4F4D\u6570\u5468\u671F (\u5929)'} value={medianCycleTimeDays} />

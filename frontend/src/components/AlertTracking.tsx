@@ -1,348 +1,186 @@
-import { useState } from 'react';
-import { Clock, CheckCircle, Search, ThumbsUp, X, TrendingDown, TrendingUp, MoreVertical, Building2 } from 'lucide-react';
-import { alerts as initialAlerts } from '../data.json';
-import { useThresholds } from '../context/ThresholdContext';
+import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
+import { ApiError } from '../api/client'
+import { postRiskTransition, useRbqmRisks, type RbqmRisk } from '../api/hooks'
+import { useThresholds } from '../context/ThresholdContext'
+import SyntheticNote from '../rbqm/SyntheticNote'
 
-const DIMENSION_LABELS: Record<string, string> = {
-  'INFORMED CONSENT': '知情同意',
-  'INCLUSION EXCLUSION': '入排标准',
-  'INVESTIGATIONAL PRODUCT': '试验用药',
-  'SAFETY REPORTING': '安全性报告',
-  'PROCEDURES TESTS': '访视与检查',
-  'VISIT SCHEDULE': '访视计划',
-  'CCMEDS': '合并用药',
-  'OTHER': '其他'
-};
+const OPERATOR = '中央监查员-合成'
 
-const HYPOTHESES_TEMPLATES: Record<string, any> = {
-  'HIGH': {
-    'INFORMED CONSENT': [
-      "签署日期晚于筛选期检查日期，可能存在流程先后顺序误解。",
-      "使用了旧版知情同意书，中心版本管理可能存在疏漏。",
-      "由于修订补录，签署时间与实际访视时间不匹配。"
-    ],
-    'SAFETY REPORTING': [
-      "SAE 报告延迟超过 24h，可能由于 CRC 与研究者沟通断层。",
-      "AE 描述不规范，缺乏严重度分级，需加强方案培训。",
-      "SAE 随访信息更新不及，存在数据积压。"
-    ],
-    'default': [
-      "由于近期入组速度过快，中心操作趋于草率，产生系统性偏差。",
-      "方案理解存在歧义，需进行全局 FAQ 答疑。",
-      "录入延迟导致的逻辑验证错误。"
-    ]
-  },
-  'LOW': {
-    'SAFETY REPORTING': [
-      "AE 发生率显著低于平均水平，可能由于研究者漏报或对非预期 AE 的判定标准过严。",
-      "患者汇报系统 (ePRO) 同步故障，导致安全性数据缺失。",
-      "中心存在恶意筛选或瞒报情况，需重点核查。"
-    ],
-    'INVESTIGATIONAL PRODUCT': [
-      "用药偏差极低，需确认是否存在空配记录或录入造假风险。",
-      "药物回收清点数据异常吻合，可能由于 CRC 代替研究者操作。"
-    ],
-    'default': [
-      "数据上报频率异常偏低，怀疑中心监控频率缩减。",
-      "原始记录可能缺失，数据采集不完整。",
-      "瞒报/漏报高风险中心，建议启动现场审计。"
-    ]
+function readError(error: unknown): string {
+  if (error instanceof ApiError) {
+    try {
+      const parsed = JSON.parse(error.body) as { code?: string; message?: string; missing?: string[] }
+      const missing = parsed.missing?.length ? `（${parsed.missing.join('、')}）` : ''
+      if (parsed.message) return `${parsed.code ?? 'ERROR'}：${parsed.message}${missing}`
+    } catch {
+      return error.message
+    }
+    return error.message
   }
-};
+  return error instanceof Error ? error.message : '请求失败'
+}
+
+function columnOf(status: string): 'open' | 'active' | 'closed' {
+  if (status === 'Closed') return 'closed'
+  if (status === 'Detected') return 'open'
+  return 'active'
+}
+
+function scopeLabel(scope: string): string {
+  return scope === 'study_qtl' ? '研究级 QTL' : '中心级 KRI'
+}
 
 export default function AlertTracking() {
-  const { checkOutlier } = useThresholds();
-  const [alerts, setAlerts] = useState(() =>
-    initialAlerts.map((a: any) => {
-      const type = a.metricValue < 0 ? 'LOW' : 'HIGH';
-      let hypothesis: string | undefined;
-      if (a.status === 'In Review' || a.status === 'Closed') {
-        const typeTemplates = HYPOTHESES_TEMPLATES[type] || HYPOTHESES_TEMPLATES['HIGH'];
-        const templates = typeTemplates[a.dimension] || typeTemplates['default'];
-        hypothesis = templates[Math.floor(Math.random() * templates.length)];
-      }
-      return {
-        ...a,
-        type,
-        ...(hypothesis !== undefined ? { hypothesis } : {})
-      };
-    })
-  );
-  const liveAlerts = alerts.map((alert) => ({
-    ...alert,
-    severity: checkOutlier(alert.metricValue, alert.dimension) === 'action' ? 'Red' : 'Yellow',
-  }));
+  const { checkOutlier } = useThresholds()
+  const query = useRbqmRisks()
+  const client = useQueryClient()
+  const [activeId, setActiveId] = useState<string | null>(null)
+  const [rootCause, setRootCause] = useState('')
+  const [assignee, setAssignee] = useState('合成CRA-甲')
+  const [dueDate, setDueDate] = useState('2026-12-15')
+  const [actionSummary, setActionSummary] = useState('合成中心复训并复核记录。')
+  const [effectivenessNote, setEffectivenessNote] = useState('')
+  const [formError, setFormError] = useState('')
 
-  const [activeRCA, setActiveRCA] = useState<any>(null);
+  if (query.isLoading) return <div className="text-slate-500">加载中…</div>
+  if (query.isError || !query.data) return <div className="text-red-600">无法加载风险信号。接口失败，未改读静态 JSON。</div>
 
-  const handleStartRCA = (alert: any) => {
+  const risks = query.data.map((risk) => {
+    const severity = risk.unit === 'SD'
+      ? (checkOutlier(risk.metricValue, risk.dimension) === 'action' ? 'Red' : 'Yellow')
+      : (risk.level === 'action' ? 'Red' : 'Yellow')
+    return { ...risk, severity }
+  })
+  const active = risks.find((risk) => risk.id === activeId) ?? null
+
+  async function submit(risk: RbqmRisk, toStatus: string, fields: Record<string, string>) {
+    setFormError('')
     try {
-      const typeTemplates = HYPOTHESES_TEMPLATES[alert?.type] || HYPOTHESES_TEMPLATES['HIGH'];
-      const templates = typeTemplates[alert?.dimension] || typeTemplates['default'];
-      const hypothesis = templates[Math.floor(Math.random() * templates.length)];
-      setActiveRCA({ ...alert, hypothesis });
+      await postRiskTransition(risk.id, {
+        toStatus,
+        operator: OPERATOR,
+        operatorRole: 'central_monitor',
+        ...fields,
+      })
+      setActiveId(null)
+      await client.invalidateQueries({ queryKey: ['rbqm-risks'] })
     } catch (error) {
-      console.error('Error in handleStartRCA:', error);
-      // Fallback
-      setActiveRCA({
-        ...alert,
-        hypothesis: "系统正在分析此偏差的潜在根因，请稍候查看详细分析结果。"
-      });
+      setFormError(readError(error))
     }
-  };
+  }
 
-  const handleConfirmHypothesis = (id: string) => {
-    setAlerts(prev => prev.map(a => a.id === id ? { ...a, status: 'In Review' } : a));
-    setActiveRCA(null);
-  };
-
-  const handleCompleteCAPA = (id: string) => {
-    setAlerts(prev => prev.map(a => a.id === id ? { ...a, status: 'Closed' } : a));
-  };
+  function renderCard(risk: (typeof risks)[number]) {
+    return (
+      <article key={risk.id} data-alert-id={risk.id} data-severity={risk.severity} className="card-minimal border-l-4 mb-4">
+        <div className="flex gap-2 mb-3">
+          <span className="badge badge-neutral">{risk.id}</span>
+          <span className="badge badge-neutral">{scopeLabel(risk.scope)}</span>
+          <span className="badge badge-neutral">{risk.status}</span>
+        </div>
+        <h3 className="text-h3 mb-2">{risk.title}</h3>
+        <p className="text-small mb-2">{risk.siteId ?? risk.studyId} · {risk.configVersion}</p>
+        <p className="text-small mb-4">
+          指标 {risk.metricValue} {risk.unit}
+        </p>
+        {risk.rootCause && <p className="text-small mb-3">人工根因：{risk.rootCause}</p>}
+        <button type="button" className="btn-primary" onClick={() => { setActiveId(risk.id); setFormError('') }}>
+          填写人工研判
+        </button>
+      </article>
+    )
+  }
 
   return (
     <div>
       <header className="mb-8">
-        <div className="flex justify-between items-end gap-8">
-          <div style={{ flex: '1 1 auto', minWidth: 0 }}>
-            <h2 className="text-h1 mb-4">预警跟踪与闭环管理</h2>
-            <p className="text-large leading-relaxed">
-              监控、调查并解决所有活跃临床站点的安全信号。系统持续接入结构化和非结构化源数据。
-            </p>
-          </div>
-          <div className="flex gap-4 flex-shrink-0">
-            <button className="btn-secondary">
-              导出PDF审计记录
-            </button>
-          </div>
-        </div>
+        <h2 className="text-h1 mb-4">预警跟踪与闭环管理</h2>
+        <SyntheticNote />
+        <p className="text-large leading-relaxed mt-3">
+          合成信号按状态机推进。根因、责任人和有效性复核都由人填写；缺任何一项时不能关闭。
+        </p>
       </header>
 
-      {/* Kanban Board Area - Mintlify clean grid */}
       <div className="grid-cards grid-cols-1 xl:grid-cols-3">
-        {/* Column 1: 待评估 (Open) */}
-        <div className="card">
-          <div className="flex justify-between items-center pb-4 border-b mb-6" style={{ borderColor: 'var(--color-border)' }}>
-            <h3 className="text-h3 flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--color-error)' }}></span>
-              待评估
-            </h3>
-            <span className="badge badge-error">
-              {liveAlerts.filter((i:any) => i.status === 'Open').length}
-            </span>
-          </div>
-          <div className="space-y-6">
-            {liveAlerts.filter((i:any) => i.status === 'Open').map((item: any) => (
-              <article key={item.id} data-alert-id={item.id} data-severity={item.severity} className="card-minimal border-l-4" style={{ borderLeftColor: 'var(--color-error)' }}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex gap-2">
-                    <span className={`badge ${item.type === 'HIGH' ? 'badge-error' : 'badge-warning'} flex items-center gap-1`}>
-                      {item.type === 'HIGH' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
-                      {item.type === 'HIGH' ? 'High Risk' : 'Low Reporting'}
-                    </span>
-                    <span className="badge badge-neutral">
-                      {item.id}
-                    </span>
-                  </div>
-                  <button className="p-1 hover:bg-gray-50 rounded transition-colors">
-                    <MoreVertical size={16} />
-                  </button>
-                </div>
-                <h4 className="text-h3 mb-3">
-                  {DIMENSION_LABELS[item.dimension as keyof typeof DIMENSION_LABELS]} 偏差
-                </h4>
-                <div className="flex items-center gap-2 mb-4 text-small">
-                  <span className="flex items-center gap-1"><Building2 size={16} /> 中心 {item.site}</span>
-                  <span>•</span>
-                  <span>{item.project}</span>
-                </div>
-                <div className="mb-6 text-small">
-                  偏差值:
-                  <span className={`ml-1 font-semibold text-mono`} style={{ color: item.type === 'HIGH' ? 'var(--color-error)' : 'var(--color-warning)' }}>
-                    {item.metricValue.toFixed(2)} SD
-                  </span>
-                </div>
-                <div className="flex justify-end pt-4 border-t" style={{ borderColor: 'var(--color-border)' }}>
-                  <button
-                    onClick={() => {
-                      console.log('Button clicked, item:', item);
-                      handleStartRCA(item);
-                    }}
-                    className="btn-primary flex items-center gap-2"
-                    type="button"
-                  >
-                    <Search size={18} /> 开始AI分析
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        {/* Column 2: CAPA执行 (In Review) */}
-        <div className="card">
-          <div className="flex justify-between items-center pb-4 border-b mb-6" style={{ borderColor: 'var(--color-border)' }}>
-            <h3 className="text-h3 flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--color-warning)' }}></span>
-              CAPA执行
-            </h3>
-            <span className="badge badge-warning">
-              {liveAlerts.filter((i:any) => i.status === 'In Review').length}
-            </span>
-          </div>
-          <div className="space-y-6">
-            {liveAlerts.filter((i:any) => i.status === 'In Review').map((item: any) => (
-              <article key={item.id} data-alert-id={item.id} data-severity={item.severity} className="card-minimal border-l-4 relative" style={{ borderLeftColor: 'var(--color-warning)' }}>
-                <div className="absolute inset-0 opacity-5 pointer-events-none" style={{ background: 'linear-gradient(135deg, var(--color-brand), transparent)' }}></div>
-                <div className="flex justify-between items-start mb-4 relative z-10">
-                  <div className="flex gap-2">
-                    <span className="badge badge-warning flex items-center gap-1">
-                      <Clock size={12} /> 进行中
-                    </span>
-                    <span className="badge badge-neutral">
-                      {item.id}
-                    </span>
-                  </div>
-                </div>
-                <h4 className="text-h3 mb-3 relative z-10">
-                  {DIMENSION_LABELS[item.dimension as keyof typeof DIMENSION_LABELS]} 解决方案
-                </h4>
-                <div className="flex items-center gap-2 mb-4 text-small relative z-10">
-                  <span className="flex items-center gap-1"><Building2 size={16} /> 中心 {item.site}</span>
-                </div>
-                <div className="card-minimal text-small italic mb-6 border-l-2 relative z-10" style={{ borderLeftColor: 'var(--color-warning)' }}>
-                  "{item.hypothesis}"
-                </div>
-                <div className="flex justify-end pt-4 border-t relative z-10" style={{ borderColor: 'var(--color-border)' }}>
-                  <button
-                    onClick={() => handleCompleteCAPA(item.id)}
-                    className="btn-brand w-full flex justify-center items-center gap-2"
-                  >
-                    确认CAPA闭环
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        {/* Column 3: 审计闭环 (Closed) */}
-        <div className="card opacity-80 hover:opacity-100 transition-opacity">
-          <div className="flex justify-between items-center pb-4 border-b mb-6" style={{ borderColor: 'var(--color-border)' }}>
-            <h3 className="text-h3 flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--color-brand)' }}></span>
-              审计闭环
-            </h3>
-            <span className="badge badge-success">
-              {liveAlerts.filter((i:any) => i.status === 'Closed').length}
-            </span>
-          </div>
-          <div className="space-y-6">
-            {liveAlerts.filter((i:any) => i.status === 'Closed').map((item: any) => (
-              <article key={item.id} data-alert-id={item.id} data-severity={item.severity} className="card-minimal border-l-4 opacity-80" style={{ borderLeftColor: 'var(--color-brand)' }}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex gap-2">
-                    <span className="badge badge-success flex items-center gap-1">
-                      <CheckCircle size={14} /> 已解决
-                    </span>
-                  </div>
-                  <span className="text-mono text-xs">{item.id}</span>
-                </div>
-                <h4 className="text-h3 mb-3 line-through opacity-60" style={{ textDecorationColor: 'var(--color-border)' }}>
-                  {DIMENSION_LABELS[item.dimension as keyof typeof DIMENSION_LABELS]} 问题
-                </h4>
-                <div className="flex items-center gap-2 text-small opacity-60">
-                  <span className="flex items-center gap-1"><Building2 size={16} /> 中心 {item.site}</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
+        <section className="card">
+          <h3 className="text-h3 mb-4">待评估</h3>
+          {risks.filter((risk) => columnOf(risk.status) === 'open').map(renderCard)}
+        </section>
+        <section className="card">
+          <h3 className="text-h3 mb-4">CAPA执行</h3>
+          {risks.filter((risk) => columnOf(risk.status) === 'active').map(renderCard)}
+        </section>
+        <section className="card">
+          <h3 className="text-h3 mb-4">审计闭环</h3>
+          {risks.filter((risk) => columnOf(risk.status) === 'closed').map(renderCard)}
+        </section>
       </div>
 
-      {/* RCA Modal */}
-      {activeRCA && (
+      {active && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-8" style={{ backgroundColor: 'rgba(0,0,0,0.35)' }}>
           <div className="card-featured shadow-2xl w-full overflow-hidden" style={{ maxWidth: '42rem' }}>
-            <div className="p-6 border-b flex justify-between items-start" style={{ borderColor: 'var(--color-border)' }}>
-              <div>
-                <h3 className="text-h2 flex items-center gap-3">
-                  <div className="p-2 rounded-lg shadow-lg rotate-3" style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-primary)' }}>
-                    <Search size={20} />
-                  </div>
-                  根因分析
-                </h3>
-                <p className="text-mono mt-2">
-                  事件 ID: {activeRCA.id} | 类型: {activeRCA.type} 异常值
-                </p>
-              </div>
-              <button
-                onClick={() => setActiveRCA(null)}
-                className="p-2 rounded-full transition-colors"
-                style={{ backgroundColor: 'transparent' }}
-                onMouseEnter={e => e.currentTarget.style.backgroundColor = '#f9fafb'}
-                onMouseLeave={e => e.currentTarget.style.backgroundColor = 'transparent'}
-                type="button"
-              >
-                <X size={20} />
-              </button>
+            <div className="p-6 border-b" style={{ borderColor: 'var(--color-border)' }}>
+              <h3 className="text-h2">人工根因与行动</h3>
+              <p className="text-small mt-2">{active.id} · {scopeLabel(active.scope)} · 当前 {active.status}</p>
             </div>
-
-            <div className="p-8 space-y-8">
-              <div className="card-minimal relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1 h-full" style={{ backgroundColor: 'var(--color-brand)' }}></div>
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-1.5 h-1.5 rounded-full animate-pulse" style={{ backgroundColor: 'var(--color-brand)' }}></div>
-                  <h4 className="text-mono" style={{ color: 'var(--color-brand)' }}>
-                    AI预测引擎生成
-                  </h4>
-                </div>
-                <p className="text-large font-medium leading-relaxed italic">
-                  "{activeRCA.hypothesis}"
-                </p>
-              </div>
-
-              <div className="space-y-6">
-                <h4 className="text-mono">
-                  下一步行动 (风险缓解)
-                </h4>
-                <div className="grid grid-cols-1 gap-4">
-                  <button
-                    onClick={() => handleConfirmHypothesis(activeRCA.id)}
-                    className="flex items-center gap-4 p-6 card-minimal border hover:border-gray-200 transition-all text-left group"
-                  >
-                    <div className="p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform" style={{ backgroundColor: 'var(--color-brand)', color: 'var(--color-primary)' }}>
-                      <ThumbsUp size={20} />
-                    </div>
-                    <div>
-                      <div className="text-h3">接受假设并启动CAPA</div>
-                      <div className="text-small mt-1">
-                        自动分派任务到CRM/CRC门户并进入闭环跟踪。
-                      </div>
-                    </div>
+            <div className="p-6 space-y-4">
+              <label className="block text-small">
+                根因
+                <textarea className="w-full mt-1 border p-2" value={rootCause} onChange={(event) => setRootCause(event.target.value)} />
+              </label>
+              <label className="block text-small">
+                责任人
+                <input className="w-full mt-1 border p-2" value={assignee} onChange={(event) => setAssignee(event.target.value)} />
+              </label>
+              <label className="block text-small">
+                到期日
+                <input className="w-full mt-1 border p-2" value={dueDate} onChange={(event) => setDueDate(event.target.value)} />
+              </label>
+              <label className="block text-small">
+                行动说明
+                <textarea className="w-full mt-1 border p-2" value={actionSummary} onChange={(event) => setActionSummary(event.target.value)} />
+              </label>
+              <label className="block text-small">
+                有效性复核
+                <textarea className="w-full mt-1 border p-2" value={effectivenessNote} onChange={(event) => setEffectivenessNote(event.target.value)} />
+              </label>
+              {formError && <p role="alert" className="text-red-600">{formError}</p>}
+              <div className="flex flex-wrap gap-2">
+                {active.status === 'Detected' && (
+                  <button type="button" className="btn-primary" onClick={() => submit(active, 'Under_RCA', { rootCause })}>
+                    提交根因并进入研判
                   </button>
-                </div>
+                )}
+                {(active.status === 'Under_RCA' || active.status === 'Triaged') && (
+                  <button
+                    type="button"
+                    className="btn-primary"
+                    onClick={() => submit(active, 'Action_In_Progress', { rootCause, assignee, dueDate, actionSummary })}
+                  >
+                    指派行动
+                  </button>
+                )}
+                {active.status === 'Action_In_Progress' && (
+                  <button type="button" className="btn-primary" onClick={() => submit(active, 'Effectiveness_Check', {})}>
+                    进入有效性复核
+                  </button>
+                )}
+                {active.status === 'Effectiveness_Check' && (
+                  <button type="button" className="btn-primary" onClick={() => submit(active, 'Closed', { effectivenessNote })}>
+                    确认有效并关闭
+                  </button>
+                )}
+                {active.status !== 'Closed' && (
+                  <button type="button" className="btn-secondary" onClick={() => submit(active, 'Closed', {})}>
+                    尝试关闭
+                  </button>
+                )}
+                <button type="button" className="btn-secondary" onClick={() => setActiveId(null)}>返回</button>
               </div>
-            </div>
-
-            <div className="p-6 border-t flex justify-end gap-4" style={{ borderColor: 'var(--color-border)' }}>
-              <button
-                onClick={() => setActiveRCA(null)}
-                className="btn-secondary"
-              >
-                忽略预测
-              </button>
-              <button
-                onClick={() => handleConfirmHypothesis(activeRCA.id)}
-                className="btn-primary active:scale-95"
-              >
-                确认并发出指令
-              </button>
             </div>
           </div>
         </div>
       )}
     </div>
-  );
+  )
 }
-

@@ -1,0 +1,21 @@
+{
+  "fallbackActive": true,
+  "isSynthetic": true,
+  "dataSourceMode": "synthetic",
+  "disclaimer": "合成研究验证数据，非真实临床试验监查证据",
+  "datasets": {
+    "/api/rbqm/risks": [],
+    "/api/rbqm/tasks": [],
+    "/api/rbqm/actions": [],
+    "/api/rbqm/audit": { "logs": [], "events": [] },
+    "/api/rbqm/capa/efficiency": {
+      "avgCycleTimeDays": 0,
+      "medianCycleTimeDays": 0,
+      "closureRate": 0,
+      "bySite": [],
+      "byCategory": []
+    },
+    "/api/rbqm/sites/comparison": { "seed": 42, "points": [], "visits": {} },
+    "/api/rbqm/thresholds": { "configVersion": "v1", "versions": [], "rules": [] }
+  }
+}
