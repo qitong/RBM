@@ -3,6 +3,7 @@ import { ApiError } from '../api/client';
 import { postThresholdVersion, useActiveMonitoringPlan, useRbqmThresholds } from '../api/hooks';
 import { useThresholds } from '../context/ThresholdContext';
 import { thresholdsForReadEntry } from '../ctq/adaptApprovedPlan';
+import OverdueConsentJudgment from './OverdueConsentJudgment';
 import SyntheticNote from '../rbqm/SyntheticNote';
 import { useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -72,7 +73,7 @@ export default function ThresholdConfig() {
              <h2 className="text-xl font-bold text-on-surface">已生效监测计划</h2>
           </div>
              <p className="text-sm text-on-surface-variant mb-4">
-             单位为 SD 的已批准规则写入对应类别的超限判断。其他单位只按该指标自己的阈值判断，不改 SD 滑块。未批准候选不改变预设。
+             单位为 SD 的已批准规则写入对应类别的超限判断。逾期签署比例按百分比界限单独判断，不改 SD 滑块。未批准候选不改变预设。
           </p>
           {plan.isLoading && <p className="text-sm text-on-surface">正在读取已批准监测计划</p>}
           {plan.isError && (
@@ -93,6 +94,8 @@ export default function ThresholdConfig() {
              </p>
           ))}
        </section>
+
+       <OverdueConsentJudgment />
 
        <section aria-label="研究级与中心级阈值版本" className="bg-surface-container-high rounded-xl p-6 border border-outline-variant/50 relative z-10">
           <h2 className="text-xl font-bold text-on-surface mb-2">研究级与中心级阈值版本</h2>

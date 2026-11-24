@@ -182,6 +182,7 @@ describe('useThresholds', () => {
     expect(cat?.presetFromPlan).toBe(false)
     expect(result.current.checkOutlier(3.5, 'INFORMED CONSENT')).toBe('action')
     expect(result.current.checkApprovedMetric(3, 'KRI-01')).toBe('normal')
+    expect(result.current.checkApprovedMetric(4, 'KRI-01')).toBe('warning')
     expect(result.current.checkApprovedMetric(5, 'KRI-01')).toBe('warning')
     expect(result.current.checkApprovedMetric(9, 'KRI-01')).toBe('action')
   })
