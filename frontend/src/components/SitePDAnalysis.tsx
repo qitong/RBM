@@ -6,42 +6,27 @@ import {
 import { ChevronLeft, ArrowRight, LayoutGrid, Table as TableIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useThresholds } from '../context/ThresholdContext';
-
-const SITES = ['101', '102', '105', '201', '203', '302', '305', '401', '402', '501'];
+import { useRbqmSiteComparison } from '../api/hooks';
+import SyntheticNote from '../rbqm/SyntheticNote';
 
 export default function SitePDAnalysis() {
   const { categories, checkOutlier } = useThresholds();
+  const comparison = useRbqmSiteComparison();
   const navigate = useNavigate();
   const [selectedSite, setSelectedSite] = useState<string | null>(null);
 
-  // Comparison View Data (Current Site Comparison)
   const siteComparisonData = useMemo(() => {
-    return SITES.map(s => {
-      const entry: any = { site: `中心 ${s}`, rawSite: s };
-      categories.forEach(cat => {
-        // Occurrence counts should always be positive
-        entry[cat.label] = Math.max(1, Math.floor(Math.random() * 25));
-      });
-      return entry;
-    });
-  }, [categories]);
+    return (comparison.data?.points ?? []).map((point) => ({
+      site: point.siteId,
+      rawSite: point.siteId,
+      ...point.counts,
+    }));
+  }, [comparison.data]);
 
-  // Site Matrix Data (Visit 1-20 x Dimension) for selected site
   const siteMatrixData = useMemo(() => {
-    if (!selectedSite) return [];
-    return Array.from({ length: 20 }, (_, i) => {
-      const visit = i + 1;
-      const entry: any = { visit: `Visit ${visit}` };
-      categories.forEach(cat => {
-        // Mocking NorPD values (-3.0 to 3.0)
-        let base = Math.random() * 2.5;
-        if (Math.random() > 0.85) base = Math.random() * 4; // Outlier
-        if (Math.random() > 0.9) base = -base; // Negative outlier
-        entry[cat.id] = base;
-      });
-      return entry;
-    });
-  }, [selectedSite, categories]);
+    if (!selectedSite || !comparison.data) return [];
+    return comparison.data.visits[selectedSite] ?? [];
+  }, [selectedSite, comparison.data]);
 
   const COLORS = [
     '#54e98a', '#ffb4ab', '#59d8e5', '#f59e0b', 
@@ -57,8 +42,15 @@ export default function SitePDAnalysis() {
     }
   };
 
+  if (comparison.isLoading) {
+    return <div className="text-slate-500">加载中…</div>
+  }
+  if (comparison.isError || !comparison.data) {
+    return <div role="alert">中心对比接口不可用，未用随机数填补。</div>
+  }
+
   return (
-    <div className="bg-surface-container-low rounded-xl p-6 relative flex flex-col h-full overflow-hidden shadow-lg border border-outline-variant/30 group animate-in fade-in duration-300">
+    <div data-synthetic="true" className="bg-surface-container-low rounded-xl p-6 relative flex flex-col h-full overflow-hidden shadow-lg border border-outline-variant/30 group animate-in fade-in duration-300">
        <div className="absolute top-0 left-0 w-full h-[2px] card-top-border opacity-50 group-hover:opacity-100 transition-opacity"></div>
        <div className="flex justify-between items-start mb-6">
           <div>
@@ -75,6 +67,12 @@ export default function SitePDAnalysis() {
                  </>
                ) : '各中心 PD 发生构成 (Site Comparison)'}
             </h3>
+            <SyntheticNote />
+            <ul>
+              {(comparison.data?.points ?? []).map((point) => (
+                <li key={point.siteId}>{point.siteId}</li>
+              ))}
+            </ul>
             <p className="font-body-md text-sm text-on-surface-variant mt-1">
                {selectedSite 
                  ? `查看该中心在各个访视上的多维度 PD 偏离度 (双向预警)。` 
@@ -109,12 +107,12 @@ export default function SitePDAnalysis() {
                   </thead>
                   <tbody className="text-[11px] font-medium">
                      {siteMatrixData.map((row) => (
-                       <tr key={row.visit} className="border-b border-outline-variant/10 hover:bg-surface-container-high/50 transition-colors group/row">
+                       <tr key={String(row.visit)} className="border-b border-outline-variant/10 hover:bg-surface-container-high/50 transition-colors group/row">
                           <td className="p-3 font-bold text-on-surface bg-surface-container-low group-hover/row:bg-surface-container-high/50 sticky left-0 shadow-[2px_0_5px_rgba(0,0,0,0.2)] transition-colors">
                              {row.visit}
                           </td>
                           {categories.map(cat => {
-                             const val = row[cat.id];
+                             const val = Number(row[cat.id] ?? 0);
                              const status = checkOutlier(val, cat.id);
                              const bgColor = status === 'action' ? 'bg-error text-on-error' : status === 'warning' ? 'bg-yellow-500 text-black' : 'bg-primary-container/20 text-primary-fixed';
                              const ring = status === 'action' ? 'ring-1 ring-error/50 shadow-[0_0_8px_rgba(255,180,171,0.4)]' : '';

@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react'
 import { Shield, Download, ChevronDown, ChevronRight, Filter } from 'lucide-react'
 import { useAuditLogs } from '../api/hooks'
+import SyntheticNote from '../rbqm/SyntheticNote'
 import type { AuditLog, AuditActionType } from '../api/hooks'
 
 const ACTION_META: Record<AuditActionType, { label: string; bg: string; color: string }> = {
   UPDATE_THRESHOLD: { label: '阈值变更',   bg: '#FEF3C7', color: '#92400E' },
   CLOSE_ALERT:     { label: '预警关闭',   bg: '#ECFDF5', color: '#065F46' },
+  STATE_TRANSITION: { label: '状态跃迁', bg: '#F8FAFC', color: '#334155' },
   CREATE_TASK:     { label: '工单创建',   bg: '#EFF6FF', color: '#1E40AF' },
   RESOLVE_TASK:    { label: '工单完结',   bg: '#F0FDF4', color: '#166534' },
   UPDATE_SUBJECT:  { label: '受试者更新', bg: '#FAF5FF', color: '#6B21A8' },
@@ -152,7 +154,8 @@ export default function AuditTrail() {
     <div className="animate-in fade-in duration-300">
       <div className="flex items-center gap-2 mb-6" style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '8px', padding: '10px 16px', fontSize: '12px', color: '#1E40AF' }}>
         <span><Shield size={14} /></span>
-        <span>审计日志为只读不可篡改记录，符合 FDA CFR 21 Part 11 电子记录规范。所有敏感操作均自动捕获并持久化。</span>
+        <span>追加式操作留痕，仅供研究原型核对。这不是经认证的生产电子记录系统。</span>
+        <SyntheticNote />
       </div>
 
       <KpiBanner logs={logs} />

@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
-import { apiGet, apiSendStrict } from './client'
+import { apiGet, apiGetStrict, apiSendStrict } from './client'
 
 export interface Site {
   id: string
@@ -165,11 +165,27 @@ export interface CapaEfficiency {
 }
 
 export function useCapaList() {
-  return useQuery({ queryKey: ['capa'], queryFn: () => apiGet<CapaRecord[]>('/api/capa') })
+  return useQuery({
+    queryKey: ['capa'],
+    queryFn: async () => {
+      const body = unwrapContract<CapaRecord[]>(await apiGetStrict<unknown>('/api/rbqm/actions'))
+      if (!Array.isArray(body)) throw new Error('CAPA action contract mismatch')
+      return body
+    },
+  })
 }
 
 export function useCapaEfficiency() {
-  return useQuery({ queryKey: ['capa-efficiency'], queryFn: () => apiGet<CapaEfficiency>('/api/capa/efficiency') })
+  return useQuery({
+    queryKey: ['capa-efficiency'],
+    queryFn: async () => {
+      const body = unwrapContract<CapaEfficiency>(await apiGetStrict<unknown>('/api/rbqm/capa/efficiency'))
+      if (!body || typeof body !== 'object' || !('avgCycleTimeDays' in body)) {
+        throw new Error('CAPA efficiency contract mismatch')
+      }
+      return body
+    },
+  })
 }
 
 export interface Task {
@@ -187,7 +203,14 @@ export interface Task {
 }
 
 export function useTaskList() {
-  return useQuery({ queryKey: ['tasks'], queryFn: () => apiGet<Task[]>('/api/tasks') })
+  return useQuery({
+    queryKey: ['tasks'],
+    queryFn: async () => {
+      const body = unwrapContract<Task[]>(await apiGetStrict<unknown>('/api/rbqm/tasks'))
+      if (!Array.isArray(body)) throw new Error('task contract mismatch')
+      return body
+    },
+  })
 }
 
 export type ClinicalEventType = 'AE' | 'SAE' | 'Diagnosis' | 'LabFinding' | 'TreatmentChange' | 'Surgery' | 'Progression' | 'Hospitalization'
@@ -283,6 +306,7 @@ export type AuditActionType =
   | 'RESOLVE_TASK'
   | 'UPDATE_SUBJECT'
   | 'EXPORT_REPORT'
+  | 'STATE_TRANSITION'
 
 export interface AuditLog {
   logId: string
@@ -295,7 +319,27 @@ export interface AuditLog {
 }
 
 export function useAuditLogs() {
-  return useQuery({ queryKey: ['audit-logs'], queryFn: () => apiGet<AuditLog[]>('/api/audit-logs') })
+  return useQuery({
+    queryKey: ['audit-logs'],
+    queryFn: async () => {
+      const body = unwrapContract<AuditLog[] | { logs: AuditLog[] }>(await apiGetStrict<unknown>('/api/rbqm/audit'))
+      if (Array.isArray(body)) return body
+      if (body && Array.isArray(body.logs)) return body.logs
+      throw new Error('audit contract mismatch')
+    },
+  })
+}
+
+function unwrapContract<T>(payload: unknown): T {
+  if (
+    payload !== null &&
+    typeof payload === 'object' &&
+    'isSynthetic' in payload &&
+    'data' in payload
+  ) {
+    return (payload as { data: T }).data
+  }
+  return payload as T
 }
 
 export type ReportType = 'Monthly' | 'SiteDeepDive' | 'CapaAnalysis' | 'Custom'
@@ -430,5 +474,110 @@ export function useCtqVersions() {
   return useQuery({
     queryKey: ['ctq-versions'],
     queryFn: () => apiSendStrict<CtqVersionsResponse>('/api/ctq/versions'),
+  })
+}
+
+export type RbqmStatus =
+  | 'Detected'
+  | 'Triaged'
+  | 'Under_RCA'
+  | 'Action_In_Progress'
+  | 'Escalated'
+  | 'Effectiveness_Check'
+  | 'Closed'
+
+export interface RbqmRisk {
+  id: string
+  studyId: string
+  siteId: string | null
+  scope: 'site_kri' | 'study_qtl'
+  ctqId: string
+  dimension: string
+  title: string
+  metric: string
+  metricValue: number
+  unit: string
+  level: 'action' | 'warning'
+  status: RbqmStatus | string
+  configVersion: string
+  rootCause: string | null
+  assignee: string | null
+  dueDate: string | null
+  actionSummary: string | null
+  effectivenessNote: string | null
+  taskId: string | null
+  capaId: string | null
+}
+
+export interface RbqmSiteComparison {
+  seed: number
+  points: Array<{ siteId: string; siteLabel: string; counts: Record<string, number> }>
+  visits: Record<string, Array<Record<string, string | number>>>
+}
+
+export interface RbqmThresholdRule {
+  thresholdId?: string
+  configVersion?: string
+  scope: string
+  ctqId: string
+  metric: string
+  dimension?: string
+  unit: string
+  warningThreshold: number
+  actionThreshold: number
+  weight: number
+  rationale?: string
+}
+
+export interface RbqmThresholds {
+  configVersion: string
+  versions: Array<{ configVersion: string; operator?: string; rules: RbqmThresholdRule[] }>
+  rules: RbqmThresholdRule[]
+}
+
+export function useRbqmRisks() {
+  return useQuery({
+    queryKey: ['rbqm-risks'],
+    queryFn: async () => {
+      const body = unwrapContract<RbqmRisk[]>(await apiGetStrict<unknown>('/api/rbqm/risks'))
+      if (!Array.isArray(body)) throw new Error('RBQM risks contract mismatch')
+      return body
+    },
+  })
+}
+
+export function useRbqmSiteComparison() {
+  return useQuery({
+    queryKey: ['rbqm-site-comparison'],
+    queryFn: async () => {
+      const body = unwrapContract<RbqmSiteComparison>(await apiGetStrict<unknown>('/api/rbqm/sites/comparison'))
+      if (!body || !Array.isArray(body.points)) throw new Error('site comparison contract mismatch')
+      return body
+    },
+  })
+}
+
+export function useRbqmThresholds() {
+  return useQuery({
+    queryKey: ['rbqm-thresholds'],
+    queryFn: async () => {
+      const body = unwrapContract<RbqmThresholds>(await apiGetStrict<unknown>('/api/rbqm/thresholds'))
+      if (!body || !Array.isArray(body.versions)) return null
+      return body
+    },
+  })
+}
+
+export function postRiskTransition(id: string, body: Record<string, unknown>) {
+  return apiSendStrict(`/api/rbqm/risks/${id}/transitions`, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  })
+}
+
+export function postThresholdVersion(body: Record<string, unknown>) {
+  return apiSendStrict('/api/rbqm/thresholds', {
+    method: 'POST',
+    body: JSON.stringify(body),
   })
 }
