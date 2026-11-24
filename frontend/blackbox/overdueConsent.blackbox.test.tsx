@@ -150,6 +150,8 @@ describe('synthetic overdue consent through the public API and page', () => {
     const { rule, studyCode } = ruleFromActive(await send(port, 'GET', '/api/ctq/active'))
     expect(studyCode).toBe('SYN-FICTION-MIST-001')
     expect(rule.unit).toBe('百分比')
+    expect(rule.warningThreshold).toBe(4)
+    expect(rule.actionThreshold).toBe(9)
     expect(judgeOverdueConsentRate(3.9, rule, studyCode)).toMatchObject({ ok: true, level: 'normal' })
     expect(judgeOverdueConsentRate(4, rule, studyCode)).toMatchObject({ ok: true, level: 'warning' })
     expect(judgeOverdueConsentRate(9, rule, studyCode)).toMatchObject({ ok: true, level: 'action' })
@@ -164,6 +166,8 @@ describe('synthetic overdue consent through the public API and page', () => {
     await approvePercent(port, other)
     const { rule, studyCode } = ruleFromActive(await send(port, 'GET', '/api/ctq/active'))
     expect(studyCode).toBe('SYN-OTHER-STUDY')
+    expect(rule.warningThreshold).toBe(4)
+    expect(rule.actionThreshold).toBe(9)
     for (const value of [3.9, 4, 9]) {
       expect(judgeOverdueConsentRate(value, rule, studyCode)).toMatchObject({ ok: false, code: 'WRONG_STUDY' })
     }
