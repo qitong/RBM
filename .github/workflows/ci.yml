@@ -2,6 +2,8 @@ name: CI
 
 on:
   pull_request:
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -27,6 +29,12 @@ jobs:
         working-directory: frontend
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install the API used by the black-box test
+        working-directory: backend
+        run: pip install -e ".[dev]"
       - uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -35,3 +43,5 @@ jobs:
       - run: npm ci
       - run: npx tsc -p tsconfig.app.json --noEmit
       - run: npx vitest run
+      - run: npm run blackbox
+      - run: npm run build

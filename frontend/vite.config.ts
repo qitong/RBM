@@ -24,6 +24,7 @@ export default defineConfig(({ command }) => ({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
+    exclude: ['**/node_modules/**', '**/dist/**', 'blackbox/**'],
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
