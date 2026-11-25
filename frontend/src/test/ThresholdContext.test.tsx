@@ -163,6 +163,7 @@ describe('useThresholds', () => {
         status: 'approved',
         approvalStatus: 'approved',
         approvedBy: '审阅员-合成甲',
+        studyCode: 'SYN-FICTION-MIST-001',
         legacyThresholdMap: [{
           rbmCategoryId: 'INFORMED CONSENT',
           warningThreshold: 4,
@@ -182,9 +183,106 @@ describe('useThresholds', () => {
     expect(cat?.presetFromPlan).toBe(false)
     expect(result.current.checkOutlier(3.5, 'INFORMED CONSENT')).toBe('action')
     expect(result.current.checkApprovedMetric(3, 'KRI-01')).toBe('normal')
+    expect(result.current.checkApprovedMetric(3.9, 'KRI-01')).toBe('normal')
     expect(result.current.checkApprovedMetric(4, 'KRI-01')).toBe('warning')
     expect(result.current.checkApprovedMetric(5, 'KRI-01')).toBe('warning')
     expect(result.current.checkApprovedMetric(9, 'KRI-01')).toBe('action')
+    expect(result.current.checkApprovedMetric(-4, 'KRI-01')).toBeNull()
+    expect(result.current.checkApprovedMetric(-9, 'KRI-01')).toBeNull()
+  })
+
+  it('fails closed when the percentage rule has no unit, reuses SD bounds, mismatches the study, or has no approved version', async () => {
+    const approved = {
+      versionId: 'MP-0002',
+      status: 'approved',
+      approvalStatus: 'approved',
+      approvedBy: '审阅员-合成甲',
+      studyCode: 'SYN-FICTION-MIST-001',
+      legacyThresholdMap: [{
+        rbmCategoryId: 'INFORMED CONSENT',
+        warningThreshold: 4,
+        actionThreshold: 9,
+        monitoringMethod: 'CENTRAL_REVIEW',
+        candidateId: 'KRI-01',
+        source: 'approved_kri',
+      }],
+    }
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({ ok: true, active: approved }))
+    const missingUnit = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => {
+      const data = queryClient.getQueryData<{ active: { versionId: string } }>(['ctq-active'])
+      expect(data?.active.versionId).toBe('MP-0002')
+    })
+    expect(missingUnit.result.current.checkApprovedMetric(9, 'KRI-01')).toBeNull()
+
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
+      ok: true,
+      active: {
+        ...approved,
+        legacyThresholdMap: [{
+          ...approved.legacyThresholdMap[0],
+          unit: '百分比',
+          warningThreshold: 2,
+          actionThreshold: 3,
+        }],
+      },
+    }))
+    const reusedSd = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => {
+      const data = queryClient.getQueryData<{ active: { legacyThresholdMap: Array<{ actionThreshold: number }> } }>(['ctq-active'])
+      expect(data?.active.legacyThresholdMap[0].actionThreshold).toBe(3)
+    })
+    expect(reusedSd.result.current.checkApprovedMetric(9, 'KRI-01')).toBeNull()
+    expect(reusedSd.result.current.checkApprovedMetric(3, 'KRI-01')).toBeNull()
+    expect(reusedSd.result.current.checkOutlier(3, 'INFORMED CONSENT')).toBe('action')
+
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
+      ok: true,
+      active: { ...approved, studyCode: 'SYN-OTHER', legacyThresholdMap: [{ ...approved.legacyThresholdMap[0], unit: '百分比' }] },
+    }))
+    const wrongStudy = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => {
+      const data = queryClient.getQueryData<{ active: { studyCode: string } }>(['ctq-active'])
+      expect(data?.active.studyCode).toBe('SYN-OTHER')
+    })
+    expect(wrongStudy.result.current.checkApprovedMetric(9, 'KRI-01')).toBeNull()
+
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({ ok: true, active: null }))
+    const noVersion = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => {
+      const data = queryClient.getQueryData<{ active: null }>(['ctq-active'])
+      expect(data?.active).toBeNull()
+    })
+    expect(noVersion.result.current.checkApprovedMetric(9, 'KRI-01')).toBeNull()
+  })
+
+  it('keeps the previous absolute grades for an approved SD rule', async () => {
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
+      ok: true,
+      active: {
+        versionId: 'MP-0004',
+        status: 'approved',
+        approvalStatus: 'approved',
+        approvedBy: '审阅员-合成甲',
+        studyCode: 'SYN-FICTION-MIST-001',
+        legacyThresholdMap: [{
+          rbmCategoryId: 'SAFETY REPORTING',
+          warningThreshold: 2,
+          actionThreshold: 3,
+          monitoringMethod: 'CENTRAL_REVIEW',
+          candidateId: 'KRI-04',
+          unit: 'SD',
+          source: 'approved_kri',
+        }],
+      },
+    }))
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => expect(result.current.checkApprovedMetric(1.5, 'KRI-04')).toBe('normal'))
+    expect(result.current.checkApprovedMetric(-1.5, 'KRI-04')).toBe('normal')
+    expect(result.current.checkApprovedMetric(2, 'KRI-04')).toBe('warning')
+    expect(result.current.checkApprovedMetric(-2, 'KRI-04')).toBe('warning')
+    expect(result.current.checkApprovedMetric(3, 'KRI-04')).toBe('action')
+    expect(result.current.checkApprovedMetric(-3, 'KRI-04')).toBe('action')
   })
 
   it('still applies an approved sd preset when that category is missing from localStorage', async () => {

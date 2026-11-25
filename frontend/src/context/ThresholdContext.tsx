@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useActiveMonitoringPlan } from '../api/hooks';
 import { adaptApprovedPlan, applyApprovedPresets } from '../ctq/adaptApprovedPlan';
+import { SYNTHETIC_OVERDUE_CONSENT } from '../ctq/syntheticOverdueConsent';
 
 export interface CategoryConfig {
   id: string;
@@ -106,13 +107,43 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     return 'normal';
   };
 
+  // Grades one approved rule. The overdue-consent card does not call this
+  // function, and this is not that percentage rule's entry point.
   const checkApprovedMetric = (value: number, candidateId: string): 'action' | 'warning' | 'normal' | null => {
+    if (!approvedPlan || approvedPlan.approvalStatus !== 'approved' || approvedPlan.status !== 'approved') {
+      return null;
+    }
+    if (approvedPlan.studyCode !== SYNTHETIC_OVERDUE_CONSENT.studyCode) return null;
     const rule = approvedMetrics.find((item) => item.candidateId === candidateId);
-    if (!rule) return null;
-    const absVal = Math.abs(value);
-    if (absVal >= rule.actionThreshold) return 'action';
-    if (absVal >= rule.warningThreshold) return 'warning';
-    return 'normal';
+    if (!rule || rule.unit == null || rule.unit === '') return null;
+
+    if (rule.unit === SYNTHETIC_OVERDUE_CONSENT.unit) {
+      if (!Number.isFinite(value) || value < 0) return null;
+      if (!Number.isFinite(rule.warningThreshold) || !Number.isFinite(rule.actionThreshold)) return null;
+      if (rule.warningThreshold < 0 || rule.actionThreshold < 0 || rule.warningThreshold >= rule.actionThreshold) {
+        return null;
+      }
+      const sdCategory = resolvedCategories.find((category) => category.id === rule.id);
+      if (
+        sdCategory
+        && rule.warningThreshold === sdCategory.warningThreshold
+        && rule.actionThreshold === sdCategory.actionThreshold
+      ) {
+        return null;
+      }
+      if (value >= rule.actionThreshold) return 'action';
+      if (value >= rule.warningThreshold) return 'warning';
+      return 'normal';
+    }
+
+    if (rule.unit === 'SD') {
+      const absVal = Math.abs(value);
+      if (absVal >= rule.actionThreshold) return 'action';
+      if (absVal >= rule.warningThreshold) return 'warning';
+      return 'normal';
+    }
+
+    return null;
   };
 
   return (
