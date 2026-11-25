@@ -153,6 +153,67 @@ class Store:
     def comparison(self) -> dict[str, Any]:
         return self._state["comparison"]
 
+    def study_candidate_view(self) -> dict[str, Any]:
+        from src.rbqm.study_candidate import public_view
+
+        return public_view(self._state["studyCandidates"], self._state["risks"])
+
+    def record_site_exceedances(self, operator: str, observations: list[dict[str, Any]]) -> dict[str, Any]:
+        from src.rbqm.study_candidate import fold_exceedances, validate_observations
+
+        if not _text(operator):
+            raise RbqmError(422, "OPERATOR_REQUIRED", "缺少操作者。未生成候选。")
+        rules = self._state["rules"]
+        try:
+            validate_observations(rules, observations)
+        except ValueError as error:
+            if str(error) == "BLINDING_BLOCKED":
+                raise RbqmError(422, "BLINDING_BLOCKED", "带未授权破盲标记的行被拒绝，未生成候选。") from error
+            raise
+        created = fold_exceedances(
+            self._state["studyCandidates"],
+            self._state["exceedanceCounts"],
+            rules,
+            observations,
+        )
+        if created:
+            self._append_event(
+                event_type="CANDIDATE_RECORDED",
+                actor_role="central_monitor",
+                actor_name=_text(operator),
+                from_status=None,
+                to_status="pending_confirmation",
+                risk_id=None,
+                note="同一合成中心、同一指标反复越界，生成一条待人确认的研究级候选。",
+                before={},
+                after={"created": created},
+            )
+        view = self.study_candidate_view()
+        view["createdCandidateIds"] = created
+        return view
+
+    def confirm_study_candidate(self, candidate_id: str, operator: str) -> dict[str, Any]:
+        if not _text(operator):
+            raise RbqmError(422, "OPERATOR_REQUIRED", "缺少操作者。研究级列表保持不变。")
+        found = next((item for item in self._state["studyCandidates"] if item["id"] == candidate_id), None)
+        if found is None:
+            raise RbqmError(404, "CANDIDATE_NOT_FOUND", "没有这条待确认的研究级候选。")
+        if found["status"] != "confirmed":
+            found["status"] = "confirmed"
+            found["confirmedBy"] = _text(operator)
+            self._append_event(
+                event_type="CANDIDATE_CONFIRMED",
+                actor_role="rbqm_lead",
+                actor_name=_text(operator),
+                from_status="pending_confirmation",
+                to_status="confirmed",
+                risk_id=None,
+                note="人确认了研究级候选。不生成研究级 QTL 信号。",
+                before={"status": "pending_confirmation"},
+                after={"status": "confirmed", "candidateId": candidate_id},
+            )
+        return self.study_candidate_view()
+
     def thresholds(self) -> dict[str, Any]:
         return {
             "configVersion": self.config_version,

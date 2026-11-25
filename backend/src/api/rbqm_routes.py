@@ -37,6 +37,24 @@ class ThresholdVersionIn(BaseModel):
     rules: list[ThresholdRuleIn] = Field(default_factory=list)
 
 
+class ObservationIn(BaseModel):
+    studyId: str
+    siteId: str
+    metric: str
+    value: float
+    observedAt: str
+    blindingSensitive: bool = False
+
+
+class ExceedancesIn(BaseModel):
+    operator: str
+    observations: list[ObservationIn] = Field(default_factory=list)
+
+
+class ConfirmCandidateIn(BaseModel):
+    operator: str
+
+
 def _fail(error: RbqmError) -> JSONResponse:
     return JSONResponse(status_code=error.status, content={
         "ok": False,
@@ -121,3 +139,29 @@ def save_thresholds(body: ThresholdVersionIn):
 @router.get("/api/rbqm/sites/comparison")
 def comparison():
     return envelope(get_store().comparison())
+
+
+@router.get("/api/rbqm/study-candidates")
+def study_candidates():
+    return envelope(get_store().study_candidate_view())
+
+
+@router.post("/api/rbqm/site-exceedances")
+def site_exceedances(body: ExceedancesIn):
+    try:
+        recorded = get_store().record_site_exceedances(
+            body.operator,
+            [row.model_dump() for row in body.observations],
+        )
+    except RbqmError as error:
+        return _fail(error)
+    return envelope(recorded)
+
+
+@router.post("/api/rbqm/study-candidates/{candidate_id}/confirm")
+def confirm_study_candidate(candidate_id: str, body: ConfirmCandidateIn):
+    try:
+        confirmed = get_store().confirm_study_candidate(candidate_id, body.operator)
+    except RbqmError as error:
+        return _fail(error)
+    return envelope(confirmed)
