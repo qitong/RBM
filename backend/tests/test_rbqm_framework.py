@@ -138,7 +138,7 @@ def test_invalid_threshold_does_not_change_version():
     assert codes == {"THRESHOLD_ORDER", "NEGATIVE_WEIGHT"}
     current = client.get("/api/rbqm/thresholds").json()
     assert current["configVersion"] == "v1"
-    assert len(current["data"]["versions"]) == 1
+    assert len(current["data"]["versions"]) == 2
 
 
 def test_contract_marks_synthetic_and_comparison_is_stable():

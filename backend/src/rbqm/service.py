@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
+from src.rbqm.bound_threshold import resolve_bound_threshold
 from src.rbqm.synthetic import DISCLAIMER, SEED, initial_state
 
 NEXT: dict[str, set[str]] = {
@@ -80,12 +81,20 @@ class Store:
         }
 
     def risks(self) -> list[dict[str, Any]]:
-        return [dict(risk) for risk in self._state["risks"]]
+        versions = self._state["versions"]
+        return [
+            {**risk, "boundThreshold": resolve_bound_threshold(risk, versions)}
+            for risk in self._state["risks"]
+        ]
 
     def risk_detail(self, risk_id: str) -> dict[str, Any]:
         risk = self._find_risk(risk_id)
         audits = [dict(event) for event in self._state["events"] if event.get("riskId") == risk_id]
-        return {"risk": dict(risk), "audits": audits}
+        return {
+            "risk": dict(risk),
+            "audits": audits,
+            "boundThreshold": resolve_bound_threshold(risk, self._state["versions"]),
+        }
 
     def tasks(self) -> list[dict[str, Any]]:
         return [dict(task) for task in self._state["tasks"]]
@@ -188,6 +197,7 @@ class Store:
         self._state["rules"] = stored
         self._state["versions"].append({
             "configVersion": version,
+            "studyId": self._state["study"]["studyId"],
             "rules": stored,
             "operator": operator,
         })
