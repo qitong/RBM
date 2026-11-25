@@ -6,7 +6,7 @@ import RiskForecast from '../components/RiskForecast'
 
 const MOCK_DATA = [
   {
-    siteId: 'S-001', siteName: '北京协和医院',
+    siteId: 'S-001', siteName: 'SYN-SITE-001',
     metricName: 'Protocol Deviation Rate (%)',
     historicalData: [
       { month: '2025-11', value: 1.2 },
@@ -19,7 +19,7 @@ const MOCK_DATA = [
     forecast: { nextMonth: '2026-05', predictedValue: 3.6, confidenceInterval: [3.1, 4.1] },
   },
   {
-    siteId: 'S-004', siteName: '杭州邵逸夫医院',
+    siteId: 'S-004', siteName: 'SYN-SITE-010',
     metricName: 'Protocol Deviation Rate (%)',
     historicalData: [
       { month: '2025-11', value: 0.8 },
@@ -69,14 +69,14 @@ describe('RiskForecast', () => {
   it('renders chart title for default site', async () => {
     (fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(MOCK_DATA), { status: 200 }))
     setup()
-    await waitFor(() => expect(screen.getByText(/北京协和医院.*PD 率固定示意/)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText(/SYN-SITE-001.*PD 率固定示意/)).toBeInTheDocument())
   })
 
   it('renders summary table with all site names', async () => {
     (fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(MOCK_DATA), { status: 200 }))
     setup()
-    await waitFor(() => expect(screen.getAllByText('北京协和医院').length).toBeGreaterThanOrEqual(1))
-    expect(screen.getAllByText('杭州邵逸夫医院').length).toBeGreaterThanOrEqual(1)
+    await waitFor(() => expect(screen.getAllByText('SYN-SITE-001').length).toBeGreaterThanOrEqual(1))
+    expect(screen.getAllByText('SYN-SITE-010').length).toBeGreaterThanOrEqual(1)
   })
 
   it('states the page is a fixed synthetic illustration and not an action', async () => {
@@ -93,7 +93,7 @@ describe('RiskForecast', () => {
     setup()
     await waitFor(() => expect(screen.getByText('S-004')).toBeInTheDocument())
     fireEvent.click(screen.getByText('S-004'))
-    await waitFor(() => expect(screen.getByText(/杭州邵逸夫医院.*PD 率固定示意/)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText(/SYN-SITE-010.*PD 率固定示意/)).toBeInTheDocument())
   })
 
   it('renders KPI cards with 6月均值 and 下月示意值', async () => {

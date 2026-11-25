@@ -91,7 +91,7 @@
     "userId": "CRA_003",
     "userName": "SYN-INV-001",
     "actionType": "CLOSE_ALERT",
-    "description": "关闭预警 ALT-2026-039（SYN-SITE-003大学 AE 率偏高）",
+    "description": "关闭预警 ALT-2026-039（SYN-SITE-003 AE 率偏高）",
     "details": {
       "alertId": "ALT-2026-039",
       "siteId": "S-003",
@@ -211,7 +211,7 @@
     "userId": "PM_002",
     "userName": "SYN-INV-008",
     "actionType": "UPDATE_SUBJECT",
-    "description": "更新受试者 SUBJ-1003 风险评估（SYN-SITE-003大学）",
+    "description": "更新受试者 SUBJ-1003 风险评估（SYN-SITE-003）",
     "details": {
       "subjectId": "SUBJ-1003",
       "siteId": "S-003",
