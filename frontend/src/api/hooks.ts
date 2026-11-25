@@ -486,6 +486,17 @@ export type RbqmStatus =
   | 'Effectiveness_Check'
   | 'Closed'
 
+export interface BoundThreshold {
+  traceable: boolean
+  label?: string
+  configVersion?: string
+  studyId?: string
+  unit?: string
+  warningThreshold?: number
+  actionThreshold?: number
+  thresholdId?: string
+}
+
 export interface RbqmRisk {
   id: string
   studyId: string
@@ -507,6 +518,13 @@ export interface RbqmRisk {
   effectivenessNote: string | null
   taskId: string | null
   capaId: string | null
+  boundThreshold?: BoundThreshold
+}
+
+export interface RbqmRiskDetail {
+  risk: RbqmRisk
+  audits: unknown[]
+  boundThreshold: BoundThreshold
 }
 
 export interface RbqmSiteComparison {
@@ -541,6 +559,20 @@ export function useRbqmRisks() {
     queryFn: async () => {
       const body = unwrapContract<RbqmRisk[]>(await apiGetStrict<unknown>('/api/rbqm/risks'))
       if (!Array.isArray(body)) throw new Error('RBQM risks contract mismatch')
+      return body
+    },
+  })
+}
+
+export function useRbqmRiskDetail(id: string | null) {
+  return useQuery({
+    queryKey: ['rbqm-risk', id],
+    enabled: Boolean(id),
+    queryFn: async () => {
+      const body = unwrapContract<RbqmRiskDetail>(await apiGetStrict<unknown>(`/api/rbqm/risks/${id}`))
+      if (!body || typeof body !== 'object' || !body.boundThreshold || !body.risk) {
+        throw new Error('RBQM risk detail contract mismatch')
+      }
       return body
     },
   })

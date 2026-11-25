@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { ApiError } from '../api/client'
-import { postRiskTransition, useRbqmRisks, type RbqmRisk } from '../api/hooks'
+import { postRiskTransition, useRbqmRiskDetail, useRbqmRisks, type BoundThreshold, type RbqmRisk } from '../api/hooks'
 import { useThresholds } from '../context/ThresholdContext'
 import SyntheticNote from '../rbqm/SyntheticNote'
 
@@ -31,11 +31,39 @@ function scopeLabel(scope: string): string {
   return scope === 'study_qtl' ? '研究级 QTL' : '中心级 KRI'
 }
 
+function BoundThresholdLine({ riskId, bound }: { riskId: string; bound: BoundThreshold | undefined }) {
+  const warning = bound?.warningThreshold
+  const action = bound?.actionThreshold
+  const traceable = bound?.traceable === true
+    && typeof bound.configVersion === 'string'
+    && bound.configVersion.length > 0
+    && typeof bound.unit === 'string'
+    && bound.unit.length > 0
+    && typeof warning === 'number'
+    && typeof action === 'number'
+  return (
+    <p
+      className="text-small mb-4"
+      data-bound-threshold={riskId}
+      data-traceable={traceable ? 'true' : 'false'}
+      data-config-version={traceable ? bound.configVersion : undefined}
+      data-unit={traceable ? bound.unit : undefined}
+      data-warning={traceable ? String(warning) : undefined}
+      data-action={traceable ? String(action) : undefined}
+    >
+      {traceable
+        ? `阈值版本 ${bound.configVersion} · 单位 ${bound.unit} · 预警界限 ${warning} · 行动界限 ${action}`
+        : '无法溯源'}
+    </p>
+  )
+}
+
 export default function AlertTracking() {
   const { checkOutlier } = useThresholds()
   const query = useRbqmRisks()
   const client = useQueryClient()
   const [activeId, setActiveId] = useState<string | null>(null)
+  const detail = useRbqmRiskDetail(activeId)
   const [rootCause, setRootCause] = useState('')
   const [assignee, setAssignee] = useState('合成CRA-甲')
   const [dueDate, setDueDate] = useState('2026-12-15')
@@ -80,9 +108,10 @@ export default function AlertTracking() {
         </div>
         <h3 className="text-h3 mb-2">{risk.title}</h3>
         <p className="text-small mb-2">{risk.siteId ?? risk.studyId} · {risk.configVersion}</p>
-        <p className="text-small mb-4">
+        <p className="text-small mb-2">
           指标 {risk.metricValue} {risk.unit}
         </p>
+        <BoundThresholdLine riskId={risk.id} bound={risk.boundThreshold} />
         {risk.rootCause && <p className="text-small mb-3">人工根因：{risk.rootCause}</p>}
         <button type="button" className="btn-primary" onClick={() => { setActiveId(risk.id); setFormError('') }}>
           填写人工研判
@@ -118,10 +147,13 @@ export default function AlertTracking() {
 
       {active && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-8" style={{ backgroundColor: 'rgba(0,0,0,0.35)' }}>
-          <div className="card-featured shadow-2xl w-full overflow-hidden" style={{ maxWidth: '42rem' }}>
+          <div role="dialog" aria-modal="true" className="card-featured shadow-2xl w-full overflow-hidden" style={{ maxWidth: '42rem' }}>
             <div className="p-6 border-b" style={{ borderColor: 'var(--color-border)' }}>
               <h3 className="text-h2">人工根因与行动</h3>
               <p className="text-small mt-2">{active.id} · {scopeLabel(active.scope)} · 当前 {active.status}</p>
+              {detail.isLoading && <p className="text-small mt-3">加载阈值版本…</p>}
+              {detail.data && <BoundThresholdLine riskId={active.id} bound={detail.data.boundThreshold} />}
+              {detail.isError && <BoundThresholdLine riskId={active.id} bound={undefined} />}
             </div>
             <div className="p-6 space-y-4">
               <label className="block text-small">
