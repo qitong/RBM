@@ -93,16 +93,16 @@ function KpiRow({ site }: { site: SiteForecast }) {
           sub: '历史平均 PD 率',
         },
         {
-          label: '下月预测值',
+          label: '下月示意值',
           value: `${pred.toFixed(2)}%`,
           color: pred > PD_THRESHOLD ? '#DC3545' : '#10B981',
           sub: `${site.forecast.nextMonth}`,
         },
         {
-          label: '95% 置信区间',
+          label: '示意区间',
           value: `[${ci[0].toFixed(1)}, ${ci[1].toFixed(1)}]%`,
           color: exceedRisk ? '#DC3545' : '#6B7280',
-          sub: exceedRisk ? '上界超过阈值' : '在安全范围内',
+          sub: exceedRisk ? '上界高于页面阈值' : '上界未高于页面阈值',
         },
         {
           label: '趋势',
@@ -157,22 +157,14 @@ export default function RiskForecast() {
   const siteId = selectedSite || sites[0].siteId
   const site = sites.find(s => s.siteId === siteId) ?? sites[0]
   const chartData = buildChartData(site)
-  const highRiskSites = sites.filter(s => s.forecast.predictedValue > PD_THRESHOLD)
-
   return (
     <div className="animate-in fade-in duration-300">
-      {highRiskSites.length > 0 && (
-        <div
-          className="flex items-center gap-2 mb-6"
-          style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '8px', padding: '12px 16px', fontSize: '13px', color: '#B91C1C' }}
-        >
-          <span><AlertTriangle size={15} /></span>
-          <span>
-            <strong>{highRiskSites.length} 个中心</strong>预测下月 PD 率将超过阈值 ({PD_THRESHOLD}%)：
-            {highRiskSites.map(s => s.siteName).join('、')}
-          </span>
-        </div>
-      )}
+      <div
+        className="mb-6"
+        style={{ background: '#F8FAFC', border: '1px solid var(--color-border)', borderRadius: '8px', padding: '12px 16px', fontSize: '13px', color: 'var(--color-text-secondary)' }}
+      >
+        本页为固定合成示意，不是监查预测，不触发行动。折线与标注值来自固定示例数据。
+      </div>
 
       <div className="card mb-6" style={{ padding: '20px 24px' }}>
         <div className="flex items-center justify-between mb-4">
@@ -189,15 +181,15 @@ export default function RiskForecast() {
       <div className="card" style={{ padding: '20px 24px' }}>
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h2 className="text-h3" style={{ fontSize: '14px' }}>{site.siteName} — PD 率趋势预测</h2>
+            <h2 className="text-h3" style={{ fontSize: '14px' }}>{site.siteName} — PD 率固定示意</h2>
             <div style={{ fontSize: '12px', color: 'var(--color-text-secondary)', marginTop: '4px' }}>
-              {site.metricName} · 线性回归预测（含 95% 置信区间）
+              {site.metricName} · 固定合成示意，不是监查预测，不触发行动
             </div>
           </div>
           <div className="flex gap-4 text-mono" style={{ fontSize: '11px', color: 'var(--color-text-secondary)' }}>
             <span style={{ color: 'var(--color-brand)' }}>— 历史值</span>
-            <span style={{ color: '#F59E0B' }}>- - 预测值</span>
-            <span style={{ color: '#BAE6FD', border: '1px solid #7DD3FC', padding: '0 6px', borderRadius: '4px' }}>■ 置信区间</span>
+            <span style={{ color: '#F59E0B' }}>- - 示意值</span>
+            <span style={{ color: '#BAE6FD', border: '1px solid #7DD3FC', padding: '0 6px', borderRadius: '4px' }}>■ 示意区间</span>
           </div>
         </div>
         <ResponsiveContainer width="100%" height={320}>
@@ -210,22 +202,22 @@ export default function RiskForecast() {
             <ReferenceLine y={PD_THRESHOLD} stroke="#DC3545" strokeDasharray="4 4" strokeWidth={1.5} label={{ value: `阈值 ${PD_THRESHOLD}%`, position: 'right', fontSize: 11, fill: '#DC3545' }} />
 
             {/* CI band: transparent base + shaded delta on top */}
-            <Area dataKey="ciLow" stackId="ci" stroke="none" fill="transparent" legendType="none" name="CI下界" />
-            <Area dataKey="ciDelta" stackId="ci" stroke="none" fill="#BAE6FD" fillOpacity={0.6} legendType="none" name="置信区间" />
+            <Area dataKey="ciLow" stackId="ci" stroke="none" fill="transparent" legendType="none" name="示意下界" />
+            <Area dataKey="ciDelta" stackId="ci" stroke="none" fill="#BAE6FD" fillOpacity={0.6} legendType="none" name="示意区间" />
 
             <Line dataKey="value" stroke="var(--color-brand)" strokeWidth={2.5} dot={{ r: 4, fill: 'var(--color-brand)' }} name="历史值" connectNulls={false} />
-            <Line dataKey="forecastValue" stroke="#F59E0B" strokeWidth={2.5} strokeDasharray="6 4" dot={{ r: 6, fill: '#F59E0B', strokeWidth: 2, stroke: '#fff' }} name="预测值" connectNulls={false} />
+            <Line dataKey="forecastValue" stroke="#F59E0B" strokeWidth={2.5} strokeDasharray="6 4" dot={{ r: 6, fill: '#F59E0B', strokeWidth: 2, stroke: '#fff' }} name="示意值" connectNulls={false} />
           </ComposedChart>
         </ResponsiveContainer>
       </div>
 
       <div className="card mt-6" style={{ padding: '20px 24px' }}>
-        <h2 className="text-h3 mb-4" style={{ fontSize: '14px' }}>各中心预测摘要</h2>
+        <h2 className="text-h3 mb-4" style={{ fontSize: '14px' }}>各中心示意摘要</h2>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid var(--color-border)' }}>
-                {['中心', '当前值 (2026-04)', '预测值 (2026-05)', '95% CI', '趋势'].map(h => (
+                {['中心', '当前值 (2026-04)', '示意值 (2026-05)', '示意区间', '趋势'].map(h => (
                   <th key={h} style={{ padding: '10px 12px', textAlign: h === '中心' ? 'left' : 'right', fontSize: '11px', fontFamily: 'SF Mono, Menlo, monospace', color: 'var(--color-text-secondary)', whiteSpace: 'nowrap' }}>{h}</th>
                 ))}
               </tr>

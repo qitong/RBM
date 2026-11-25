@@ -69,7 +69,7 @@ describe('RiskForecast', () => {
   it('renders chart title for default site', async () => {
     (fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(MOCK_DATA), { status: 200 }))
     setup()
-    await waitFor(() => expect(screen.getByText(/北京协和医院.*PD 率趋势预测/)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText(/北京协和医院.*PD 率固定示意/)).toBeInTheDocument())
   })
 
   it('renders summary table with all site names', async () => {
@@ -79,10 +79,13 @@ describe('RiskForecast', () => {
     expect(screen.getAllByText('杭州邵逸夫医院').length).toBeGreaterThanOrEqual(1)
   })
 
-  it('shows high-risk warning banner when predicted value exceeds threshold', async () => {
+  it('states the page is a fixed synthetic illustration and not an action', async () => {
     (fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(MOCK_DATA), { status: 200 }))
     setup()
-    await waitFor(() => expect(screen.getByText(/预测下月 PD 率将超过阈值/)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getAllByText(/固定合成示意，不是监查预测，不触发行动/).length).toBeGreaterThanOrEqual(1))
+    expect(screen.queryByText(/预测下月 PD 率将超过阈值/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/线性回归/)).not.toBeInTheDocument()
+    expect(screen.queryByText(/95% 置信区间/)).not.toBeInTheDocument()
   })
 
   it('switches site when selector button clicked', async () => {
@@ -90,15 +93,15 @@ describe('RiskForecast', () => {
     setup()
     await waitFor(() => expect(screen.getByText('S-004')).toBeInTheDocument())
     fireEvent.click(screen.getByText('S-004'))
-    await waitFor(() => expect(screen.getByText(/杭州邵逸夫医院.*PD 率趋势预测/)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getByText(/杭州邵逸夫医院.*PD 率固定示意/)).toBeInTheDocument())
   })
 
-  it('renders KPI cards with 6月均值 and 下月预测值', async () => {
+  it('renders KPI cards with 6月均值 and 下月示意值', async () => {
     (fetch as ReturnType<typeof vi.fn>).mockResolvedValue(new Response(JSON.stringify(MOCK_DATA), { status: 200 }))
     setup()
     await waitFor(() => expect(screen.getByText('6月均值')).toBeInTheDocument())
-    expect(screen.getByText('下月预测值')).toBeInTheDocument()
-    expect(screen.getByText('95% 置信区间')).toBeInTheDocument()
+    expect(screen.getByText('下月示意值')).toBeInTheDocument()
+    expect(screen.getAllByText('示意区间').length).toBeGreaterThanOrEqual(1)
     expect(screen.getAllByText('趋势').length).toBeGreaterThanOrEqual(1)
   })
 })

@@ -144,7 +144,7 @@ function GenerateModal({ onClose, onGenerate }: {
     type: 'Monthly',
     period: '2026-05',
     format: 'PDF',
-    operator: '赵晓燕',
+    operator: 'SYN-INV-008',
   })
 
   return (
@@ -300,7 +300,7 @@ export default function ReportCenter() {
     setTimeout(() => {
       setLocalReports(prev => prev.map(r =>
         r.reportId === newReport.reportId
-          ? { ...r, status: 'Ready', sizeMb: +(Math.random() * 3 + 0.5).toFixed(1), summary: { totalCriticalAlerts: 3, unresolvedTasks: 5, avgEntryDelayDays: 4.2, highestRiskSite: '北京协和医院' } }
+          ? { ...r, status: 'Ready', sizeMb: +(Math.random() * 3 + 0.5).toFixed(1), summary: { totalCriticalAlerts: 3, unresolvedTasks: 5, avgEntryDelayDays: 4.2, highestRiskSite: 'SYN-SITE-001' } }
           : r
       ))
     }, 2500)
