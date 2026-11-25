@@ -256,6 +256,65 @@ describe('useThresholds', () => {
     expect(noVersion.result.current.checkApprovedMetric(9, 'KRI-01')).toBeNull()
   })
 
+  it('fails closed when a percentage rule copies default SD bounds for a category missing from the list', async () => {
+    localStorage.setItem('rbm_threshold_configs', JSON.stringify({
+      categories: [
+        { id: 'INCLUSION EXCLUSION', label: '入排标准', weight: 0.15, warningThreshold: 1.1, actionThreshold: 1.6, enabled: true },
+      ],
+    }))
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
+      ok: true,
+      active: {
+        versionId: 'MP-0006',
+        status: 'approved',
+        approvalStatus: 'approved',
+        approvedBy: '审阅员-合成甲',
+        studyCode: 'SYN-FICTION-MIST-001',
+        legacyThresholdMap: [{
+          rbmCategoryId: 'INFORMED CONSENT',
+          warningThreshold: 2,
+          actionThreshold: 3,
+          monitoringMethod: 'CENTRAL_REVIEW',
+          candidateId: 'KRI-01',
+          unit: '百分比',
+          source: 'approved_kri',
+        }],
+      },
+    }))
+    const copied = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => {
+      const data = queryClient.getQueryData<{ active: { versionId: string } }>(['ctq-active'])
+      expect(data?.active.versionId).toBe('MP-0006')
+    })
+    expect(copied.result.current.categories.some((item) => item.id === 'INFORMED CONSENT')).toBe(false)
+    expect(copied.result.current.checkApprovedMetric(3, 'KRI-01')).toBeNull()
+    expect(copied.result.current.checkApprovedMetric(9, 'KRI-01')).toBeNull()
+
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
+      ok: true,
+      active: {
+        versionId: 'MP-0006',
+        status: 'approved',
+        approvalStatus: 'approved',
+        approvedBy: '审阅员-合成甲',
+        studyCode: 'SYN-FICTION-MIST-001',
+        legacyThresholdMap: [{
+          rbmCategoryId: 'INFORMED CONSENT',
+          warningThreshold: 4,
+          actionThreshold: 9,
+          monitoringMethod: 'CENTRAL_REVIEW',
+          candidateId: 'KRI-01',
+          unit: '百分比',
+          source: 'approved_kri',
+        }],
+      },
+    }))
+    const distinct = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => expect(distinct.result.current.checkApprovedMetric(3.9, 'KRI-01')).toBe('normal'))
+    expect(distinct.result.current.checkApprovedMetric(4, 'KRI-01')).toBe('warning')
+    expect(distinct.result.current.checkApprovedMetric(9, 'KRI-01')).toBe('action')
+  })
+
   it('keeps the previous absolute grades for an approved SD rule', async () => {
     vi.mocked(fetch).mockImplementation(() => jsonResponse({
       ok: true,

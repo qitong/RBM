@@ -123,7 +123,8 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
       if (rule.warningThreshold < 0 || rule.actionThreshold < 0 || rule.warningThreshold >= rule.actionThreshold) {
         return null;
       }
-      const sdCategory = resolvedCategories.find((category) => category.id === rule.id);
+      const sdCategory = resolvedCategories.find((category) => category.id === rule.id)
+        ?? DEFAULT_CATEGORIES.find((category) => category.id === rule.id);
       if (
         sdCategory
         && rule.warningThreshold === sdCategory.warningThreshold
