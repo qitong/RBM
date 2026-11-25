@@ -9,6 +9,9 @@ from typing import Any
 DISCLAIMER = "合成研究验证数据，非真实临床试验监查证据"
 STUDY_ID = "SYN-STUDY-001"
 CONFIG_VERSION = "v1"
+FOREIGN_STUDY_ID = "SYN-STUDY-009"
+FOREIGN_VERSION = "v-foreign"
+ABSENT_VERSION = "v-absent"
 SEED = 42
 
 CATEGORIES: list[tuple[str, str]] = [
@@ -315,6 +318,50 @@ def initial_state() -> dict[str, Any]:
             "taskId": "TASK-SYN-003",
             "capaId": "CAPA-SYN-003",
         },
+        {
+            "id": "RSK-KRI-20261125-404",
+            "studyId": STUDY_ID,
+            "siteId": "SYN-SITE-404",
+            "scope": "site_kri",
+            "ctqId": "CTQ-ICF",
+            "dimension": "INFORMED CONSENT",
+            "title": "缺失版本的合成信号",
+            "metric": "informed_consent_sd",
+            "metricValue": 3.5,
+            "unit": "SD",
+            "level": "action",
+            "status": "Detected",
+            "configVersion": ABSENT_VERSION,
+            "rootCause": None,
+            "assignee": None,
+            "dueDate": None,
+            "actionSummary": None,
+            "effectivenessNote": None,
+            "taskId": None,
+            "capaId": None,
+        },
+        {
+            "id": "RSK-KRI-20261125-409",
+            "studyId": STUDY_ID,
+            "siteId": "SYN-SITE-409",
+            "scope": "site_kri",
+            "ctqId": "CTQ-ICF",
+            "dimension": "INFORMED CONSENT",
+            "title": "研究号不符的合成信号",
+            "metric": "informed_consent_sd",
+            "metricValue": 3.5,
+            "unit": "SD",
+            "level": "action",
+            "status": "Detected",
+            "configVersion": FOREIGN_VERSION,
+            "rootCause": None,
+            "assignee": None,
+            "dueDate": None,
+            "actionSummary": None,
+            "effectivenessNote": None,
+            "taskId": None,
+            "capaId": None,
+        },
     ]
     actions = [
         {
@@ -460,7 +507,34 @@ def initial_state() -> dict[str, Any]:
         "ctqs": ctqs,
         "assessments": assessments,
         "configVersion": CONFIG_VERSION,
-        "versions": [{"configVersion": CONFIG_VERSION, "rules": rules, "operator": "合成质量员甲"}],
+        "versions": [
+            {
+                "configVersion": CONFIG_VERSION,
+                "studyId": STUDY_ID,
+                "rules": rules,
+                "operator": "合成质量员甲",
+            },
+            {
+                "configVersion": FOREIGN_VERSION,
+                "studyId": FOREIGN_STUDY_ID,
+                "operator": "合成质量员乙",
+                "rules": [
+                    {
+                        "thresholdId": "THR-KRI-ICF-FOREIGN",
+                        "configVersion": FOREIGN_VERSION,
+                        "scope": "site_kri",
+                        "ctqId": "CTQ-ICF",
+                        "metric": "informed_consent_sd",
+                        "dimension": "INFORMED CONSENT",
+                        "unit": "SD",
+                        "warningThreshold": 8.5,
+                        "actionThreshold": 9.5,
+                        "weight": 0.25,
+                        "rationale": "另一条合成研究的已批准版本，不能解释 SYN-STUDY-001 的信号。",
+                    },
+                ],
+            },
+        ],
         "rules": rules,
         "risks": risks,
         "actions": actions,

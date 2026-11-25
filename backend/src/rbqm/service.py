@@ -80,12 +80,12 @@ class Store:
         }
 
     def risks(self) -> list[dict[str, Any]]:
-        return [dict(risk) for risk in self._state["risks"]]
+        return [self._present_risk(risk) for risk in self._state["risks"]]
 
     def risk_detail(self, risk_id: str) -> dict[str, Any]:
         risk = self._find_risk(risk_id)
         audits = [dict(event) for event in self._state["events"] if event.get("riskId") == risk_id]
-        return {"risk": dict(risk), "audits": audits}
+        return {"risk": self._present_risk(risk), "audits": audits}
 
     def tasks(self) -> list[dict[str, Any]]:
         return [dict(task) for task in self._state["tasks"]]
@@ -188,6 +188,7 @@ class Store:
         self._state["rules"] = stored
         self._state["versions"].append({
             "configVersion": version,
+            "studyId": self._state["study"]["studyId"],
             "rules": stored,
             "operator": operator,
         })
@@ -324,6 +325,39 @@ class Store:
             if not (_text(payload.get(key)) or _text(risk.get(key))):
                 missing.append(key)
         return missing
+
+    def _present_risk(self, risk: dict[str, Any]) -> dict[str, Any]:
+        shown = dict(risk)
+        shown["boundThreshold"] = self._bound_threshold(risk)
+        return shown
+
+    def _bound_threshold(self, risk: dict[str, Any]) -> dict[str, Any]:
+        """Read the approved version this signal names. Never substitute another version."""
+        version_id = risk.get("configVersion")
+        study_id = risk.get("studyId")
+        matches = [
+            version
+            for version in self._state["versions"]
+            if version.get("configVersion") == version_id and version.get("studyId") == study_id
+        ]
+        if len(matches) != 1:
+            return {"traceable": False, "traceLabel": "无法溯源"}
+        rules = [
+            rule
+            for rule in matches[0].get("rules", [])
+            if rule.get("metric") == risk.get("metric")
+        ]
+        if len(rules) != 1:
+            return {"traceable": False, "traceLabel": "无法溯源"}
+        rule = rules[0]
+        return {
+            "traceable": True,
+            "configVersion": matches[0]["configVersion"],
+            "studyId": matches[0]["studyId"],
+            "unit": rule["unit"],
+            "warningThreshold": rule["warningThreshold"],
+            "actionThreshold": rule["actionThreshold"],
+        }
 
     def _find_risk(self, risk_id: str) -> dict[str, Any]:
         for risk in self._state["risks"]:

@@ -31,6 +31,18 @@ function scopeLabel(scope: string): string {
   return scope === 'study_qtl' ? '研究级 QTL' : '中心级 KRI'
 }
 
+function BoundThresholdReadout({ risk }: { risk: RbqmRisk }) {
+  const bound = risk.boundThreshold
+  if (!bound?.traceable) {
+    return <p className="text-small mb-2" data-bound-threshold={risk.id}>无法溯源</p>
+  }
+  return (
+    <p className="text-small mb-2" data-bound-threshold={risk.id}>
+      已绑定历史阈值 {bound.configVersion} · 单位 {bound.unit} · 预警 {bound.warningThreshold} · 行动 {bound.actionThreshold}
+    </p>
+  )
+}
+
 export default function AlertTracking() {
   const { checkOutlier } = useThresholds()
   const query = useRbqmRisks()
@@ -79,7 +91,8 @@ export default function AlertTracking() {
           <span className="badge badge-neutral">{risk.status}</span>
         </div>
         <h3 className="text-h3 mb-2">{risk.title}</h3>
-        <p className="text-small mb-2">{risk.siteId ?? risk.studyId} · {risk.configVersion}</p>
+        <p className="text-small mb-2">{risk.siteId ?? risk.studyId}</p>
+        <BoundThresholdReadout risk={risk} />
         <p className="text-small mb-4">
           指标 {risk.metricValue} {risk.unit}
         </p>
@@ -118,10 +131,11 @@ export default function AlertTracking() {
 
       {active && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-8" style={{ backgroundColor: 'rgba(0,0,0,0.35)' }}>
-          <div className="card-featured shadow-2xl w-full overflow-hidden" style={{ maxWidth: '42rem' }}>
+          <div role="dialog" aria-label={active.title} className="card-featured shadow-2xl w-full overflow-hidden" style={{ maxWidth: '42rem' }}>
             <div className="p-6 border-b" style={{ borderColor: 'var(--color-border)' }}>
               <h3 className="text-h2">人工根因与行动</h3>
               <p className="text-small mt-2">{active.id} · {scopeLabel(active.scope)} · 当前 {active.status}</p>
+              <BoundThresholdReadout risk={active} />
             </div>
             <div className="p-6 space-y-4">
               <label className="block text-small">

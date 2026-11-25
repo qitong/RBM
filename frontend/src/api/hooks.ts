@@ -486,6 +486,16 @@ export type RbqmStatus =
   | 'Effectiveness_Check'
   | 'Closed'
 
+export interface RbqmBoundThreshold {
+  traceable: boolean
+  traceLabel?: string
+  configVersion?: string
+  studyId?: string
+  unit?: string
+  warningThreshold?: number
+  actionThreshold?: number
+}
+
 export interface RbqmRisk {
   id: string
   studyId: string
@@ -500,6 +510,7 @@ export interface RbqmRisk {
   level: 'action' | 'warning'
   status: RbqmStatus | string
   configVersion: string
+  boundThreshold?: RbqmBoundThreshold
   rootCause: string | null
   assignee: string | null
   dueDate: string | null
@@ -531,7 +542,7 @@ export interface RbqmThresholdRule {
 
 export interface RbqmThresholds {
   configVersion: string
-  versions: Array<{ configVersion: string; operator?: string; rules: RbqmThresholdRule[] }>
+  versions: Array<{ configVersion: string; studyId?: string; operator?: string; rules: RbqmThresholdRule[] }>
   rules: RbqmThresholdRule[]
 }
 

@@ -116,6 +116,9 @@ def test_skip_close_is_rejected_and_status_stays():
 
 
 def test_invalid_threshold_does_not_change_version():
+    before = client.get("/api/rbqm/thresholds").json()
+    assert before["configVersion"] == "v1"
+    version_count = len(before["data"]["versions"])
     response = client.post("/api/rbqm/thresholds", json={
         "operator": "合成质量员甲",
         "rules": [{
@@ -138,7 +141,7 @@ def test_invalid_threshold_does_not_change_version():
     assert codes == {"THRESHOLD_ORDER", "NEGATIVE_WEIGHT"}
     current = client.get("/api/rbqm/thresholds").json()
     assert current["configVersion"] == "v1"
-    assert len(current["data"]["versions"]) == 1
+    assert len(current["data"]["versions"]) == version_count
 
 
 def test_contract_marks_synthetic_and_comparison_is_stable():
