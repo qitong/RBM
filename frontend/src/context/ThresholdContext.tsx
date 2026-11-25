@@ -113,11 +113,11 @@ export const ThresholdProvider: React.FC<{ children: React.ReactNode }> = ({ chi
     if (!approvedPlan || approvedPlan.approvalStatus !== 'approved' || approvedPlan.status !== 'approved') {
       return null;
     }
-    if (approvedPlan.studyCode !== SYNTHETIC_OVERDUE_CONSENT.studyCode) return null;
     const rule = approvedMetrics.find((item) => item.candidateId === candidateId);
     if (!rule || rule.unit == null || rule.unit === '') return null;
 
     if (rule.unit === SYNTHETIC_OVERDUE_CONSENT.unit) {
+      if (approvedPlan.studyCode !== SYNTHETIC_OVERDUE_CONSENT.studyCode) return null;
       if (!Number.isFinite(value) || value < 0) return null;
       if (!Number.isFinite(rule.warningThreshold) || !Number.isFinite(rule.actionThreshold)) return null;
       if (rule.warningThreshold < 0 || rule.actionThreshold < 0 || rule.warningThreshold >= rule.actionThreshold) {

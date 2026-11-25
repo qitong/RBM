@@ -344,6 +344,35 @@ describe('useThresholds', () => {
     expect(result.current.checkApprovedMetric(-3, 'KRI-04')).toBe('action')
   })
 
+  it('keeps absolute SD grades for an approved rule from another study', async () => {
+    vi.mocked(fetch).mockImplementation(() => jsonResponse({
+      ok: true,
+      active: {
+        versionId: 'MP-0011',
+        status: 'approved',
+        approvalStatus: 'approved',
+        approvedBy: '审阅员-合成甲',
+        studyCode: 'SYN-OTHER',
+        legacyThresholdMap: [{
+          rbmCategoryId: 'SAFETY REPORTING',
+          warningThreshold: 2,
+          actionThreshold: 3,
+          monitoringMethod: 'CENTRAL_REVIEW',
+          candidateId: 'KRI-11',
+          unit: 'SD',
+          source: 'approved_kri',
+        }],
+      },
+    }))
+    const { result } = renderHook(() => useThresholds(), { wrapper: Harness })
+    await waitFor(() => expect(result.current.checkApprovedMetric(-2, 'KRI-11')).toBe('warning'))
+    expect(result.current.checkApprovedMetric(2, 'KRI-11')).toBe('warning')
+    expect(result.current.checkApprovedMetric(1.5, 'KRI-11')).toBe('normal')
+    expect(result.current.checkApprovedMetric(-1.5, 'KRI-11')).toBe('normal')
+    expect(result.current.checkApprovedMetric(3, 'KRI-11')).toBe('action')
+    expect(result.current.checkApprovedMetric(-3, 'KRI-11')).toBe('action')
+  })
+
   it('still applies an approved sd preset when that category is missing from localStorage', async () => {
     localStorage.setItem('rbm_threshold_configs', JSON.stringify({
       categories: [
