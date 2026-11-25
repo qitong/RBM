@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 
 from src.api.main import app
 from src.rbqm.service import CLOSE_FIELDS, RbqmError, reset_store
-from src.rbqm.study_candidate import exceeds_action, fold_exceedances, site_rule
+from src.rbqm.study_candidate import exceeds_action, fold_exceedances, observation_identity, site_rule
 from src.rbqm.synthetic import STUDY_ID
 
 client = TestClient(app)
@@ -116,6 +116,29 @@ def test_replaying_one_observation_does_not_open_a_candidate():
     assert distinct.json()["data"]["createdCandidateIds"] == [CANDIDATE]
     assert distinct.json()["data"]["pending"][0]["exceedanceCount"] == 2
     assert distinct.json()["data"]["studyLevel"] == []
+    assert _qtl_ids() == ["RSK-QTL-001"]
+
+
+def test_nearby_floats_above_the_bound_are_not_one_replay():
+    low = _obs(value=3.000000000001)
+    high = _obs(value=3.000000000002)
+    assert observation_identity(low) != observation_identity(high)
+    assert format(3.000000000001, ".12g") == format(3.000000000002, ".12g")
+    before = client.get("/api/rbqm/risks").json()["data"]
+    opened = _post(low, high)
+    assert opened.status_code == 200, opened.text
+    data = opened.json()["data"]
+    assert data["createdCandidateIds"] == [CANDIDATE]
+    assert data["pending"][0]["exceedanceCount"] == 2
+    assert data["pending"][0]["status"] == "pending_confirmation"
+    assert data["studyLevel"] == []
+    assert data["studyQtlIds"] == ["RSK-QTL-001"]
+    assert client.get("/api/rbqm/risks").json()["data"] == before
+    replay = _post(low, high)
+    assert replay.json()["data"]["createdCandidateIds"] == []
+    assert [item["id"] for item in replay.json()["data"]["pending"]] == [CANDIDATE]
+    assert replay.json()["data"]["pending"][0]["exceedanceCount"] == 2
+    assert replay.json()["data"]["studyLevel"] == []
     assert _qtl_ids() == ["RSK-QTL-001"]
 
 

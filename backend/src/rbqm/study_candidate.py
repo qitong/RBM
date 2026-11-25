@@ -81,8 +81,12 @@ def validate_observations(rules: list[dict[str, Any]], observations: list[dict[s
 
 
 def observation_identity(row: dict[str, Any]) -> str:
-    """One synthetic reading. Replaying the same fields does not count again."""
-    value = format(float(row["value"]), ".12g")
+    """One synthetic reading. Replaying the same fields does not count again.
+
+    The value keeps the float's own hex form, so 3.000000000001 and
+    3.000000000002 stay different. A shorter decimal format collapses both to 3.
+    """
+    value = float(row["value"]).hex()
     return "|".join((
         str(row.get("studyId")),
         str(row.get("siteId")),

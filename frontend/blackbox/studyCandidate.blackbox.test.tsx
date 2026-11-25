@@ -212,4 +212,40 @@ describe('repeated synthetic site exceedances through the public API', () => {
       expect(readFileSync(planFile, 'utf8')).not.toContain('informed_consent_sd')
     }
   }, 20000)
+
+  it('keeps two nearby exceeding floats as one pending candidate', async () => {
+    const started = await startApi()
+    try {
+      const res = await nativeFetch(`http://127.0.0.1:${started.port}/api/rbqm/site-exceedances`, {
+        method: 'POST',
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          operator: '中央监查员-合成',
+          observations: [3.000000000001, 3.000000000002].map((value) => ({
+            studyId: 'SYN-STUDY-001',
+            siteId: 'SYN-SITE-203',
+            metric: 'informed_consent_sd',
+            value,
+            observedAt: '2026-11-02',
+          })),
+        }),
+      })
+      const json = await res.json() as {
+        data: {
+          createdCandidateIds: string[]
+          pending: Array<{ exceedanceCount: number }>
+          studyLevel: unknown[]
+          studyQtlIds: string[]
+        }
+      }
+      expect(res.status).toBe(200)
+      expect(json.data.createdCandidateIds).toEqual(['CAND-SYN-SITE-203-informed_consent_sd'])
+      expect(json.data.pending).toHaveLength(1)
+      expect(json.data.pending[0].exceedanceCount).toBe(2)
+      expect(json.data.studyLevel).toEqual([])
+      expect(json.data.studyQtlIds).toEqual(['RSK-QTL-001'])
+    } finally {
+      started.proc.kill()
+    }
+  }, 20000)
 })
