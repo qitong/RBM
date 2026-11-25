@@ -175,6 +175,7 @@ class Store:
             self._state["exceedanceCounts"],
             rules,
             observations,
+            self._state["seenObservations"],
         )
         if created:
             self._append_event(

@@ -543,4 +543,5 @@ def initial_state() -> dict[str, Any]:
         "metricBatch": batch,
         "studyCandidates": [],
         "exceedanceCounts": {},
+        "seenObservations": set(),
     }

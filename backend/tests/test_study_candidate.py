@@ -62,19 +62,23 @@ def test_module_counts_only_repeated_action_crossings():
     assert exceeds_action(-1, proportion) is False
     candidates: list[dict] = []
     counts: dict[str, int] = {}
+    seen: set[str] = set()
     rules = [rule, proportion]
-    assert fold_exceedances(candidates, counts, rules, [_obs(value=2.5), _obs(value=2.9)]) == []
+    assert fold_exceedances(candidates, counts, rules, [_obs(value=2.5), _obs(value=2.9)], seen) == []
     assert candidates == []
-    assert fold_exceedances(candidates, counts, rules, [_obs(value=3.5)]) == []
-    created = fold_exceedances(candidates, counts, rules, [_obs(value=-3.2), _obs(value=4)])
+    same = _obs(value=3.5)
+    assert fold_exceedances(candidates, counts, rules, [same, same], seen) == []
+    assert fold_exceedances(candidates, counts, rules, [same], seen) == []
+    assert candidates == []
+    created = fold_exceedances(candidates, counts, rules, [_obs(value=-3.2), _obs(value=4)], seen)
     assert created == [CANDIDATE]
     assert len(candidates) == 1
     assert candidates[0]["status"] == "pending_confirmation"
     assert candidates[0]["exceedanceCount"] == 3
     assert candidates[0]["riskId"] is None
-    assert fold_exceedances(candidates, counts, rules, [_obs(value=8)]) == []
+    assert fold_exceedances(candidates, counts, rules, [_obs(value=8)], seen) == []
     assert len(candidates) == 1
-    other = fold_exceedances(candidates, counts, rules, [_obs(site="SYN-SITE-102", value=3.1), _obs(site="SYN-SITE-102", value=3.4)])
+    other = fold_exceedances(candidates, counts, rules, [_obs(site="SYN-SITE-102", value=3.1), _obs(site="SYN-SITE-102", value=3.4)], seen)
     assert other == ["CAND-SYN-SITE-102-informed_consent_sd"]
     assert len(candidates) == 2
     with pytest.raises(RbqmError) as ambiguous:
@@ -93,6 +97,26 @@ def test_single_crossing_does_not_open_a_candidate_or_a_qtl():
     assert body["data"]["studyLevel"] == []
     assert body["data"]["studyQtlIds"] == ["RSK-QTL-001"]
     assert client.get("/api/rbqm/risks").json()["data"] == before
+
+
+def test_replaying_one_observation_does_not_open_a_candidate():
+    row = _obs(value=3.5)
+    before = client.get("/api/rbqm/risks").json()["data"]
+    first = _post(row)
+    second = _post(row)
+    duplicated = _post(row, row)
+    assert first.status_code == second.status_code == duplicated.status_code == 200
+    for response in (first, second, duplicated):
+        assert response.json()["data"]["createdCandidateIds"] == []
+        assert response.json()["data"]["pending"] == []
+        assert response.json()["data"]["studyLevel"] == []
+        assert response.json()["data"]["studyQtlIds"] == ["RSK-QTL-001"]
+    assert client.get("/api/rbqm/risks").json()["data"] == before
+    distinct = _post(_obs(value=3.5, observedAt="2026-11-18"))
+    assert distinct.json()["data"]["createdCandidateIds"] == [CANDIDATE]
+    assert distinct.json()["data"]["pending"][0]["exceedanceCount"] == 2
+    assert distinct.json()["data"]["studyLevel"] == []
+    assert _qtl_ids() == ["RSK-QTL-001"]
 
 
 def test_repeated_crossing_opens_one_pending_candidate_until_a_person_confirms():

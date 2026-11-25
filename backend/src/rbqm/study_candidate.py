@@ -80,15 +80,32 @@ def validate_observations(rules: list[dict[str, Any]], observations: list[dict[s
         site_rule(rules, metric)
 
 
+def observation_identity(row: dict[str, Any]) -> str:
+    """One synthetic reading. Replaying the same fields does not count again."""
+    value = format(float(row["value"]), ".12g")
+    return "|".join((
+        str(row.get("studyId")),
+        str(row.get("siteId")),
+        str(row.get("metric")),
+        value,
+        str(row.get("observedAt")),
+    ))
+
+
 def fold_exceedances(
     candidates: list[dict[str, Any]],
     counts: dict[str, int],
     rules: list[dict[str, Any]],
     observations: list[dict[str, Any]],
+    seen: set[str],
 ) -> list[str]:
     """Count action-bound crossings. Open at most one pending candidate per site and metric."""
     created: list[str] = []
     for row in observations:
+        identity = observation_identity(row)
+        if identity in seen:
+            continue
+        seen.add(identity)
         rule = site_rule(rules, str(row["metric"]))
         if not exceeds_action(float(row["value"]), rule):
             continue

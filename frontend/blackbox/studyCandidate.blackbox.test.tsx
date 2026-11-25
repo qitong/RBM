@@ -126,6 +126,21 @@ describe('repeated synthetic site exceedances through the public API', () => {
       studyQtlIds: ['RSK-QTL-001'],
     })
 
+    const replay = await send(port, 'POST', '/api/rbqm/site-exceedances', {
+      operator: '中央监查员-合成',
+      observations: [
+        observation('SYN-SITE-101', 3.5, '2026-11-02'),
+        observation('SYN-SITE-101', 3.5, '2026-11-02'),
+      ],
+    })
+    expect(replay.status).toBe(200)
+    expect(replay.json.data).toMatchObject({
+      createdCandidateIds: [],
+      pending: [],
+      studyLevel: [],
+      studyQtlIds: ['RSK-QTL-001'],
+    })
+
     const twice = await send(port, 'POST', '/api/rbqm/site-exceedances', {
       operator: '中央监查员-合成',
       observations: [
