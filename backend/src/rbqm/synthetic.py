@@ -541,4 +541,7 @@ def initial_state() -> dict[str, Any]:
         "seed": SEED,
         "comparison": comparison,
         "metricBatch": batch,
+        "studyCandidates": [],
+        "exceedanceCounts": {},
+        "seenObservations": set(),
     }
