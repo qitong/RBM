@@ -1,7 +1,7 @@
 [
   {
     "siteId": "S-001",
-    "siteName": "北京协和医院",
+    "siteName": "SYN-SITE-001",
     "metricName": "Protocol Deviation Rate (%)",
     "historicalData": [
       { "month": "2025-11", "value": 1.2 },
@@ -19,7 +19,7 @@
   },
   {
     "siteId": "S-002",
-    "siteName": "上海瑞金医院",
+    "siteName": "SYN-SITE-002",
     "metricName": "Protocol Deviation Rate (%)",
     "historicalData": [
       { "month": "2025-11", "value": 3.4 },
@@ -37,7 +37,7 @@
   },
   {
     "siteId": "S-003",
-    "siteName": "广州中山大学附属医院",
+    "siteName": "SYN-SITE-003",
     "metricName": "Protocol Deviation Rate (%)",
     "historicalData": [
       { "month": "2025-11", "value": 2.1 },
@@ -55,7 +55,7 @@
   },
   {
     "siteId": "S-004",
-    "siteName": "杭州邵逸夫医院",
+    "siteName": "SYN-SITE-010",
     "metricName": "Protocol Deviation Rate (%)",
     "historicalData": [
       { "month": "2025-11", "value": 0.8 },
@@ -73,7 +73,7 @@
   },
   {
     "siteId": "S-005",
-    "siteName": "成都华西医院",
+    "siteName": "SYN-SITE-004",
     "metricName": "Protocol Deviation Rate (%)",
     "historicalData": [
       { "month": "2025-11", "value": 1.5 },
@@ -91,7 +91,7 @@
   },
   {
     "siteId": "S-006",
-    "siteName": "武汉同济医院",
+    "siteName": "SYN-SITE-006",
     "metricName": "Protocol Deviation Rate (%)",
     "historicalData": [
       { "month": "2025-11", "value": 4.1 },
